@@ -1,0 +1,19 @@
+
+#  11 February 2016
+
+CC=gcc
+CFLAGS=-I.
+DEPS=cips.h
+
+hello0: hello0.c
+	gcc -o hello0 hello0.c 
+
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+HELLOOBJS=hello.o hello2.o hello3.o
+
+hello: $(HELLOOBJS)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+
