@@ -1,4 +1,7 @@
 
+
+/* silly change */
+
 read_tiff_header(file_name, image_header)
    char file_name[];
    struct tiff_header_struct *image_header;
