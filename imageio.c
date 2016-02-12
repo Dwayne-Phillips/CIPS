@@ -1,5 +1,9 @@
 
 
+
+
+
+
        /*********************************************
        *
        *   file imageio.c
@@ -97,6 +101,360 @@
 #include "cips.h"
 
 
+      /******************************************
+      *
+      *   print_tiff_header()
+      *
+      ******************************************/
+
+
+int print_tiff_header(header)
+   struct tiff_header_struct header;
+{
+   printf("\n");
+   printf("\nlsb: %d", header.lsb);
+   printf("\nbits per pixel: %ld", header.bits_per_pixel);
+   printf("\nimage length: %ld", header.image_length);
+   printf("\nimage width: %ld", header.image_width);
+   printf("\nstrip offset: %ld", header.strip_offset);
+   printf("\n");
+   return(1);
+} /* ends print_tiff_header */
+
+
+
+
+
+      /******************************************
+      *
+      *   read_bmp_file_header(...
+      *
+      *   This function reads the bmpfileheader
+      *   structure from the top of a bmp
+      *   image file.
+      *
+      ******************************************/
+
+int read_bmp_file_header(file_name,
+                     file_header)
+   char *file_name;
+   struct bmpfileheader *file_header;
+{
+   char  buffer[10];
+   long  ll;
+   short ss;
+   unsigned long  ull;
+   unsigned short uss;
+   FILE     *fp;
+
+   fp = fopen(file_name, "rb");
+
+   fread(buffer, 1, 2, fp);
+   extract_ushort_from_buffer(buffer, 1, 0, &uss);
+   file_header->filetype = uss;
+
+   fread(buffer, 1, 4, fp);
+   extract_ulong_from_buffer(buffer, 1, 0, &ull);
+   file_header->filesize = ull;
+
+   fread(buffer, 1, 2, fp);
+   extract_short_from_buffer(buffer, 1, 0, &ss);
+   file_header->reserved1 = ss;
+
+   fread(buffer, 1, 2, fp);
+   extract_short_from_buffer(buffer, 1, 0, &ss);
+   file_header->reserved2 = ss;
+
+   fread(buffer, 1, 4, fp);
+   extract_ulong_from_buffer(buffer, 1, 0, &ull);
+   file_header->bitmapoffset = ull;
+
+   fclose(fp);
+   return(1);
+}  /* ends read_bmp_file_header */
+
+
+
+      /******************************************
+      *
+      *   calculate_pad(...
+      *
+      *   This function calculates the pad needed
+      *   at the end of each row of pixels in a
+      *   bmp image.
+      *
+      ******************************************/
+
+int calculate_pad(width)
+   long width;
+{
+   int pad = 0;
+   pad = ( (width%4) == 0) ? 0 : (4-(width%4));
+   return(pad);
+}  /* ends calculate_pad */
+
+
+
+   /**********************************************
+   *
+   *   is_a_bmp(...
+   *
+   *   This function looks at a file to see if it
+   *   is a bmp file.  First look at the file
+   *   extension.  Next look at the filetype to
+   *   ensure it is 0x4d42.
+   *
+   ***********************************************/
+
+int is_a_bmp(file_name)
+   char *file_name;
+{
+   char   *cc;
+   int    result = 0;
+   struct bmpfileheader file_header;
+
+   cc = strstr(file_name, ".bmp");
+   if(cc == NULL)
+      return(result);
+
+   read_bmp_file_header(file_name, &file_header);
+   if(file_header.filetype != 0x4d42)
+      return(result);
+
+   result = 1;
+   return(result);
+}  /* ends is_a_bmp */
+
+
+
+
+
+   /**********************************************
+   *
+   *   is_a_tiff(...
+   *
+   *   This function looks at a file to see if it
+   *   is a tiff file.  First look at the file
+   *   extension.  Next look at the first four 
+   *   bytes of the header.
+   *
+   ***********************************************/
+
+
+int is_a_tiff(file_name)
+   char *file_name;
+{
+   char   *cc;
+   char   buffer[4];
+   FILE   *fp;
+   int    ok     = 0,
+          result = 0;
+
+   cc = strstr(file_name, ".tif");
+   if(cc == NULL)
+      return(result);
+
+   fp = fopen(file_name, "rb");
+   fread(buffer, 1, 4, fp);
+   fclose(fp);
+
+   if(buffer[0] == 0x49  &&
+      buffer[1] == 0x49  &&
+      buffer[2] == 0x2a  &&
+      buffer[3] == 0x00)
+      ok = 1;
+
+   if(buffer[0] == 0x4d  &&
+      buffer[1] == 0x4d  &&
+      buffer[2] == 0x00  &&
+      buffer[3] == 0x2a)
+      ok = 1;
+
+   if(ok == 0)
+      return(result);
+
+   result = 1;
+   return(result);
+}  /* ends is_a_tiff */
+
+
+
+
+
+
+
+
+   /****************************************
+   *
+   *   extract_long_from_buffer(...
+   *
+   *   This takes a four byte long out of a
+   *   buffer of characters.
+   *
+   *   It is important to know the byte order
+   *   LSB or MSB.
+   *
+   ****************************************/
+
+int extract_long_from_buffer(buffer, lsb, start, number)
+   char  buffer[];
+   int       lsb, start;
+   long  *number;
+{
+   int i;
+   union long_char_union lcu;
+
+   lcu.l_num = 0; /*****HERE*****/
+
+
+   if(lsb == 1){
+      lcu.l_alpha[0] = buffer[start+0];
+      lcu.l_alpha[1] = buffer[start+1];
+      lcu.l_alpha[2] = buffer[start+2];
+      lcu.l_alpha[3] = buffer[start+3];
+   }  /* ends if lsb = 1 */
+
+   if(lsb == 0){
+      lcu.l_alpha[0] = buffer[start+3];
+      lcu.l_alpha[1] = buffer[start+2];
+      lcu.l_alpha[2] = buffer[start+1];
+      lcu.l_alpha[3] = buffer[start+0];
+   }  /* ends if lsb = 0      */
+
+   *number = lcu.l_num;
+
+   return(1);
+
+}  /* ends extract_long_from_buffer */
+
+
+
+
+
+
+   /****************************************
+   *
+   *   extract_ulong_from_buffer(...
+   *
+   *   This takes a four byte unsigned long 
+   *   out of a buffer of characters.
+   *
+   *   It is important to know the byte order
+   *   LSB or MSB.
+   *
+   ****************************************/
+
+int extract_ulong_from_buffer(buffer, lsb, start, number)
+   char  buffer[];
+   int       lsb, start;
+   unsigned long  *number;
+{
+   int i;
+   union ulong_char_union lcu;
+
+   lcu.l_num = 0;
+
+   if(lsb == 1){
+      lcu.l_alpha[0] = buffer[start+0];
+      lcu.l_alpha[1] = buffer[start+1];
+      lcu.l_alpha[2] = buffer[start+2];
+      lcu.l_alpha[3] = buffer[start+3];
+   }  /* ends if lsb = 1 */
+
+   if(lsb == 0){
+      lcu.l_alpha[0] = buffer[start+3];
+      lcu.l_alpha[1] = buffer[start+2];
+      lcu.l_alpha[2] = buffer[start+1];
+      lcu.l_alpha[3] = buffer[start+0];
+   }  /* ends if lsb = 0      */
+
+   *number = lcu.l_num;
+   return(1);
+}  /* ends extract_ulong_from_buffer */
+
+
+
+
+   /****************************************
+   *
+   *   extract_short_from_buffer(...
+   *
+   *   This takes a two byte short out of a
+   *   buffer of characters.
+   *
+   *   It is important to know the byte order
+   *   LSB or MSB.
+   *
+   ****************************************/
+
+int extract_short_from_buffer(buffer, lsb, start, number)
+   char  buffer[];
+   int   lsb, start;
+   short *number;
+{
+
+   int i;
+   union short_char_union lcu;
+
+   lcu.s_num = 0;
+
+   if(lsb == 1){
+      lcu.s_alpha[0] = buffer[start+0];
+      lcu.s_alpha[1] = buffer[start+1];
+   }  /* ends if lsb = 1 */
+
+   if(lsb == 0){
+      lcu.s_alpha[0] = buffer[start+1];
+      lcu.s_alpha[1] = buffer[start+0];
+   }  /* ends if lsb = 0      */
+
+   *number = lcu.s_num;
+   return(1);
+
+}  /* ends extract_short_from_buffer */
+
+
+
+ 
+
+
+   /****************************************
+   *
+   *   extract_ushort_from_buffer(...
+   *
+   *   This takes a two byte unsiged short 
+   *   out of a buffer of characters.
+   *
+   *   It is important to know the byte order
+   *   LSB or MSB.
+   *
+   ****************************************/
+
+int extract_ushort_from_buffer(buffer, lsb, start, number)
+   char  buffer[];
+   int       lsb, start;
+   unsigned short *number;
+{
+
+   int i;
+   union ushort_char_union lcu;
+
+   lcu.s_num = 0;
+
+   if(lsb == 1){
+      lcu.s_alpha[0] = buffer[start+0];
+      lcu.s_alpha[1] = buffer[start+1];
+   }  /* ends if lsb = 1 */
+
+   if(lsb == 0){
+      lcu.s_alpha[0] = buffer[start+1];
+      lcu.s_alpha[1] = buffer[start+0];
+   }  /* ends if lsb = 0      */
+
+   *number = lcu.s_num;
+   return(1);
+}  /* ends extract_ushort_from_buffer */
+
 
 
        /***********************************************
@@ -109,7 +467,7 @@
        *
        ***********************************************/
 
-read_tiff_header(file_name, image_header)
+int read_tiff_header(file_name, image_header)
    char file_name[];
    struct tiff_header_struct *image_header;
 {
@@ -128,7 +486,6 @@ read_tiff_header(file_name, image_header)
    long bits_per_pixel,
         image_length,
         image_width,
-        length_of_field,
         offset_to_ifd,
         strip_offset,
         subfile,
@@ -136,6 +493,7 @@ read_tiff_header(file_name, image_header)
 
    short entry_count,
          field_type,
+         length_of_field,
          s_bits_per_pixel,
          s_image_length,
          s_image_width,
@@ -158,6 +516,7 @@ read_tiff_header(file_name, image_header)
       lsb = 1;
    else
       lsb = 0;
+
 
         /*************************************
         *
@@ -289,7 +648,7 @@ read_tiff_header(file_name, image_header)
 
 
    image_header->lsb                = lsb;
-   image_header->bits_per_pixel = bits_per_pixel;
+   image_header->bits_per_pixel     = bits_per_pixel;
    image_header->image_length       = image_length;
    image_header->image_width        = image_width;
    image_header->strip_offset       = strip_offset;
@@ -299,171 +658,10 @@ read_tiff_header(file_name, image_header)
    else{
       printf("\n\nTIFF.C> ERROR - could not open "
              "tiff file");
+      return(0);
    }
+   return(1);
 }  /* ends read_tiff_header */
-
-
-
-
-
-   /****************************************
-   *
-   *   extract_long_from_buffer(...
-   *
-   *   This takes a four byte long out of a
-   *   buffer of characters.
-   *
-   *   It is important to know the byte order
-   *   LSB or MSB.
-   *
-   ****************************************/
-
-extract_long_from_buffer(buffer, lsb, start, number)
-   char  buffer[];
-   int       lsb, start;
-   long  *number;
-{
-   int i;
-   union long_char_union lcu;
-
-   if(lsb == 1){
-      lcu.l_alpha[0] = buffer[start+0];
-      lcu.l_alpha[1] = buffer[start+1];
-      lcu.l_alpha[2] = buffer[start+2];
-      lcu.l_alpha[3] = buffer[start+3];
-   }  /* ends if lsb = 1 */
-
-   if(lsb == 0){
-      lcu.l_alpha[0] = buffer[start+3];
-      lcu.l_alpha[1] = buffer[start+2];
-      lcu.l_alpha[2] = buffer[start+1];
-      lcu.l_alpha[3] = buffer[start+0];
-   }  /* ends if lsb = 0      */
-
-   *number = lcu.l_num;
-
-
-}  /* ends extract_long_from_buffer */
-
-
-
-
-
-
-   /****************************************
-   *
-   *   extract_ulong_from_buffer(...
-   *
-   *   This takes a four byte unsigned long 
-   *   out of a buffer of characters.
-   *
-   *   It is important to know the byte order
-   *   LSB or MSB.
-   *
-   ****************************************/
-
-extract_ulong_from_buffer(buffer, lsb, start, number)
-   char  buffer[];
-   int       lsb, start;
-   unsigned long  *number;
-{
-   int i;
-   union ulong_char_union lcu;
-
-   if(lsb == 1){
-      lcu.l_alpha[0] = buffer[start+0];
-      lcu.l_alpha[1] = buffer[start+1];
-      lcu.l_alpha[2] = buffer[start+2];
-      lcu.l_alpha[3] = buffer[start+3];
-   }  /* ends if lsb = 1 */
-
-   if(lsb == 0){
-      lcu.l_alpha[0] = buffer[start+3];
-      lcu.l_alpha[1] = buffer[start+2];
-      lcu.l_alpha[2] = buffer[start+1];
-      lcu.l_alpha[3] = buffer[start+0];
-   }  /* ends if lsb = 0      */
-
-   *number = lcu.l_num;
-}  /* ends extract_ulong_from_buffer */
-
-
-
-
-   /****************************************
-   *
-   *   extract_short_from_buffer(...
-   *
-   *   This takes a two byte short out of a
-   *   buffer of characters.
-   *
-   *   It is important to know the byte order
-   *   LSB or MSB.
-   *
-   ****************************************/
-
-extract_short_from_buffer(buffer, lsb, start, number)
-   char  buffer[];
-   int       lsb, start;
-   short *number;
-{
-
-   int i;
-   union short_char_union lcu;
-
-   if(lsb == 1){
-      lcu.s_alpha[0] = buffer[start+0];
-      lcu.s_alpha[1] = buffer[start+1];
-   }  /* ends if lsb = 1 */
-
-   if(lsb == 0){
-      lcu.s_alpha[0] = buffer[start+1];
-      lcu.s_alpha[1] = buffer[start+0];
-   }  /* ends if lsb = 0      */
-
-   *number = lcu.s_num;
-
-
-}  /* ends extract_short_from_buffer */
-
-
-
- 
-
-
-   /****************************************
-   *
-   *   extract_ushort_from_buffer(...
-   *
-   *   This takes a two byte unsiged short 
-   *   out of a buffer of characters.
-   *
-   *   It is important to know the byte order
-   *   LSB or MSB.
-   *
-   ****************************************/
-
-extract_ushort_from_buffer(buffer, lsb, start, number)
-   char  buffer[];
-   int       lsb, start;
-   unsigned short *number;
-{
-
-   int i;
-   union ushort_char_union lcu;
-
-   if(lsb == 1){
-      lcu.s_alpha[0] = buffer[start+0];
-      lcu.s_alpha[1] = buffer[start+1];
-   }  /* ends if lsb = 1 */
-
-   if(lsb == 0){
-      lcu.s_alpha[0] = buffer[start+1];
-      lcu.s_alpha[1] = buffer[start+0];
-   }  /* ends if lsb = 0      */
-
-   *number = lcu.s_num;
-}  /* ends extract_ushort_from_buffer */
 
 
 
@@ -478,19 +676,23 @@ extract_ushort_from_buffer(buffer, lsb, start, number)
    *
    ****************************************/
 
-short **allocate_image_array(length, width)
+short** allocate_image_array(length, width)
    long  length, width;
 {
-   int i;
-   short **the_array;
+   int i, j;
 
-   the_array = malloc(length * sizeof(short  *));
+   short** the_array = (short**) malloc(length * sizeof(short*));
    for(i=0; i<length; i++){
-      the_array[i] = malloc(width * sizeof(short ));
+      the_array[i] = (short*) malloc(width * sizeof(short));
       if(the_array[i] == '\0'){
          printf("\n\tmalloc of the_image[%d] failed", i);
       }  /* ends if */
    }  /* ends loop over i */
+
+   for(i=0; i<length; i++)
+      for(j=0; j<width; j++)
+         the_array[i][j] = 0;
+
    return(the_array);
 
 }  /* ends allocate_image_array */
@@ -516,6 +718,7 @@ int free_image_array(the_array, length)
    int i;
    for(i=0; i<length; i++)
       free(the_array[i]);
+   free(the_array);  /***** HERE ****/
    return(1);
 }  /* ends free_image_array */
 
@@ -537,7 +740,7 @@ int free_image_array(the_array, length)
    *
    ****************************************/
 
-read_tiff_image(image_file_name, the_image)
+int read_tiff_image(image_file_name, the_image)
       char   image_file_name[];
       short   **the_image;
 {
@@ -606,7 +809,7 @@ read_tiff_image(image_file_name, the_image)
    *
    **********************************************/
 
-read_line(image_file, the_image, line_number, 
+int read_line(image_file, the_image, line_number, 
           image_header, ie, le)
    FILE   *image_file;
    int    ie, le, line_number;
@@ -618,6 +821,7 @@ read_line(image_file, the_image, line_number,
    int bytes_read, i;
    unsigned int bytes_to_read;
    union short_char_union scu;
+
 
 
    buffer = (char  *) malloc(image_header->image_width * sizeof(char ));
@@ -646,8 +850,8 @@ read_line(image_file, the_image, line_number,
         **********************************************/
 
       if(image_header->bits_per_pixel == 8){
-       scu.s_num          = 0;
-       scu.s_alpha[0]        = buffer[i];
+       scu.s_num                 = 0;
+       scu.s_alpha[0]            = buffer[i];
        the_image[line_number][i] = scu.s_num;
       }  /* ends if bits_per_pixel == 8 */
 
@@ -687,7 +891,7 @@ read_line(image_file, the_image, line_number,
     *
     **********************************************/
 
-seek_to_first_line(image_file, image_header, il)
+int seek_to_first_line(image_file, image_header, il)
    FILE   *image_file;
    int    il;
    struct tiff_header_struct *image_header;
@@ -715,7 +919,7 @@ seek_to_first_line(image_file, image_header, il)
     *
     ***********************************************/
 
-seek_to_end_of_line(image_file, le, image_header)
+int seek_to_end_of_line(image_file, le, image_header)
    FILE   *image_file;
    int    le;
    struct tiff_header_struct *image_header;
@@ -744,7 +948,7 @@ seek_to_end_of_line(image_file, le, image_header)
    *
    ***********************************************/
 
-create_tiff_file_if_needed(in_name, out_name, out_image)
+int create_tiff_file_if_needed(in_name, out_name, out_image)
    char in_name[], out_name[];
    short **out_image;
 {
@@ -787,7 +991,7 @@ create_tiff_file_if_needed(in_name, out_name, out_image)
    ***************************************************/
 
 
-create_allocate_tiff_file(file_name, 
+int create_allocate_tiff_file(file_name, 
                           image_header)
    char   file_name[];
    struct tiff_header_struct *image_header;
@@ -1143,6 +1347,86 @@ create_allocate_tiff_file(file_name,
 
 
 
+
+
+       /*********************************************
+       *
+       *   write_line(...
+       *
+       *   This function takes an array of shorts, 
+       *   extracts the numbers and puts them into 
+       *   a buffer, then writes this buffer into a 
+       *   tiff file on disk. The process depends on 
+       *   the number of bits per pixel used in the 
+       *   file (4 or 8).
+       *
+       **********************************************/
+
+int write_line(image_file, array, line_number, 
+           image_header, ie, le)
+   FILE   *image_file;
+   int    ie, le, line_number;
+   short  **array;
+   struct tiff_header_struct *image_header;
+{
+   char     *buffer, first, second;
+   float    a, b;
+   int      bytes_written, i;
+   unsigned int bytes_to_write;
+   union    short_char_union scu;
+
+   buffer = (char  *) malloc(image_header->image_width * sizeof(char ));
+   for(i=0; i<image_header->image_width; i++)
+      buffer[i] = '\0';
+
+   bytes_to_write = (le-ie)/
+                    (8/image_header->bits_per_pixel);
+
+   for(i=0; i<bytes_to_write; i++){
+
+        /**********************************************
+        *
+        *   Use unions defined in cips.h to stuff shorts
+        *   into bytes.
+        *
+        **********************************************/
+
+      if(image_header->bits_per_pixel == 8){
+       scu.s_num = 0;
+       scu.s_num = array[line_number][i];
+       buffer[i] = scu.s_alpha[0];
+      }  /* ends if bits_per_pixel == 8 */
+
+
+      if(image_header->bits_per_pixel == 4){
+
+       scu.s_num = 0;
+       scu.s_num = array[line_number][i*2];
+       first     = scu.s_alpha[0] << 4;
+
+       scu.s_num = 0;
+       scu.s_num = array[line_number][i*2];
+       second    = scu.s_alpha[0] & 0X000F;
+
+       buffer[i] = first | second;
+      }  /* ends if bits_per_pixel == 4 */
+
+   }  /*  ends loop over i  */
+
+
+   bytes_written = fwrite(buffer, 1, bytes_to_write, 
+                          image_file);
+
+   free(buffer);
+   return(bytes_written);
+
+}  /* ends write_line  */
+
+
+
+
+
+
        /*********************************************
        *
        *   write_array_into_tiff_file(...
@@ -1152,7 +1436,7 @@ create_allocate_tiff_file(file_name,
        *
        **********************************************/
 
-write_tiff_image(image_file_name, array)
+int write_tiff_image(image_file_name, array)
 
         char    image_file_name[];
         short   **array;
@@ -1204,82 +1488,6 @@ write_tiff_image(image_file_name, array)
 
 
 
-       /*********************************************
-       *
-       *   write_line(...
-       *
-       *   This function takes an array of shorts, 
-       *   extracts the numbers and puts them into 
-       *   a buffer, then writes this buffer into a 
-       *   tiff file on disk. The process depends on 
-       *   the number of bits per pixel used in the 
-       *   file (4 or 8).
-       *
-       **********************************************/
-
-write_line(image_file, array, line_number, 
-           image_header, ie, le)
-   FILE   *image_file;
-   int    ie, le, line_number;
-   short  **array;
-   struct tiff_header_struct *image_header;
-{
-   char     *buffer, first, second;
-   float    a, b;
-   int      bytes_written, i;
-   unsigned int bytes_to_write;
-   union    short_char_union scu;
-
-   buffer = (char  *) malloc(image_header->image_width * sizeof(char ));
-   for(i=0; i<image_header->image_width; i++)
-      buffer[i] = '\0';
-
-   bytes_to_write = (le-ie)/
-                    (8/image_header->bits_per_pixel);
-
-   for(i=0; i<bytes_to_write; i++){
-
-        /**********************************************
-        *
-        *   Use unions defined in cips.h to stuff shorts
-        *   into bytess.
-        *
-        **********************************************/
-
-      if(image_header->bits_per_pixel == 8){
-       scu.s_num = 0;
-       scu.s_num = array[line_number][i];
-       buffer[i] = scu.s_alpha[0];
-      }  /* ends if bits_per_pixel == 8 */
-
-
-      if(image_header->bits_per_pixel == 4){
-
-       scu.s_num = 0;
-       scu.s_num = array[line_number][i*2];
-       first     = scu.s_alpha[0] << 4;
-
-       scu.s_num = 0;
-       scu.s_num = array[line_number][i*2];
-       second    = scu.s_alpha[0] & 0X000F;
-
-       buffer[i] = first | second;
-      }  /* ends if bits_per_pixel == 4 */
-
-   }  /*  ends loop over i  */
-
-
-   bytes_written = fwrite(buffer, 1, bytes_to_write, 
-                          image_file);
-
-   free(buffer);
-   return(bytes_written);
-
-}  /* ends write_line  */
-
-
-
-
 
 
    /***************************************
@@ -1293,7 +1501,7 @@ write_line(image_file, array, line_number,
    ***************************************/
 
 
-insert_short_into_buffer(buffer, start, number)
+int insert_short_into_buffer(buffer, start, number)
     char  buffer[];
     int   start;
     short number;
@@ -1321,7 +1529,7 @@ insert_short_into_buffer(buffer, start, number)
    *
    ***************************************/
 
-insert_ushort_into_buffer(buffer, start, number)
+int insert_ushort_into_buffer(buffer, start, number)
     char  buffer[];
     int   start;
     unsigned short number;
@@ -1349,7 +1557,7 @@ insert_ushort_into_buffer(buffer, start, number)
 
 
 
-insert_long_into_buffer(buffer, start, number)
+int insert_long_into_buffer(buffer, start, number)
     char buffer[];
     int  start;
     long number;
@@ -1378,7 +1586,7 @@ insert_long_into_buffer(buffer, start, number)
    *
    ***************************************/
 
-insert_ulong_into_buffer(buffer, start, number)
+int insert_ulong_into_buffer(buffer, start, number)
     char buffer[];
     int  start;
     unsigned long number;
@@ -1407,7 +1615,7 @@ insert_ulong_into_buffer(buffer, start, number)
    ***************************************/
 
 
-round_off_image_size(image_header, length, width)
+int round_off_image_size(image_header, length, width)
     int    *length, *width;
     struct tiff_header_struct *image_header;
 {
@@ -1430,7 +1638,7 @@ round_off_image_size(image_header, length, width)
     *
     ***********************************************/
 
-does_not_exist(file_name)
+int does_not_exist(file_name)
     char file_name[];
 {
    FILE *image_file;
@@ -1454,54 +1662,6 @@ does_not_exist(file_name)
 
 
 
-      /******************************************
-      *
-      *   read_bmp_file_header(...
-      *
-      *   This function reads the bmpfileheader
-      *   structure from the top of a bmp
-      *   image file.
-      *
-      ******************************************/
-
-read_bmp_file_header(file_name,
-                     file_header)
-   char *file_name;
-   struct bmpfileheader *file_header;
-{
-   char  buffer[10];
-   long  ll;
-   short ss;
-   unsigned long  ull;
-   unsigned short uss;
-   FILE     *fp;
-
-   fp = fopen(file_name, "rb");
-
-   fread(buffer, 1, 2, fp);
-   extract_ushort_from_buffer(buffer, 1, 0, &uss);
-   file_header->filetype = uss;
-
-   fread(buffer, 1, 4, fp);
-   extract_ulong_from_buffer(buffer, 1, 0, &ull);
-   file_header->filesize = ull;
-
-   fread(buffer, 1, 2, fp);
-   extract_short_from_buffer(buffer, 1, 0, &ss);
-   file_header->reserved1 = ss;
-
-   fread(buffer, 1, 2, fp);
-   extract_short_from_buffer(buffer, 1, 0, &ss);
-   file_header->reserved2 = ss;
-
-   fread(buffer, 1, 4, fp);
-   extract_ulong_from_buffer(buffer, 1, 0, &ull);
-   file_header->bitmapoffset = ull;
-
-   fclose(fp);
-
-}  /* ends read_bmp_file_header */
-
 
 
       /******************************************
@@ -1513,7 +1673,7 @@ read_bmp_file_header(file_name,
       *
       ******************************************/
 
-print_bmp_file_header(struct bmpfileheader *file_header)
+int print_bmp_file_header(struct bmpfileheader *file_header)
 {
  printf("\nfile type %x", file_header->filetype);
  printf("\nfile size %d", file_header->filesize);
@@ -1533,7 +1693,7 @@ print_bmp_file_header(struct bmpfileheader *file_header)
       *
       ******************************************/
 
-read_bm_header(file_name,
+int read_bm_header(file_name,
                bmheader)
    char *file_name;
    struct bitmapheader *bmheader;
@@ -1614,7 +1774,7 @@ read_bm_header(file_name,
       *
       ******************************************/
 
-print_bm_header(bmheader)
+int print_bm_header(bmheader)
    struct bitmapheader *bmheader;
 {
  printf("\nwidth %d", bmheader->width);
@@ -1637,7 +1797,7 @@ print_bm_header(bmheader)
       *
       ******************************************/
 
-read_color_table(file_name, rgb, size)
+int read_color_table(file_name, rgb, size)
    char   *file_name;
    struct ctstruct *rgb;
    int    size;
@@ -1677,7 +1837,7 @@ read_color_table(file_name, rgb, size)
       *
       ******************************************/
 
-print_color_table(struct ctstruct *rgb, int size)
+int print_color_table(struct ctstruct *rgb, int size)
 {
    int i;
 
@@ -1701,7 +1861,7 @@ print_color_table(struct ctstruct *rgb, int size)
       *
       ******************************************/
 
-flip_image_array(the_image, rows, cols)
+int flip_image_array(the_image, rows, cols)
    long   cols, rows;
    short  **the_image;
 {
@@ -1747,7 +1907,7 @@ flip_image_array(the_image, rows, cols)
       *
       ******************************************/
 
-read_bmp_image(file_name, array)
+int read_bmp_image(file_name, array)
    char  *file_name;
    short **array;
 {
@@ -1824,7 +1984,7 @@ read_bmp_image(file_name, array)
    *
    **********************************************/
 
-create_allocate_bmp_file(file_name,
+int create_allocate_bmp_file(file_name,
                          file_header,
                          bmheader)
    char  *file_name;
@@ -1969,7 +2129,7 @@ create_allocate_bmp_file(file_name,
       *
       ******************************************/
 
-create_bmp_file_if_needed(in_name, out_name, out_image)
+int create_bmp_file_if_needed(in_name, out_name, out_image)
    char in_name[], out_name[];
    short **out_image;
 {
@@ -1999,7 +2159,7 @@ create_bmp_file_if_needed(in_name, out_name, out_image)
       *
       ******************************************/
 
-write_bmp_image(file_name, array)
+int write_bmp_image(file_name, array)
    char   *file_name;
    short  **array;
 {
@@ -2089,26 +2249,6 @@ write_bmp_image(file_name, array)
 }  /* ends write_bmp_image */
 
 
-
-
-
-      /******************************************
-      *
-      *   calculate_pad(...
-      *
-      *   This function calculates the pad needed
-      *   at the end of each row of pixels in a
-      *   bmp image.
-      *
-      ******************************************/
-
-int calculate_pad(width)
-   long width;
-{
-   int pad = 0;
-   pad = ( (width%4) == 0) ? 0 : (4-(width%4));
-   return(pad);
-}  /* ends calculate_pad */
 
 
 
@@ -2238,92 +2378,6 @@ int get_lsb(name)
 
 
 
-
-   /**********************************************
-   *
-   *   is_a_bmp(...
-   *
-   *   This function looks at a file to see if it
-   *   is a bmp file.  First look at the file
-   *   extension.  Next look at the filetype to
-   *   ensure it is 0x4d42.
-   *
-   ***********************************************/
-
-int is_a_bmp(file_name)
-   char *file_name;
-{
-   char   *cc;
-   int    result = 0;
-   struct bmpfileheader file_header;
-
-   cc = strstr(file_name, ".bmp");
-   if(cc == NULL)
-      return(result);
-
-   read_bmp_file_header(file_name, &file_header);
-   if(file_header.filetype != 0x4d42)
-      return(result);
-
-   result = 1;
-   return(result);
-}  /* ends is_a_bmp */
-
-
-
-
-
-   /**********************************************
-   *
-   *   is_a_tiff(...
-   *
-   *   This function looks at a file to see if it
-   *   is a tiff file.  First look at the file
-   *   extension.  Next look at the first four 
-   *   bytes of the header.
-   *
-   ***********************************************/
-
-
-int is_a_tiff(file_name)
-   char *file_name;
-{
-   char   *cc;
-   char   buffer[4];
-   FILE   *fp;
-   int    ok     = 0,
-          result = 0;
-
-   cc = strstr(file_name, ".tif");
-   if(cc == NULL)
-      return(result);
-
-   fp = fopen(file_name, "rb");
-   fread(buffer, 1, 4, fp);
-   fclose(fp);
-
-   if(buffer[0] == 0x49  &&
-      buffer[1] == 0x49  &&
-      buffer[2] == 0x2a  &&
-      buffer[3] == 0x00)
-      ok = 1;
-
-   if(buffer[0] == 0x4d  &&
-      buffer[1] == 0x4d  &&
-      buffer[2] == 0x00  &&
-      buffer[3] == 0x2a)
-      ok = 1;
-
-   if(ok == 0)
-      return(result);
-
-   result = 1;
-   return(result);
-}  /* ends is_a_tiff */
-
-
-
-
    /*******************************************
    *
    *   read_image_array(...
@@ -2333,7 +2387,7 @@ int is_a_tiff(file_name)
    *
    ********************************************/
 
-read_image_array(file_name, array)
+int read_image_array(file_name, array)
    char  *file_name;
    short **array;
 {
@@ -2372,7 +2426,7 @@ read_image_array(file_name, array)
    *
    ********************************************/
 
-write_image_array(file_name, array)
+int write_image_array(file_name, array)
    char  *file_name;
    short **array;
 {
@@ -2408,7 +2462,7 @@ write_image_array(file_name, array)
    *
    *********************************************/
 
-equate_tiff_headers(src, dest)
+int equate_tiff_headers(src, dest)
    struct tiff_header_struct *src, *dest;
 {
    dest->lsb            = src->lsb;
@@ -2431,7 +2485,7 @@ equate_tiff_headers(src, dest)
    *
    *********************************************/
 
-equate_bmpfileheaders(src, dest)
+int equate_bmpfileheaders(src, dest)
    struct bmpfileheader *src, *dest;
 {
    dest->filetype     = src->filetype;
@@ -2453,7 +2507,7 @@ equate_bmpfileheaders(src, dest)
    *
    *********************************************/
 
-equate_bitmapheaders(src, dest)
+int equate_bitmapheaders(src, dest)
    struct bitmapheader *src, *dest;
 {
    dest->size         = src->size;
@@ -2520,7 +2574,7 @@ int are_not_same_size(file1, file2)
    *
    *********************************************/
 
-create_file_if_needed(in_name, out_name, array)
+int create_file_if_needed(in_name, out_name, array)
    char *in_name, *out_name;
    short **array;
 {
@@ -2553,7 +2607,7 @@ create_file_if_needed(in_name, out_name, array)
    *
    *********************************************/
 
-create_image_file(in_name, out_name)
+int create_image_file(in_name, out_name)
    char *in_name, *out_name;
 {
    struct bmpfileheader      bmp_file_header;
@@ -2575,6 +2629,8 @@ create_image_file(in_name, out_name)
                                &bmheader);
    }
 
+   return(1);
+
 }  /* ends create_image_file */
 
 
@@ -2593,7 +2649,7 @@ create_image_file(in_name, out_name)
    *
    *********************************************/
 
-create_resized_image_file(in_name, out_name,
+int create_resized_image_file(in_name, out_name,
                           length, width)
    char *in_name, *out_name;
    long length, width;
