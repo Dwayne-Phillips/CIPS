@@ -17,3 +17,20 @@ hello: $(HELLOOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 
+ISOOBJS=iso.o imageio.o
+iso: $(ISOOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+HISTEQOBJS=histeq.o hist.o imageio.o
+histeq: $(HISTEQOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+TESTBEDOBJS=testbed.o imageio.o hist.o
+testbed: $(TESTBEDOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+INVERTOBJS=invert.o imageio.o
+invert: $(INVERTOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+
