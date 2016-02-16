@@ -33,4 +33,12 @@ INVERTOBJS=invert.o imageio.o
 invert: $(INVERTOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
 
+HIMAGEOBJS=imageio.o hist.o himage.o
+himage: $(HIMAGEOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+SIDEOBS=imageio.o hist.o side.o
+side: $(SIDEOBS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
 
