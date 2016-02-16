@@ -39,7 +39,7 @@
 #include "cips.h"
 
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -59,7 +59,7 @@ main(argc, argv)
 
    if(argc < 5  ||  argc > 6){
     printf(
-    "\nusage 1: mfilter in-image out-image g Low-High type]"
+    "\nusage 1: mfilter in-image out-image g Low-High type"
     "\n                 OR"
     "\nusage 2: mfilter in-image out-image High-Low-Median size"
     "\n                   h - high pixel"
