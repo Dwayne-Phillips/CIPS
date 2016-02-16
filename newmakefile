@@ -28,6 +28,14 @@ INVERTOBJS=invert.o imageio.o
 invert: $(INVERTOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
 
+MAINASOBJS=mainas.o imageio.o addsub.o
+mainas: $(MAINASOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+MAINCPOBJS=maincp.o imageio.o cutp.o
+maincp: $(MAINCPOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
 MEDGEOBJS=medge.o imageio.o edges.o utility.o
 medge: $(MEDGEOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
