@@ -45,7 +45,41 @@
 #define SPOT 200
 
 
-main(argc, argv)
+
+
+int vline(image, ie, il, ll)
+   int ie, il, ll;
+   short **image;
+{
+   int i, j;
+
+   for(i=il; i>=ll; i--)
+      image[i][ie] = SPOT;
+
+   return(1);
+
+}  /* ends vline */
+
+
+
+
+int hline(image, il, ie, le)
+   int il, ie, le;
+   short **image;
+{
+   int i, j;
+
+   for(i=ie; i<=le; i++)
+      image[il][i] = SPOT;
+
+   return(1);
+
+}  /* ends hline */
+
+
+/************ M A I N **********************/
+
+int main(argc, argv)
    int  argc;
    char *argv[];
 {
@@ -163,29 +197,3 @@ main(argc, argv)
 
 
 
-
-
-vline(image, ie, il, ll)
-   int ie, il, ll;
-   short **image;
-{
-   int i, j;
-
-   for(i=il; i>=ll; i--)
-      image[i][ie] = SPOT;
-
-}  /* ends vline */
-
-
-
-
-hline(image, il, ie, le)
-   int il, ie, le;
-   short **image;
-{
-   int i, j;
-
-   for(i=ie; i<=le; i++)
-      image[il][i] = SPOT;
-
-}  /* ends hline */
