@@ -11,11 +11,6 @@ hello0: hello0.c
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-HELLOOBJS=hello.o hello2.o hello3.o
-
-hello: $(HELLOOBJS)
-	$(CC) -o $@ $^ $(CFLAGS)
-
 
 ISOOBJS=iso.o imageio.o
 iso: $(ISOOBJS) 
@@ -25,20 +20,34 @@ HISTEQOBJS=histeq.o hist.o imageio.o
 histeq: $(HISTEQOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
 
-TESTBEDOBJS=testbed.o imageio.o hist.o
-testbed: $(TESTBEDOBJS) 
+HIMAGEOBJS=imageio.o hist.o himage.o
+himage: $(HIMAGEOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
 
 INVERTOBJS=invert.o imageio.o
 invert: $(INVERTOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
 
-HIMAGEOBJS=imageio.o hist.o himage.o
-himage: $(HIMAGEOBJS) 
+MEDGEOBJS=medge.o imageio.o edges.o utility.o
+medge: $(MEDGEOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+MFILTEROBJS=mfilter.o imageio.o filter.o utility.o
+mfilter: $(MFILTEROBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
 
 SIDEOBS=imageio.o hist.o side.o
 side: $(SIDEOBS) 
 	$(CC) -o $@ $^ $(CFLAGS)
 
+####################### TEST PLATFORM ###############
+
+HELLOOBJS=hello.o hello2.o hello3.o
+
+hello: $(HELLOOBJS)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+TESTBEDOBJS=testbed.o imageio.o hist.o
+testbed: $(TESTBEDOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
 
