@@ -101,6 +101,331 @@
 #include "cips.h"
 
 
+
+
+
+    /***********************************************
+    *
+    *    does_not_exist(...
+    *
+    *    This function checks the disk to see if
+    *    a file exists.  If the file is there this
+    *    function returns a 0, if it does not exist
+    *    this function returns a 1.
+    *
+    ***********************************************/
+
+int does_not_exist(file_name)
+    char file_name[];
+{
+   FILE *image_file;
+   int  result;
+
+   result = 1;
+   image_file = fopen(file_name, "rb");
+   if(image_file != NULL){
+      result = 0;
+      fclose(image_file);
+   }
+   return(result);
+}  /* ends does_not_exist */
+
+
+
+
+   /***************************************
+   *
+   *   insert_short_into_buffer(...
+   *
+   *   This inserts a two byte short into a
+   *   buffer of characters.  It does this
+   *   is LSB order.
+   *
+   ***************************************/
+
+
+int insert_short_into_buffer(buffer, start, number)
+    char  buffer[];
+    int   start;
+    short number;
+{
+    union short_char_union lsu;
+
+    lsu.s_num       = number;
+    buffer[start+0] = lsu.s_alpha[0];
+    buffer[start+1] = lsu.s_alpha[1];
+
+   return(1);
+}  /* ends insert_short_into_buffer */
+
+
+
+
+
+
+   /***************************************
+   *
+   *   insert_ushort_into_buffer(...
+   *
+   *   This inserts a two byte unsigned 
+   *   short into a buffer of characters.  
+   *   It does this is LSB order.
+   *
+   ***************************************/
+
+int insert_ushort_into_buffer(buffer, start, number)
+    char  buffer[];
+    int   start;
+    unsigned short number;
+{
+    union ushort_char_union lsu;
+
+    lsu.s_num       = number;
+    buffer[start+0] = lsu.s_alpha[0];
+    buffer[start+1] = lsu.s_alpha[1];
+
+   return(1);
+}  /* ends insert_short_into_buffer */
+
+
+
+
+   /***************************************
+   *
+   *   insert_long_into_buffer(...
+   *
+   *   This inserts a four byte long into a
+   *   buffer of characters.  It does this
+   *   is LSB order.
+   *
+   ***************************************/
+
+
+
+int insert_long_into_buffer(buffer, start, number)
+    char buffer[];
+    int  start;
+    long number;
+{
+    union long_char_union lsu;
+
+    lsu.l_num       = number;
+    buffer[start+0] = lsu.l_alpha[0];
+    buffer[start+1] = lsu.l_alpha[1];
+    buffer[start+2] = lsu.l_alpha[2];
+    buffer[start+3] = lsu.l_alpha[3];
+
+   return(1);
+}  /* ends insert_short_into_buffer */
+
+
+
+
+
+   /***************************************
+   *
+   *   insert_ulong_into_buffer(...
+   *
+   *   This inserts a four byte unsigned 
+   *   long into a buffer of characters.  
+   *   It does this is LSB order.
+   *
+   ***************************************/
+
+int insert_ulong_into_buffer(buffer, start, number)
+    char buffer[];
+    int  start;
+    unsigned long number;
+{
+    union ulong_char_union lsu;
+
+    lsu.l_num       = number;
+    buffer[start+0] = lsu.l_alpha[0];
+    buffer[start+1] = lsu.l_alpha[1];
+    buffer[start+2] = lsu.l_alpha[2];
+    buffer[start+3] = lsu.l_alpha[3];
+
+   return(1);
+}  /* ends insert_ulong_into_buffer */
+
+
+   /****************************************
+   *
+   *   extract_long_from_buffer(...
+   *
+   *   This takes a four byte long out of a
+   *   buffer of characters.
+   *
+   *   It is important to know the byte order
+   *   LSB or MSB.
+   *
+   ****************************************/
+
+int extract_long_from_buffer(buffer, lsb, start, number)
+   char  buffer[];
+   int       lsb, start;
+   long  *number;
+{
+   int i;
+   union long_char_union lcu;
+
+   lcu.l_num = 0; /*****HERE*****/
+
+
+   if(lsb == 1){
+      lcu.l_alpha[0] = buffer[start+0];
+      lcu.l_alpha[1] = buffer[start+1];
+      lcu.l_alpha[2] = buffer[start+2];
+      lcu.l_alpha[3] = buffer[start+3];
+   }  /* ends if lsb = 1 */
+
+   if(lsb == 0){
+      lcu.l_alpha[0] = buffer[start+3];
+      lcu.l_alpha[1] = buffer[start+2];
+      lcu.l_alpha[2] = buffer[start+1];
+      lcu.l_alpha[3] = buffer[start+0];
+   }  /* ends if lsb = 0      */
+
+   *number = lcu.l_num;
+
+   return(1);
+
+}  /* ends extract_long_from_buffer */
+
+
+
+
+
+
+   /****************************************
+   *
+   *   extract_ulong_from_buffer(...
+   *
+   *   This takes a four byte unsigned long 
+   *   out of a buffer of characters.
+   *
+   *   It is important to know the byte order
+   *   LSB or MSB.
+   *
+   ****************************************/
+
+int extract_ulong_from_buffer(buffer, lsb, start, number)
+   char  buffer[];
+   int       lsb, start;
+   unsigned long  *number;
+{
+   int i;
+   union ulong_char_union lcu;
+
+   lcu.l_num = 0;
+
+   if(lsb == 1){
+      lcu.l_alpha[0] = buffer[start+0];
+      lcu.l_alpha[1] = buffer[start+1];
+      lcu.l_alpha[2] = buffer[start+2];
+      lcu.l_alpha[3] = buffer[start+3];
+   }  /* ends if lsb = 1 */
+
+   if(lsb == 0){
+      lcu.l_alpha[0] = buffer[start+3];
+      lcu.l_alpha[1] = buffer[start+2];
+      lcu.l_alpha[2] = buffer[start+1];
+      lcu.l_alpha[3] = buffer[start+0];
+   }  /* ends if lsb = 0      */
+
+   *number = lcu.l_num;
+   return(1);
+}  /* ends extract_ulong_from_buffer */
+
+
+
+
+   /****************************************
+   *
+   *   extract_short_from_buffer(...
+   *
+   *   This takes a two byte short out of a
+   *   buffer of characters.
+   *
+   *   It is important to know the byte order
+   *   LSB or MSB.
+   *
+   ****************************************/
+
+int extract_short_from_buffer(buffer, lsb, start, number)
+   char  buffer[];
+   int   lsb, start;
+   short *number;
+{
+
+   int i;
+   union short_char_union lcu;
+
+   lcu.s_num = 0;
+
+   if(lsb == 1){
+      lcu.s_alpha[0] = buffer[start+0];
+      lcu.s_alpha[1] = buffer[start+1];
+   }  /* ends if lsb = 1 */
+
+   if(lsb == 0){
+      lcu.s_alpha[0] = buffer[start+1];
+      lcu.s_alpha[1] = buffer[start+0];
+   }  /* ends if lsb = 0      */
+
+   *number = lcu.s_num;
+   return(1);
+
+}  /* ends extract_short_from_buffer */
+
+
+
+ 
+
+
+   /****************************************
+   *
+   *   extract_ushort_from_buffer(...
+   *
+   *   This takes a two byte unsiged short 
+   *   out of a buffer of characters.
+   *
+   *   It is important to know the byte order
+   *   LSB or MSB.
+   *
+   ****************************************/
+
+int extract_ushort_from_buffer(buffer, lsb, start, number)
+   char  buffer[];
+   int       lsb, start;
+   unsigned short *number;
+{
+
+   int i;
+   union ushort_char_union lcu;
+
+   lcu.s_num = 0;
+
+   if(lsb == 1){
+      lcu.s_alpha[0] = buffer[start+0];
+      lcu.s_alpha[1] = buffer[start+1];
+   }  /* ends if lsb = 1 */
+
+   if(lsb == 0){
+      lcu.s_alpha[0] = buffer[start+1];
+      lcu.s_alpha[1] = buffer[start+0];
+   }  /* ends if lsb = 0      */
+
+   *number = lcu.s_num;
+   return(1);
+}  /* ends extract_ushort_from_buffer */
+
+
+
+
+
+
+
       /******************************************
       *
       *   print_tiff_header()
@@ -282,178 +607,6 @@ int is_a_tiff(file_name)
 
 
 
-
-
-   /****************************************
-   *
-   *   extract_long_from_buffer(...
-   *
-   *   This takes a four byte long out of a
-   *   buffer of characters.
-   *
-   *   It is important to know the byte order
-   *   LSB or MSB.
-   *
-   ****************************************/
-
-int extract_long_from_buffer(buffer, lsb, start, number)
-   char  buffer[];
-   int       lsb, start;
-   long  *number;
-{
-   int i;
-   union long_char_union lcu;
-
-   lcu.l_num = 0; /*****HERE*****/
-
-
-   if(lsb == 1){
-      lcu.l_alpha[0] = buffer[start+0];
-      lcu.l_alpha[1] = buffer[start+1];
-      lcu.l_alpha[2] = buffer[start+2];
-      lcu.l_alpha[3] = buffer[start+3];
-   }  /* ends if lsb = 1 */
-
-   if(lsb == 0){
-      lcu.l_alpha[0] = buffer[start+3];
-      lcu.l_alpha[1] = buffer[start+2];
-      lcu.l_alpha[2] = buffer[start+1];
-      lcu.l_alpha[3] = buffer[start+0];
-   }  /* ends if lsb = 0      */
-
-   *number = lcu.l_num;
-
-   return(1);
-
-}  /* ends extract_long_from_buffer */
-
-
-
-
-
-
-   /****************************************
-   *
-   *   extract_ulong_from_buffer(...
-   *
-   *   This takes a four byte unsigned long 
-   *   out of a buffer of characters.
-   *
-   *   It is important to know the byte order
-   *   LSB or MSB.
-   *
-   ****************************************/
-
-int extract_ulong_from_buffer(buffer, lsb, start, number)
-   char  buffer[];
-   int       lsb, start;
-   unsigned long  *number;
-{
-   int i;
-   union ulong_char_union lcu;
-
-   lcu.l_num = 0;
-
-   if(lsb == 1){
-      lcu.l_alpha[0] = buffer[start+0];
-      lcu.l_alpha[1] = buffer[start+1];
-      lcu.l_alpha[2] = buffer[start+2];
-      lcu.l_alpha[3] = buffer[start+3];
-   }  /* ends if lsb = 1 */
-
-   if(lsb == 0){
-      lcu.l_alpha[0] = buffer[start+3];
-      lcu.l_alpha[1] = buffer[start+2];
-      lcu.l_alpha[2] = buffer[start+1];
-      lcu.l_alpha[3] = buffer[start+0];
-   }  /* ends if lsb = 0      */
-
-   *number = lcu.l_num;
-   return(1);
-}  /* ends extract_ulong_from_buffer */
-
-
-
-
-   /****************************************
-   *
-   *   extract_short_from_buffer(...
-   *
-   *   This takes a two byte short out of a
-   *   buffer of characters.
-   *
-   *   It is important to know the byte order
-   *   LSB or MSB.
-   *
-   ****************************************/
-
-int extract_short_from_buffer(buffer, lsb, start, number)
-   char  buffer[];
-   int   lsb, start;
-   short *number;
-{
-
-   int i;
-   union short_char_union lcu;
-
-   lcu.s_num = 0;
-
-   if(lsb == 1){
-      lcu.s_alpha[0] = buffer[start+0];
-      lcu.s_alpha[1] = buffer[start+1];
-   }  /* ends if lsb = 1 */
-
-   if(lsb == 0){
-      lcu.s_alpha[0] = buffer[start+1];
-      lcu.s_alpha[1] = buffer[start+0];
-   }  /* ends if lsb = 0      */
-
-   *number = lcu.s_num;
-   return(1);
-
-}  /* ends extract_short_from_buffer */
-
-
-
- 
-
-
-   /****************************************
-   *
-   *   extract_ushort_from_buffer(...
-   *
-   *   This takes a two byte unsiged short 
-   *   out of a buffer of characters.
-   *
-   *   It is important to know the byte order
-   *   LSB or MSB.
-   *
-   ****************************************/
-
-int extract_ushort_from_buffer(buffer, lsb, start, number)
-   char  buffer[];
-   int       lsb, start;
-   unsigned short *number;
-{
-
-   int i;
-   union ushort_char_union lcu;
-
-   lcu.s_num = 0;
-
-   if(lsb == 1){
-      lcu.s_alpha[0] = buffer[start+0];
-      lcu.s_alpha[1] = buffer[start+1];
-   }  /* ends if lsb = 1 */
-
-   if(lsb == 0){
-      lcu.s_alpha[0] = buffer[start+1];
-      lcu.s_alpha[1] = buffer[start+0];
-   }  /* ends if lsb = 0      */
-
-   *number = lcu.s_num;
-   return(1);
-}  /* ends extract_ushort_from_buffer */
 
 
 
@@ -728,74 +881,6 @@ int free_image_array(the_array, length)
 
 
 
-   /****************************************
-   *
-   *   read_tiff_image(...
-   *
-   *   This function reads the image data
-   *   from a tiff image file.  
-   *
-   *   It only works for 8-bit gray scale
-   *   images.
-   *
-   ****************************************/
-
-int read_tiff_image(image_file_name, the_image)
-      char   image_file_name[];
-      short   **the_image;
-{
-   char  *buffer,  /* CHANGED */
-         rep[80];
-   int   bytes_read,
-         closed,
-         position,
-         i,
-         j;
-   FILE  *image_file;
-   float a;
-   long  line_length, offset;
-
-   struct tiff_header_struct image_header;
-
-   read_tiff_header(image_file_name, &image_header);
-
-      /***********************************************
-      *
-      *   Procedure:
-      *   Seek to the strip offset where the data begins.
-      *   Seek to the first line you want.
-      *   Loop over the lines you want to read:
-      *      Seek to the first element of the line.
-      *      Read the line.
-      *      Seek to the end of the data in that line.
-      *
-      ************************************************/
-
-   image_file = fopen(image_file_name, "rb");
-   if(image_file != NULL){
-      position = fseek(image_file, 
-                       image_header.strip_offset, 
-                       SEEK_SET);
-
-      for(i=0; i<image_header.image_length; i++){
-
-         bytes_read   = read_line(image_file, the_image, 
-                                  i, &image_header, 
-                                  0, image_header.image_width);
-      }  /* ends loop over i  */
-
-      closed = fclose(image_file);
-   }  /* ends if file opened ok */
-   else{
-      printf("\nRTIFF.C> ERROR - cannot open "
-             "tiff file");
-   }
-
-}  /*  ends read_tiff_image */
-
-
-
-
    /**********************************************
    *
    *   read_line(...
@@ -875,7 +960,77 @@ int read_line(image_file, the_image, line_number,
    free(buffer);
    return(bytes_read);
 
+   return(1);
 }  /* ends read_line  */
+
+
+
+
+   /****************************************
+   *
+   *   read_tiff_image(...
+   *
+   *   This function reads the image data
+   *   from a tiff image file.  
+   *
+   *   It only works for 8-bit gray scale
+   *   images.
+   *
+   ****************************************/
+
+int read_tiff_image(image_file_name, the_image)
+      char   image_file_name[];
+      short   **the_image;
+{
+   char  *buffer,  /* CHANGED */
+         rep[80];
+   int   bytes_read,
+         closed,
+         position,
+         i,
+         j;
+   FILE  *image_file;
+   float a;
+   long  line_length, offset;
+
+   struct tiff_header_struct image_header;
+
+   read_tiff_header(image_file_name, &image_header);
+
+      /***********************************************
+      *
+      *   Procedure:
+      *   Seek to the strip offset where the data begins.
+      *   Seek to the first line you want.
+      *   Loop over the lines you want to read:
+      *      Seek to the first element of the line.
+      *      Read the line.
+      *      Seek to the end of the data in that line.
+      *
+      ************************************************/
+
+   image_file = fopen(image_file_name, "rb");
+   if(image_file != NULL){
+      position = fseek(image_file, 
+                       image_header.strip_offset, 
+                       SEEK_SET);
+
+      for(i=0; i<image_header.image_length; i++){
+
+         bytes_read   = read_line(image_file, the_image, 
+                                  i, &image_header, 
+                                  0, image_header.image_width);
+      }  /* ends loop over i  */
+
+      closed = fclose(image_file);
+   }  /* ends if file opened ok */
+   else{
+      printf("\nRTIFF.C> ERROR - cannot open "
+             "tiff file");
+   }
+
+   return(1);
+}  /*  ends read_tiff_image */
 
 
 
@@ -934,35 +1089,6 @@ int seek_to_end_of_line(image_file, le, image_header)
 }  /* ends seek_to_end_of_line         */
 
 
-
-
-
-
-   /**********************************************
-   *
-   *   create_tiff_file_if_needed(...
-   *
-   *   This function creates a tiff file on disk
-   *   if it does not exist.  The out file is
-   *   patterned after the in file.
-   *
-   ***********************************************/
-
-int create_tiff_file_if_needed(in_name, out_name, out_image)
-   char in_name[], out_name[];
-   short **out_image;
-{
-   int    length, width;
-   struct tiff_header_struct image_header;
-
-   if(does_not_exist(out_name)){
-      printf("\n\n output file does not exist %s",
-               out_name);
-      read_tiff_header(in_name, &image_header);
-      create_allocate_tiff_file(out_name, &image_header);
-      printf("\nBFIN> Created %s", out_name);
-   }  /* ends if does_not_exist */
-}  /* ends create_tiff_file_if_needed */
 
 
 
@@ -1341,8 +1467,39 @@ int create_allocate_tiff_file(file_name,
    fclose(image_file);
    free(image_buffer);
 
+   return(1);
 }  /* ends create_allocate_tiff_file */
 
+
+
+
+
+   /**********************************************
+   *
+   *   create_tiff_file_if_needed(...
+   *
+   *   This function creates a tiff file on disk
+   *   if it does not exist.  The out file is
+   *   patterned after the in file.
+   *
+   ***********************************************/
+
+int create_tiff_file_if_needed(in_name, out_name, out_image)
+   char in_name[], out_name[];
+   short **out_image;
+{
+   int    length, width;
+   struct tiff_header_struct image_header;
+
+   if(does_not_exist(out_name)){
+      printf("\n\n output file does not exist %s",
+               out_name);
+      read_tiff_header(in_name, &image_header);
+      create_allocate_tiff_file(out_name, &image_header);
+      printf("\nBFIN> Created %s", out_name);
+   }  /* ends if does_not_exist */
+   return(1);
+}  /* ends create_tiff_file_if_needed */
 
 
 
@@ -1429,7 +1586,7 @@ int write_line(image_file, array, line_number,
 
        /*********************************************
        *
-       *   write_array_into_tiff_file(...
+       *   write_tiff_image(...
        *
        *   This function takes an array of shorts and 
        *   writes them into an existing tiff image file.
@@ -1482,124 +1639,8 @@ int write_tiff_image(image_file_name, array)
    }  /* ends loop over i  */
 
    closed = fclose(image_file);
-
+   return(1);
 }  /*  ends write_tiff_image */
-
-
-
-
-
-
-   /***************************************
-   *
-   *   insert_short_into_buffer(...
-   *
-   *   This inserts a two byte short into a
-   *   buffer of characters.  It does this
-   *   is LSB order.
-   *
-   ***************************************/
-
-
-int insert_short_into_buffer(buffer, start, number)
-    char  buffer[];
-    int   start;
-    short number;
-{
-    union short_char_union lsu;
-
-    lsu.s_num       = number;
-    buffer[start+0] = lsu.s_alpha[0];
-    buffer[start+1] = lsu.s_alpha[1];
-
-}  /* ends insert_short_into_buffer */
-
-
-
-
-
-
-   /***************************************
-   *
-   *   insert_ushort_into_buffer(...
-   *
-   *   This inserts a two byte unsigned 
-   *   short into a buffer of characters.  
-   *   It does this is LSB order.
-   *
-   ***************************************/
-
-int insert_ushort_into_buffer(buffer, start, number)
-    char  buffer[];
-    int   start;
-    unsigned short number;
-{
-    union ushort_char_union lsu;
-
-    lsu.s_num       = number;
-    buffer[start+0] = lsu.s_alpha[0];
-    buffer[start+1] = lsu.s_alpha[1];
-
-}  /* ends insert_short_into_buffer */
-
-
-
-
-   /***************************************
-   *
-   *   insert_long_into_buffer(...
-   *
-   *   This inserts a four byte long into a
-   *   buffer of characters.  It does this
-   *   is LSB order.
-   *
-   ***************************************/
-
-
-
-int insert_long_into_buffer(buffer, start, number)
-    char buffer[];
-    int  start;
-    long number;
-{
-    union long_char_union lsu;
-
-    lsu.l_num       = number;
-    buffer[start+0] = lsu.l_alpha[0];
-    buffer[start+1] = lsu.l_alpha[1];
-    buffer[start+2] = lsu.l_alpha[2];
-    buffer[start+3] = lsu.l_alpha[3];
-
-}  /* ends insert_short_into_buffer */
-
-
-
-
-
-   /***************************************
-   *
-   *   insert_ulong_into_buffer(...
-   *
-   *   This inserts a four byte unsigned 
-   *   long into a buffer of characters.  
-   *   It does this is LSB order.
-   *
-   ***************************************/
-
-int insert_ulong_into_buffer(buffer, start, number)
-    char buffer[];
-    int  start;
-    unsigned long number;
-{
-    union ulong_char_union lsu;
-
-    lsu.l_num       = number;
-    buffer[start+0] = lsu.l_alpha[0];
-    buffer[start+1] = lsu.l_alpha[1];
-    buffer[start+2] = lsu.l_alpha[2];
-    buffer[start+3] = lsu.l_alpha[3];
-
-}  /* ends insert_ulong_into_buffer */
 
 
 
@@ -1621,37 +1662,8 @@ int round_off_image_size(image_header, length, width)
 {
    *length = (ROWS-10 + image_header->image_length)/ROWS;
    *width  = (COLS-10 + image_header->image_width)/COLS;
+   return(1);
 } /* ends round_off_image_size */
-
-
-
-
-
-    /***********************************************
-    *
-    *    does_not_exist(...
-    *
-    *    This function checks the disk to see if
-    *    a file exists.  If the file is there this
-    *    function returns a 0, if it does not exist
-    *    this function returns a 1.
-    *
-    ***********************************************/
-
-int does_not_exist(file_name)
-    char file_name[];
-{
-   FILE *image_file;
-   int  result;
-
-   result = 1;
-   image_file = fopen(file_name, "rb");
-   if(image_file != NULL){
-      result = 0;
-      fclose(image_file);
-   }
-   return(result);
-}  /* ends does_not_exist */
 
 
 
@@ -1676,8 +1688,9 @@ int does_not_exist(file_name)
 int print_bmp_file_header(struct bmpfileheader *file_header)
 {
  printf("\nfile type %x", file_header->filetype);
- printf("\nfile size %d", file_header->filesize);
- printf("\nbit map offset %d", file_header->bitmapoffset);
+ printf("\nfile size %lu", file_header->filesize);
+ printf("\nbit map offset %lu", file_header->bitmapoffset);
+ return(1);
 }
 
 
@@ -1761,6 +1774,7 @@ int read_bm_header(file_name,
 
    fclose(fp);
 
+ return(1);
 }  /* ends read_bm_header */
 
 
@@ -1777,12 +1791,13 @@ int read_bm_header(file_name,
 int print_bm_header(bmheader)
    struct bitmapheader *bmheader;
 {
- printf("\nwidth %d", bmheader->width);
- printf("\nheight %d", bmheader->height);
+ printf("\nwidth %ld", bmheader->width);
+ printf("\nheight %ld", bmheader->height);
  printf("\nplanes %d", bmheader->planes);
  printf("\nbitsperpixel %d", bmheader->bitsperpixel);
- printf("\ncolorsused %d", bmheader->colorsused);
- printf("\ncolorsimp %d", bmheader->colorsimp);
+ printf("\ncolorsused %lu", bmheader->colorsused);
+ printf("\ncolorsimp %lu", bmheader->colorsimp);
+ return(1);
 }
 
 
@@ -1823,6 +1838,7 @@ int read_color_table(file_name, rgb, size)
 
    fclose(fp);
 
+ return(1);
 }  /* ends read_color_table */
 
 
@@ -1845,6 +1861,7 @@ int print_color_table(struct ctstruct *rgb, int size)
       printf("\n %d %d %d",
       rgb[i].blue,rgb[i].green,rgb[i].red);
    }  /* ends loop over i */
+ return(1);
 }  /* ends print_color_table */
 
 
@@ -1888,6 +1905,7 @@ int flip_image_array(the_image, rows, cols)
          the_image[i][j] = temp[i][j];
 
    free_image_array(temp, rows);
+ return(1);
 }  /* ends flip_image_array */
 
 
@@ -1967,6 +1985,7 @@ int read_bmp_image(file_name, array)
    if(negative == 0)
       flip_image_array(array, height, width);
 
+ return(1);
 }  /* ends read_bmp_image */
 
 
@@ -2110,6 +2129,7 @@ int create_allocate_bmp_file(file_name,
 
    fclose(fp);
 
+ return(1);
 }  /* ends create_allocate_bmp_file */
 
 
@@ -2144,6 +2164,7 @@ int create_bmp_file_if_needed(in_name, out_name, out_image)
       create_allocate_bmp_file(out_name, &file_header, &bmheader);
       printf("\nBFIN> Created %s", out_name);
    }  /* ends if does_not_exist */
+ return(1);
 }  /* ends bmp_file_if_needed */
 
 
@@ -2246,6 +2267,7 @@ int write_bmp_image(file_name, array)
 
    fclose(image_file);
    free(buffer);
+ return(1);
 }  /* ends write_bmp_image */
 
 
@@ -2409,6 +2431,7 @@ int read_image_array(file_name, array)
       exit(1);
    }
 
+ return(1);
 }  /* ends read_image_array */
 
 
@@ -2448,6 +2471,7 @@ int write_image_array(file_name, array)
       exit(1);
    }
 
+ return(1);
 }  /* ends write_image_array */
 
 
@@ -2470,6 +2494,7 @@ int equate_tiff_headers(src, dest)
    dest->image_length   = src->image_length;
    dest->image_width    = src->image_width;
    dest->strip_offset   = src->strip_offset;
+ return(1);
 }  /* ends equate_tiff_headers */
 
 
@@ -2493,6 +2518,7 @@ int equate_bmpfileheaders(src, dest)
    dest->reserved1    = src->reserved1;
    dest->reserved2    = src->reserved2;
    dest->bitmapoffset = src->bitmapoffset;
+ return(1);
 }  /* ends equate_bmpfileheaders */
 
 
@@ -2521,6 +2547,7 @@ int equate_bitmapheaders(src, dest)
    dest->vertres      = src->vertres;
    dest->colorsused   = src->colorsused;
    dest->colorsimp    = src->colorsimp;
+ return(1);
 }  /* ends equate_bitmapheader */
 
 
@@ -2590,6 +2617,7 @@ int create_file_if_needed(in_name, out_name, array)
                                 array);
    }  /* ends if is a tiff */
 
+ return(1);
 }  /* ends create_file_if_needed */
 
 
@@ -2677,6 +2705,7 @@ int create_resized_image_file(in_name, out_name,
                                &bmheader);
    }
 
+ return(1);
 }  /* ends create_resided_image_file */
 
 
