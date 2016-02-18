@@ -12,6 +12,10 @@ hello0: hello0.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 
+CREATOBJS=create.o imageio.o
+create: $(CREATOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
 ISOOBJS=iso.o imageio.o
 iso: $(ISOOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
@@ -36,6 +40,10 @@ MAINCPOBJS=maincp.o imageio.o cutp.o
 maincp: $(MAINCPOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
 
+MAINSEGOBJS=mainseg.o hist.o imageio.o segment.o
+mainseg: $(MAINSEGOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
 MEDGEOBJS=medge.o imageio.o edges.o utility.o
 medge: $(MEDGEOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
@@ -58,4 +66,15 @@ hello: $(HELLOOBJS)
 TESTBEDOBJS=testbed.o imageio.o hist.o
 testbed: $(TESTBEDOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
+
+TESTSEGOBJS=testseg.o imageio.o segment.o hist.o
+testseg: $(TESTSEGOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+
+IIIOBJS=iii.o imageio.o segment.o hist.o
+iii: $(IIIOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+
 
