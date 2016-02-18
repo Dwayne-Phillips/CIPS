@@ -32,6 +32,10 @@
    *           October 1992 - created
    *           15 August 1998 - modified to work on 
    *                images at once.
+   *           18 February 2016 - with all new
+   *                compilers etc. the grow()
+   *                isn't working with the linked list
+   *                stack, so I revised all that.
    *
    ************************************************/
 
@@ -46,10 +50,13 @@ struct stacks{
    struct stacks *next;
 };
 
-struct stacks *stack;
+struct stacks *stack, *stack1, *tempstack;
 
+void push(short, short);
+void pop();
+void destroy();
 
-
+int stackcounter = 0;
 
 
 
@@ -207,12 +214,14 @@ int grow(binary, value, rows, cols)
             **************************************/
 
    g_label       = 2;
+   if(g_label == value) g_label++;
    object_found  = 0;
    first_call    = 1;
 
    for(i=0; i<rows; i++){
       for(j=0; j<cols; j++){
-
+  
+            /* This creates the stack */
          stack = NULL;
 /***printf("\nGROW> stack is %p",stack);***/
 
@@ -245,8 +254,9 @@ int grow(binary, value, rows, cols)
                *
                *******************************/
 
-         while(is_not_empty(stack)){
+         while(is_not_empty()){ /* checks stack */
             pop(&pop_i, &pop_j);
+/***if(g_label > 93) printf("\n\t\tGROW> %d",stackcounter);***/
             label_and_check_neighbor(
                         binary,
                         g_label,
@@ -258,8 +268,10 @@ int grow(binary, value, rows, cols)
 
          if(object_found == 1){
             object_found = 0;
-printf("\nGROW> g_label is %d", g_label);
+/***printf("\nGROW> g_label is %d", g_label);***/
             ++g_label;
+            if(g_label == value) g_label++;
+            destroy();
          }  /* ends if object_found == 1 */
 
       }   /* ends loop over j */
@@ -553,8 +565,7 @@ int valley_high_low(histogram, peak1, peak2, hi, low)
 
    find_valley_point(histogram, peak1, peak2,
                      &valley_point);
-   /*printf("\nVHL> valley point is %d",
-            valley_point);*/
+   /*printf("\nVHL> valley point is %d", valley_point);*/
 
    for(i=0; i<valley_point; i++)
       sum1 = sum1 + histogram[i];
@@ -866,92 +877,85 @@ printf("\nATS> hi=%d low=%d\n",hi,low);
 
 /*** U T I L I T I E S ***/
 
-int show_stack()
+void show_stack()
 {
 char r[80];
-   struct stacks *temp;
-   temp = stack;
-   while(temp != NULL){
+   stack1 = stack;
+   while(stack1 != NULL){
       printf("\n\t\t\t\t%d %d %p",
-      temp->x,temp->y, temp->next);
-      temp = temp->next;
+      stack1->x,stack1->y, stack1->next);
+      stack1 = stack1->next;
    }
-   return(1);
 }
-
-int is_not_empty(pointer)
-   struct stacks *pointer;
+   /***************************/
+int is_not_empty()
 {
    int result = 0;
-   if(pointer != NULL)
+   if(stack != NULL)
       result = 1;
    return(result);
 }  /* ends is_empty */
 
-int push(x, y)
+   /***************************/
+void push(x, y)
    short  x, y;
 {
    char r[80];
-   struct stacks *new_one;
 
-   new_one = (struct stacks *)
-             calloc(1, sizeof(struct stacks ));
-   new_one->next = stack;
-   new_one->x    = x;
-   new_one->y    = y;
-   stack         = new_one;
-   return(1);
+   if(stack == NULL){
+      stack = (struct stacks *) malloc(sizeof(struct stacks ));
+      stack->x    = x;
+      stack->y    = y;
+      stack->next = NULL;
+   }  /* ends if */
+   else{
+      tempstack = (struct stacks *) malloc(sizeof(struct stacks ));
+      tempstack->x    = x;
+      tempstack->y    = y;
+      tempstack->next = stack;
+      stack           = tempstack; 
+   }  /* ends else */
+   stackcounter++;
 }  /* ends push */
 
-int pop(x, y)
+
+   /***************************/
+void pop(x, y)
    short  *x, *y;
 {
-   struct stacks *temp;
 
-   temp    = stack;
-   *x      = stack->x;
-   *y      = stack->y;
-   stack   = stack->next;
-   free(temp);
-   return(1);
+   stack1 = stack;
+   if(stack1 == NULL){
+      printf("\nPOP ERROR - empty stack\n");
+      return;
+   }  /* ends if */
+   else{
+      *x     = stack->x;
+      *y     = stack->y;
+      stack1 = stack1->next;
+      free(stack);
+      stack = stack1;
+      stackcounter--;
+   }  /* ends else */
 }  /* ends pop */
+
+   /***************************/
+void destroy()
+{
+   stack1 = stack;
+   while(stack1 != NULL){
+      stack1 = stack->next;
+      free(stack);
+      stack  = stack1;
+      stack1 = stack1->next;
+   }  /* ends while */
+   free(stack1);
+   stack = NULL;
+}  /* ends destroy */
 
 
 
 /*** E N D   O F   U T I L I T I E S ***/
 
 
-
-
-int silly_stuff1(image, length, width)
-   int    length, width;
-   short  **image;
-{
-   long  i,j;
-   short k;
-   for(i=10; i<20; i++){
-      printf("\n");
-      for(j=10; j<20; j++){
-         printf("-%3d", image[i][j]);
-      }
-   }
-   return(1);
-}  /* ends silly_stuff1 */
-
-
-
-silly(image, histogram, length, width)
-   int    length, width;
-   short  **image;
-   unsigned long histogram[];
-{
-   long  i,j;
-   short k;
-   for(i=0; i<length; i++){
-      for(j=0; j<width; j++){
-         k = image[i][j];
-         histogram[k] = histogram[k] + 1;
-      }
-   }
-}  /* ends silly */
 
