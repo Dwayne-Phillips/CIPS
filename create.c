@@ -68,7 +68,7 @@ main(argc, argv)
       create_allocate_bmp_file(argv[1], 
                                &bmp_file_header, 
                                &bmheader);
-   }  /* ends tif */
+   }  /* ends bmp */
 
    if(ok == 0){
       printf("\nERROR input file neither tiff nor bmp");
