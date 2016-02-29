@@ -16,6 +16,22 @@ CREATOBJS=create.o imageio.o
 create: $(CREATOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
 
+GEOMETRYOBJS=geometry.o geosubs.o imageio.o
+geometry: $(GEOMETRYOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+STRETCHOBJS=stretch.o geosubs.o imageio.o
+stretch: $(STRETCHOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+MAINOVEROBJS=mainover.o overlay.o imageio.o
+mainover: $(MAINOVEROBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+BOOLEANOBJS=boolean.o boole.o imageio.o
+boolean: $(BOOLEANOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
 ISOOBJS=iso.o imageio.o
 iso: $(ISOOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
