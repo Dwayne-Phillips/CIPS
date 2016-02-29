@@ -44,6 +44,16 @@ MAINSEGOBJS=mainseg.o hist.o imageio.o segment.o
 mainseg: $(MAINSEGOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
 
+MAIN2SEGOBJS=main2seg.o hist.o imageio.o segment.o \
+             edge2.o edge3.o edge.o filter.o \
+             segment2.o utility.o
+main2seg: $(MAIN2SEGOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
+MAINSKOBJS=mainsk.o imageio.o skeleton.o ed.o utility.o
+mainsk: $(MAINSKOBJS) 
+	$(CC) -o $@ $^ $(CFLAGS)
+
 MEDGEOBJS=medge.o imageio.o edges.o utility.o
 medge: $(MEDGEOBJS) 
 	$(CC) -o $@ $^ $(CFLAGS)
