@@ -219,5 +219,22 @@ union ulong_char_union{
 short** allocate_image_array(long, long);
 int free_image_array(short **, long);
 
+int calculate_pad(long);
+/*********
+int extract_long_from_buffer(char *, long, long, long *);
+int extract_ulong_from_buffer(char *, long, long, unsigned long *);
+**********/
+
+int is_a_bmp(char *);
+int is_a_tiff(char *);
+
+int print_tiff_header(struct tiff_header_struct);
+int read_bmp_file_header(char *filename, struct bmpfileheader *);
+
+
+
+
+
+
 
 
