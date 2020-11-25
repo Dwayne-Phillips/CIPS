@@ -32,6 +32,8 @@
 #include "cips.h"
 
 
+int fix_edges();
+
      /*******************************************
      *
      *   Define the filter masks.
@@ -79,6 +81,170 @@ short hpf_filter_3[3][3] =
      { 1, -2,  1}};
 
 
+         /***********************************************
+         *
+         *    fswap(...
+         *
+         *    This function swaps two shorts.
+         *
+         ***********************************************/
+
+     int fswap(a, b)
+        short *a, *b;
+     {
+        short temp;
+        temp  = *a;
+        *a    = *b;
+        *b    = temp;
+     return(1);
+     }  /* ends swap */
+
+
+         /***********************************************
+         *
+         *    fsort_elements(...
+         *
+         *    This function performs a simple bubble
+         *    sort on the elements from the median
+         *    filter.
+         *
+         ***********************************************/
+
+     int fsort_elements(elements, count)
+        int   *count;
+        short elements[];
+     {
+        int i, j;
+        j = *count;
+        while(j-- > 1){
+           for(i=0; i<j; i++){
+              if(elements[i] > elements[i+1])
+                 fswap(&elements[i], &elements[i+1]);
+           }
+        }
+
+     return(1);
+     }  /* ends fsort_elements */
+
+
+
+         /***********************************************
+         *
+         *    median_of(...
+         *
+         *    This function finds and returns the
+         *    median value of the elements array.
+         *
+         *    As a side result, it also sorts the
+         *    elements array.
+         *
+         ***********************************************/
+
+     int median_of(elements, count)
+        int   *count;
+        short elements[];
+     {
+        short median;
+
+        fsort_elements(elements, count);
+        median = elements[*count/2];
+        return(median);
+     }  /* ends median_of */
+
+
+         /************************************************
+         *
+         *    setup_filters(...
+         *
+         *    This function copies the filter mask
+         *    values defined at the top of this file
+         *    into the filter array.
+         *
+         ************************************************/
+
+
+     int setup_filters(filter_type, low_high, filter)
+        char   low_high[];
+        int    filter_type;
+        short  filter[3][3];
+     {
+        int i, j;
+
+        if(low_high[0] == 'l'  || low_high[0] =='L'){
+           if(filter_type == 6){
+              for(i=0; i<3; i++){
+                for(j=0; j<3; j++){
+                  filter[i][j] = lpf_filter_6[i][j];
+                }
+              }
+           }  /* ends if filter_type == 6 */
+
+           if(filter_type == 9){
+              for(i=0; i<3; i++){
+                for(j=0; j<3; j++){
+                  filter[i][j] = lpf_filter_9[i][j];
+                }
+              }
+           }  /* ends if filter_type == 9 */
+
+           if(filter_type == 10){
+              for(i=0; i<3; i++){
+                for(j=0; j<3; j++){
+                  filter[i][j] = lpf_filter_10[i][j];
+                }
+              }
+           }  /* ends if filter_type == 10 */
+
+
+           if(filter_type == 16){
+              for(i=0; i<3; i++){
+                for(j=0; j<3; j++){
+                  filter[i][j] = lpf_filter_16[i][j];
+                }
+              }
+           }  /* ends if filter_type == 16 */
+
+
+           if(filter_type == 32){
+              for(i=0; i<3; i++){
+                for(j=0; j<3; j++){
+                  filter[i][j] = lpf_filter_32[i][j];
+                }
+              }
+           }  /* ends if filter_type == 32 */
+        }  /* ends low pass filter */
+
+
+
+
+        if(low_high[0] == 'h'  || low_high[0] =='H'){
+           if(filter_type == 1){
+              for(i=0; i<3; i++){
+                for(j=0; j<3; j++){
+                  filter[i][j] = hpf_filter_1[i][j];
+                }
+              }
+           }  /* ends if filter_type == 1 */
+
+           if(filter_type == 2){
+              for(i=0; i<3; i++){
+                for(j=0; j<3; j++){
+                  filter[i][j] = hpf_filter_2[i][j];
+                }
+              }
+           }  /* ends if filter_type == 2 */
+
+           if(filter_type == 3){
+              for(i=0; i<3; i++){
+                for(j=0; j<3; j++){
+                  filter[i][j] = hpf_filter_3[i][j];
+                }
+              }
+           }  /* ends if filter_type == 3 */
+        }  /* ends high pass filter */
+
+     return(1);
+     }  /* ends setup_filters */
 
 
 
@@ -92,7 +258,7 @@ short hpf_filter_3[3][3] =
      *******************************************/
 
 
-filter_image(the_image, out_image,
+int filter_image(the_image, out_image,
              rows, cols, bits_per_pixel,
              filter, type, low_high)
    int    type;
@@ -136,6 +302,8 @@ filter_image(the_image, out_image,
       }  /* ends loop over j */
    }  /* ends loop over i */
    fix_edges(out_image, 1, rows-1, cols-1);
+
+return(1);
 }  /* ends filter_image */
 
 
@@ -151,7 +319,7 @@ filter_image(the_image, out_image,
      *
      *******************************************/
 
-median_filter(the_image, out_image,
+int median_filter(the_image, out_image,
               rows, cols, size)
    int    size;
    short  **the_image,
@@ -200,32 +368,9 @@ median_filter(the_image, out_image,
    free(elements);
    fix_edges(out_image, sd2, rows-1, cols-1);
 
+return(1);
 }  /* ends median_filter */
 
-
-
-    /***********************************************
-    *
-    *    median_of(...
-    *
-    *    This function finds and returns the
-    *    median value of the elements array.
-    *
-    *    As a side result, it also sorts the
-    *    elements array.
-    *
-    ***********************************************/
-
-median_of(elements, count)
-   int   *count;
-   short elements[];
-{
-   short median;
-
-   fsort_elements(elements, count);
-   median = elements[*count/2];
-   return(median);
-}  /* ends median_of */
 
      /*******************************************
      *
@@ -238,7 +383,7 @@ median_of(elements, count)
      *******************************************/
 
 
-low_pixel(the_image, out_image,
+int low_pixel(the_image, out_image,
           rows, cols, size)
    int    size;
    short  **the_image,
@@ -288,6 +433,7 @@ low_pixel(the_image, out_image,
    free(elements);
    fix_edges(out_image, sd2, rows-1, cols-1);
 
+return(1);
 }  /* ends low_pixel */
 
 
@@ -302,7 +448,7 @@ low_pixel(the_image, out_image,
      *
      *******************************************/
 
-high_pixel(the_image, out_image,
+int high_pixel(the_image, out_image,
            rows, cols, size)
    int    size;
    short  **the_image,
@@ -351,144 +497,5 @@ high_pixel(the_image, out_image,
    free(elements);
    fix_edges(out_image, sd2, rows-1, cols-1);
 
+return(1);
 }  /* ends high_pixel */
-
-
-
-    /***********************************************
-    *
-    *    fsort_elements(...
-    *
-    *    This function performs a simple bubble
-    *    sort on the elements from the median
-    *    filter.
-    *
-    ***********************************************/
-
-fsort_elements(elements, count)
-   int   *count;
-   short elements[];
-{
-   int i, j;
-   j = *count;
-   while(j-- > 1){
-      for(i=0; i<j; i++){
-         if(elements[i] > elements[i+1])
-            fswap(&elements[i], &elements[i+1]);
-      }
-   }
-}  /* ends fsort_elements */
-
-
-
-    /***********************************************
-    *
-    *    fswap(...
-    *
-    *    This function swaps two shorts.
-    *
-    ***********************************************/
-
-fswap(a, b)
-   short *a, *b;
-{
-   short temp;
-   temp  = *a;
-   *a    = *b;
-   *b    = temp;
-}  /* ends swap */
-
-
-
-    /************************************************
-    *
-    *    setup_filters(...
-    *
-    *    This function copies the filter mask
-    *    values defined at the top of this file
-    *    into the filter array.
-    *
-    ************************************************/
-
-
-setup_filters(filter_type, low_high, filter)
-   char   low_high[];
-   int    filter_type;
-   short  filter[3][3];
-{
-   int i, j;
-
-   if(low_high[0] == 'l'  || low_high[0] =='L'){
-      if(filter_type == 6){
-         for(i=0; i<3; i++){
-           for(j=0; j<3; j++){
-             filter[i][j] = lpf_filter_6[i][j];
-           }
-         }
-      }  /* ends if filter_type == 6 */
-
-      if(filter_type == 9){
-         for(i=0; i<3; i++){
-           for(j=0; j<3; j++){
-             filter[i][j] = lpf_filter_9[i][j];
-           }
-         }
-      }  /* ends if filter_type == 9 */
-
-      if(filter_type == 10){
-         for(i=0; i<3; i++){
-           for(j=0; j<3; j++){
-             filter[i][j] = lpf_filter_10[i][j];
-           }
-         }
-      }  /* ends if filter_type == 10 */
-
-
-      if(filter_type == 16){
-         for(i=0; i<3; i++){
-           for(j=0; j<3; j++){
-             filter[i][j] = lpf_filter_16[i][j];
-           }
-         }
-      }  /* ends if filter_type == 16 */
-
-
-      if(filter_type == 32){
-         for(i=0; i<3; i++){
-           for(j=0; j<3; j++){
-             filter[i][j] = lpf_filter_32[i][j];
-           }
-         }
-      }  /* ends if filter_type == 32 */
-   }  /* ends low pass filter */
-
-
-
-
-   if(low_high[0] == 'h'  || low_high[0] =='H'){
-      if(filter_type == 1){
-         for(i=0; i<3; i++){
-           for(j=0; j<3; j++){
-             filter[i][j] = hpf_filter_1[i][j];
-           }
-         }
-      }  /* ends if filter_type == 1 */
-
-      if(filter_type == 2){
-         for(i=0; i<3; i++){
-           for(j=0; j<3; j++){
-             filter[i][j] = hpf_filter_2[i][j];
-           }
-         }
-      }  /* ends if filter_type == 2 */
-
-      if(filter_type == 3){
-         for(i=0; i<3; i++){
-           for(j=0; j<3; j++){
-             filter[i][j] = hpf_filter_3[i][j];
-           }
-         }
-      }  /* ends if filter_type == 3 */
-   }  /* ends high pass filter */
-
-}  /* ends setup_filters */
