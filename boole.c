@@ -22,7 +22,7 @@
     *
     *       Modifications:
     *          3 March 1993 - created
-    *         22 August 1998 - modified to work on 
+    *         22 August 1998 - modified to work on
     *              entire images at once.
     *
     ***********************************************/
@@ -36,14 +36,14 @@
    *
    *   and_image(...
    *
-   *   This function performs the Boolean AND 
+   *   This function performs the Boolean AND
    *   operation.  The output image = in1 AND in2.
    *   This works for 0 non-zero images.  If both
    *   in1 and in2 are non-zero, the output = in1.
    *
    *************************************************/
 
-and_image(the_image, out_image,
+int and_image(the_image, out_image,
           rows, cols)
    short  **the_image,
           **out_image;
@@ -61,7 +61,7 @@ and_image(the_image, out_image,
              out_image[i][j] = 0;
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+   return(1);
 } /* ends and_image */
 
 
@@ -72,7 +72,7 @@ and_image(the_image, out_image,
    *
    *   or_image(...
    *
-   *   This function performs the Boolean OR 
+   *   This function performs the Boolean OR
    *   operation.  The output image = in1 OR in2.
    *   This works for 0 non-zero images.  If both
    *   in1 and in2 are non-zero, the output = in1.
@@ -82,7 +82,7 @@ and_image(the_image, out_image,
    *
    *************************************************/
 
-or_image(the_image, out_image,
+int or_image(the_image, out_image,
          rows, cols)
    short **the_image,
          **out_image;
@@ -104,7 +104,7 @@ or_image(the_image, out_image,
              out_image[i][j] = 0;
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+   return(1);
 } /* ends or_image */
 
 
@@ -115,9 +115,9 @@ or_image(the_image, out_image,
    *
    *   xor_image(...
    *
-   *   This function performs the Boolean XOR 
+   *   This function performs the Boolean XOR
    *   operation.  The output image = in1 XOR in2.
-   *   This works for 0 non-zero images.  If 
+   *   This works for 0 non-zero images.  If
    *   in1 is non-zero and in2 is 0, output = in1. If
    *   in2 is non-zero and in1 is 0, output = in2.
    *   If both in1 and in2 are non-zero, output = 0.
@@ -125,7 +125,7 @@ or_image(the_image, out_image,
    *
    *************************************************/
 
-xor_image(the_image, out_image,
+int xor_image(the_image, out_image,
           rows, cols)
    short  **the_image,
           **out_image;
@@ -152,7 +152,7 @@ xor_image(the_image, out_image,
          out_image[i][j] = answer;
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+   return(1);
 } /* ends xor_image */
 
 
@@ -163,7 +163,7 @@ xor_image(the_image, out_image,
    *
    *   nand_image(...
    *
-   *   This function performs the Boolean NAND 
+   *   This function performs the Boolean NAND
    *   operation.  The output image = in1 NAND in2.
    *   This works for 0 non-zero images.  If both
    *   in1 and in2 are non-zero, the output = 0.
@@ -171,7 +171,7 @@ xor_image(the_image, out_image,
    *
    ************************************************/
 
-nand_image(the_image, out_image,
+int nand_image(the_image, out_image,
            value, rows, cols)
    short   **the_image,
            **out_image, value;
@@ -189,7 +189,7 @@ nand_image(the_image, out_image,
              out_image[i][j] = value;
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+   return(1);
 } /* ends nand_image */
 
 
@@ -201,7 +201,7 @@ nand_image(the_image, out_image,
    *
    *   nor_image(...
    *
-   *   This function performs the Boolean NOR 
+   *   This function performs the Boolean NOR
    *   operation.  The output image = in1 NOR in2.
    *   This works for 0 non-zero images.  If niether
    *   in1 nor in2 are non-zero, the output = value.
@@ -210,7 +210,7 @@ nand_image(the_image, out_image,
    *
    ************************************************/
 
-nor_image(the_image, out_image,
+int nor_image(the_image, out_image,
           value, rows, cols)
    short  **the_image,
           **out_image, value;
@@ -228,7 +228,7 @@ nor_image(the_image, out_image,
              out_image[i][j] = 0;
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+   return(1);
 } /* ends nor_image */
 
 
@@ -239,15 +239,15 @@ nor_image(the_image, out_image,
    *
    *   not_image(...
    *
-   *   This function will complement the values 
-   *   of the input image and put them into the 
-   *   output image. It will complement using a 
-   *   0-value scheme where value is one of the 
+   *   This function will complement the values
+   *   of the input image and put them into the
+   *   output image. It will complement using a
+   *   0-value scheme where value is one of the
    *   input parameters.
    *
    ************************************************/
 
-not_image(the_image, out_image,
+int not_image(the_image, out_image,
           value, rows, cols)
    short  **the_image,
           **out_image,
@@ -267,6 +267,5 @@ not_image(the_image, out_image,
              out_image[i][j] = 0;
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+   return(1);
 } /* ends not_image */
-
