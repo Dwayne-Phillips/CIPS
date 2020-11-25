@@ -31,7 +31,7 @@
      *
      *******************************************/
 
-add_image_array(the_image, out_image, rows, cols, max)
+int add_image_array(the_image, out_image, rows, cols, max)
    int    rows, cols;
    short  **the_image,
           **out_image,
@@ -66,7 +66,7 @@ add_image_array(the_image, out_image, rows, cols, max)
      *
      *******************************************/
 
-subtract_image_array(the_image, out_image, rows, cols)
+int subtract_image_array(the_image, out_image, rows, cols)
    int    rows, cols;
    short  **the_image,
           **out_image;
