@@ -7,8 +7,8 @@
    *      main
    *
    *   Purpose:
-   *      This file contains a program that 
-   *      is very similar to dumpi.  Dumpi dumps 
+   *      This file contains a program that
+   *      is very similar to dumpi.  Dumpi dumps
    *      the number values of an image
    *      to an ascii text file.
    *      This program sends a space to a text
@@ -23,14 +23,19 @@
    *                  does_not_exist
    *
    *   Modifications:
-   *      3 October 1998 - created to work with 
+   *      3 October 1998 - created to work with
    *           all I O routines in imageio.c.
    *
    *************************************************/
 
 #include "cips.h"
 
-main(argc, argv)
+int does_not_exist();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -42,7 +47,7 @@ main(argc, argv)
    short **the_image;
    FILE  *out_file;
 
-   
+
       /******************************************
       *
       *   Ensure the command line is correct.
@@ -56,7 +61,7 @@ main(argc, argv)
 
    strcpy(in_name,  argv[1]);
    strcpy(out_name, argv[2]);
-   
+
       /******************************************
       *
       *   Ensure the input image exists.
