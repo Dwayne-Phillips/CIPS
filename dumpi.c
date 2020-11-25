@@ -7,7 +7,7 @@
    *      main
    *
    *   Purpose:
-   *      This file contains a program that 
+   *      This file contains a program that
    *      dumps the number values of an image
    *      to an ascii text file.
    *
@@ -18,14 +18,20 @@
    *                  free_image_array
    *
    *   Modifications:
-   *      1 October 1998 - created to work with 
+   *      1 October 1998 - created to work with
    *           all I O routines in imageio.c.
    *
    *************************************************/
 
 #include "cips.h"
 
-main(argc, argv)
+int does_not_exist();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+
+
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -37,7 +43,7 @@ main(argc, argv)
    short **the_image;
    FILE  *out_file;
 
-   
+
       /******************************************
       *
       *   Ensure the command line is correct.
@@ -51,7 +57,7 @@ main(argc, argv)
 
    strcpy(in_name,  argv[1]);
    strcpy(out_name, argv[2]);
-   
+
       /******************************************
       *
       *   Ensure the input image exists.
@@ -92,7 +98,7 @@ main(argc, argv)
    for(i=0; i<height; i++){
       sprintf(line, "%5d>", i);
       for(j=0; j<width; j++){
-         sprintf(buffer, "-%3d", the_image[i][j]); 
+         sprintf(buffer, "-%3d", the_image[i][j]);
          strcat(line, buffer);
       }
       strcat(line, "\n");
