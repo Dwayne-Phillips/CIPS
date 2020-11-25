@@ -67,7 +67,7 @@ int main(argc, argv)
    }  /* ends tif */
 
    cc = strstr(argv[2], ".tif");
-   if(cc == NULL){  /* create a bmp */
+   if(cc == NULL){  /* create a tif */
       printf("\nERROR %s must be a tiff file name",
              argv[2]);
       exit(0);
