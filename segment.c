@@ -30,7 +30,7 @@
    *
    *       Modifications:
    *           October 1992 - created
-   *           15 August 1998 - modified to work on 
+   *           15 August 1998 - modified to work on
    *                images at once.
    *           18 February 2016 - with all new
    *                compilers etc. the grow()
@@ -42,7 +42,18 @@
 
 #include "cips.h"
 
+int is_not_empty();
+int zero_histogram();
+int calculate_histogram();
+int smooth_histogram();
+int find_peaks();
+int find_valley_point();
+int insert_into_peaks();
+int insert_into_deltas();
 
+void push(int, int);
+void pop();
+void destroy();
 
 struct stacks{
    short         x;
@@ -52,9 +63,7 @@ struct stacks{
 
 struct stacks *stack, *stack1, *tempstack;
 
-void push(short, short);
-void pop();
-void destroy();
+
 
 int stackcounter = 0;
 
@@ -71,12 +80,12 @@ int stackcounter = 0;
    *
    ***********************************************/
 
-int label_and_check_neighbor(binary_image, 
-                         g_label, 
+int label_and_check_neighbor(binary_image,
+                         g_label,
                          r, e, value,
-                         first_call, 
+                         first_call,
                          rows, cols)
-int   cols, 
+int   cols,
       e,
       *first_call,
       r,
@@ -113,7 +122,7 @@ char rr[80];
 
             /********************************
             *
-            *   Ensure i and j are not 
+            *   Ensure i and j are not
             *   outside the boundary of the
             *   image.
             *
@@ -150,7 +159,7 @@ char rr[80];
    ***************************************************/
 
 
-int threshold_image_array(in_image, out_image, 
+int threshold_image_array(in_image, out_image,
                       hi, low, value,
                       rows, cols)
    short hi, low, **in_image,
@@ -220,7 +229,7 @@ int grow(binary, value, rows, cols)
 
    for(i=0; i<rows; i++){
       for(j=0; j<cols; j++){
-  
+
             /* This creates the stack */
          stack = NULL;
 /***printf("\nGROW> stack is %p",stack);***/
@@ -235,10 +244,10 @@ int grow(binary, value, rows, cols)
          if(binary[i][j] == value){
 /***printf("\nGROW> Hit value at %d %d number %d",i,j,g_label);***/
             label_and_check_neighbor(
-                      binary, 
-                      g_label, 
-                      i, j, value, 
-                      &first_call, 
+                      binary,
+                      g_label,
+                      i, j, value,
+                      &first_call,
                       rows, cols);
             object_found = 1;
          }  /* ends if binary[i]j] == value */
@@ -371,7 +380,7 @@ int insert_into_peaks(peaks, max, max_place)
       }  /* ends if */
    }  /* ends loop over j */
       /* last case */
-   if(max < peaks[PEAKS-2][0]  && 
+   if(max < peaks[PEAKS-2][0]  &&
       max > peaks[PEAKS-1][0]){
       peaks[PEAKS-1][0] = max;
       peaks[PEAKS-1][1] = max_place;
@@ -518,16 +527,16 @@ int peak_threshold_segmentation(the_image, out_image,
    unsigned long histogram[GRAY_LEVELS+1];
 
    zero_histogram(histogram, GRAY_LEVELS+1);
-   calculate_histogram(the_image, histogram, 
+   calculate_histogram(the_image, histogram,
                        rows, cols);
    smooth_histogram(histogram, GRAY_LEVELS+1);
    find_peaks(histogram, &peak1, &peak2);
    peaks_high_low(histogram, peak1, peak2,
                   &hi, &low);
 printf("\nPTS> hi=%d low=%d\n", hi, low);
-   threshold_image_array(the_image, 
+   threshold_image_array(the_image,
                          out_image,
-                         hi, low, value, 
+                         hi, low, value,
                          rows, cols);
    if(segment == 1)
       grow(out_image, value, rows, cols);
@@ -608,7 +617,7 @@ int valley_high_low(histogram, peak1, peak2, hi, low)
    *
    *********************************************/
 
-int find_valley_point(histogram, peak1, 
+int find_valley_point(histogram, peak1,
                   peak2, valley_point)
    int  peak1, peak2, *valley_point;
    unsigned long histogram[];
@@ -850,7 +859,7 @@ int adaptive_threshold_segmentation(the_image, out_image,
    unsigned long histogram[GRAY_LEVELS+1];
 
    zero_histogram(histogram, GRAY_LEVELS+1);
-   calculate_histogram(the_image, histogram, 
+   calculate_histogram(the_image, histogram,
                        rows, cols);
    smooth_histogram(histogram, GRAY_LEVELS+1);
    find_peaks(histogram, &peak1, &peak2);
@@ -898,7 +907,7 @@ int is_not_empty()
 
    /***************************/
 void push(x, y)
-   short  x, y;
+   int  x, y;
 {
    char r[80];
 
@@ -913,7 +922,7 @@ void push(x, y)
       tempstack->x    = x;
       tempstack->y    = y;
       tempstack->next = stack;
-      stack           = tempstack; 
+      stack           = tempstack;
    }  /* ends else */
    stackcounter++;
 }  /* ends push */
@@ -921,7 +930,7 @@ void push(x, y)
 
    /***************************/
 void pop(x, y)
-   short  *x, *y;
+   int  *x, *y;
 {
 
    stack1 = stack;
@@ -956,6 +965,3 @@ void destroy()
 
 
 /*** E N D   O F   U T I L I T I E S ***/
-
-
-
