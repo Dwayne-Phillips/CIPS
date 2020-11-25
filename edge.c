@@ -36,6 +36,8 @@
 
 #include "cips.h"
 
+int fix_edges();
+
 short quick_mask[3][3] =  {
        {-1,  0, -1},
        { 0,  4,  0},
@@ -190,38 +192,81 @@ short sobel_mask_7[3][3] =  {
 
 
 
-  /**************************************************
-  *
-  *   detect_edges(...
-  *
-  *   This function detects edges in an area of one
-  *   image and sends the result to another image
-  *   on disk.  It reads the input image from disk,
-  *   calls a convolution function, and then writes
-  *   the result out to disk.  If needed, it
-  *   allocates space on disk for the output image.
-  *
-  ***************************************************/
+          /***********************************************
+           *
+           *    setup_masks(...
+           *
+           *    This function copies the mask values defined
+           *    at the top of this file into the mask
+           *    arrays mask_0 through mask_7.
+           *
+           ***********************************************/
 
 
 
+       int setup_masks(detect_type, mask_0, mask_1, mask_2, mask_3,
+                   mask_4, mask_5, mask_6, mask_7)
+          int    detect_type;
+          short  mask_0[3][3],
+                 mask_1[3][3],
+                 mask_2[3][3],
+                 mask_3[3][3],
+                 mask_4[3][3],
+                 mask_5[3][3],
+                 mask_6[3][3],
+                 mask_7[3][3];
+       {
+          int i, j;
 
-detect_edges(the_image, out_image,
-             detect_type, threshold, high,
-             rows, cols, bits_per_pixel)
-   int    detect_type, high, threshold;
-   long   rows, cols, bits_per_pixel;
-   short  **the_image, **out_image;
+          if(detect_type == KIRSCH){
+             for(i=0; i<3; i++){
+               for(j=0; j<3; j++){
+                 mask_0[i][j] = kirsch_mask_0[i][j];
+                 mask_1[i][j] = kirsch_mask_1[i][j];
+                 mask_2[i][j] = kirsch_mask_2[i][j];
+                 mask_3[i][j] = kirsch_mask_3[i][j];
+                 mask_4[i][j] = kirsch_mask_4[i][j];
+                 mask_5[i][j] = kirsch_mask_5[i][j];
+                 mask_6[i][j] = kirsch_mask_6[i][j];
+                 mask_7[i][j] = kirsch_mask_7[i][j];
+               }
+             }
+          }  /* ends if detect_type == KIRSCH */
 
-{
-   perform_convolution(the_image, out_image,
-                       detect_type, threshold,
-                       rows, cols, 
-                       bits_per_pixel, 
-                       high);
-   fix_edges(out_image, 1, rows, cols);
-}  /* ends detect_edges */
 
+          if(detect_type == PREWITT){
+             for(i=0; i<3; i++){
+               for(j=0; j<3; j++){
+                 mask_0[i][j] = prewitt_mask_0[i][j];
+                 mask_1[i][j] = prewitt_mask_1[i][j];
+                 mask_2[i][j] = prewitt_mask_2[i][j];
+                 mask_3[i][j] = prewitt_mask_3[i][j];
+                 mask_4[i][j] = prewitt_mask_4[i][j];
+                 mask_5[i][j] = prewitt_mask_5[i][j];
+                 mask_6[i][j] = prewitt_mask_6[i][j];
+                 mask_7[i][j] = prewitt_mask_7[i][j];
+               }
+             }
+          }  /* ends if detect_type == PREWITT */
+
+
+          if(detect_type == SOBEL){
+             for(i=0; i<3; i++){
+               for(j=0; j<3; j++){
+                 mask_0[i][j] = sobel_mask_0[i][j];
+                 mask_1[i][j] = sobel_mask_1[i][j];
+                 mask_2[i][j] = sobel_mask_2[i][j];
+                 mask_3[i][j] = sobel_mask_3[i][j];
+                 mask_4[i][j] = sobel_mask_4[i][j];
+                 mask_5[i][j] = sobel_mask_5[i][j];
+                 mask_6[i][j] = sobel_mask_6[i][j];
+                 mask_7[i][j] = sobel_mask_7[i][j];
+               }
+             }
+          }  /* ends if detect_type == SOBEL */
+
+       return(1);
+       }  /* ends setup_masks */
 
 
 
@@ -238,7 +283,7 @@ detect_edges(the_image, out_image,
      *
      ********************************************************/
 
-perform_convolution(image, out_image,
+int perform_convolution(image, out_image,
                     detect_type, threshold,
                     rows, cols, bits_per_pixel, high)
    short **image,
@@ -253,7 +298,7 @@ perform_convolution(image, out_image,
        i,
        is_present,
        j,
-       sum; 
+       sum;
 
    short  mask_0[3][3],
           mask_1[3][3],
@@ -453,6 +498,7 @@ if( (i%10) == 0){ printf("%4d", i); }
        }
    }  /* ends if threshold == 1 */
 
+return(1);
 }  /* ends perform_convolution */
 
 
@@ -471,7 +517,7 @@ if( (i%10) == 0){ printf("%4d", i); }
      *******************************************/
 
 
-quick_edge(the_image, out_image,
+int quick_edge(the_image, out_image,
            threshold, high, rows, cols, bits_per_pixel)
    int    high, threshold;
    long   rows, cols, bits_per_pixel;
@@ -528,9 +574,9 @@ quick_edge(the_image, out_image,
        }
    }  /* ends if threshold == 1 */
 
-   fix_edges(out_image, 1, 
-             rows-1, cols-1); 
-
+   fix_edges(out_image, 1,
+             rows-1, cols-1);
+return(1);
 }  /* ends quick_edge */
 
 
@@ -540,77 +586,38 @@ quick_edge(the_image, out_image,
 
 
 
-   /***********************************************
-    *
-    *    setup_masks(...
-    *
-    *    This function copies the mask values defined
-    *    at the top of this file into the mask
-    *    arrays mask_0 through mask_7.
-    *
-    ***********************************************/
 
 
 
-setup_masks(detect_type, mask_0, mask_1, mask_2, mask_3,
-            mask_4, mask_5, mask_6, mask_7)
-   int    detect_type;
-   short  mask_0[3][3],
-          mask_1[3][3],
-          mask_2[3][3],
-          mask_3[3][3],
-          mask_4[3][3],
-          mask_5[3][3],
-          mask_6[3][3],
-          mask_7[3][3];
+  /**************************************************
+  *
+  *   detect_edges(...
+  *
+  *   This function detects edges in an area of one
+  *   image and sends the result to another image
+  *   on disk.  It reads the input image from disk,
+  *   calls a convolution function, and then writes
+  *   the result out to disk.  If needed, it
+  *   allocates space on disk for the output image.
+  *
+  ***************************************************/
+
+
+
+
+int detect_edges(the_image, out_image,
+             detect_type, threshold, high,
+             rows, cols, bits_per_pixel)
+   int    detect_type, high, threshold;
+   long   rows, cols, bits_per_pixel;
+   short  **the_image, **out_image;
+
 {
-   int i, j;
-
-   if(detect_type == KIRSCH){
-      for(i=0; i<3; i++){
-        for(j=0; j<3; j++){
-          mask_0[i][j] = kirsch_mask_0[i][j];
-          mask_1[i][j] = kirsch_mask_1[i][j];
-          mask_2[i][j] = kirsch_mask_2[i][j];
-          mask_3[i][j] = kirsch_mask_3[i][j];
-          mask_4[i][j] = kirsch_mask_4[i][j];
-          mask_5[i][j] = kirsch_mask_5[i][j];
-          mask_6[i][j] = kirsch_mask_6[i][j];
-          mask_7[i][j] = kirsch_mask_7[i][j];
-        }
-      }
-   }  /* ends if detect_type == KIRSCH */
-
-
-   if(detect_type == PREWITT){
-      for(i=0; i<3; i++){
-        for(j=0; j<3; j++){
-          mask_0[i][j] = prewitt_mask_0[i][j];
-          mask_1[i][j] = prewitt_mask_1[i][j];
-          mask_2[i][j] = prewitt_mask_2[i][j];
-          mask_3[i][j] = prewitt_mask_3[i][j];
-          mask_4[i][j] = prewitt_mask_4[i][j];
-          mask_5[i][j] = prewitt_mask_5[i][j];
-          mask_6[i][j] = prewitt_mask_6[i][j];
-          mask_7[i][j] = prewitt_mask_7[i][j];
-        }
-      }
-   }  /* ends if detect_type == PREWITT */
-
-
-   if(detect_type == SOBEL){
-      for(i=0; i<3; i++){
-        for(j=0; j<3; j++){
-          mask_0[i][j] = sobel_mask_0[i][j];
-          mask_1[i][j] = sobel_mask_1[i][j];
-          mask_2[i][j] = sobel_mask_2[i][j];
-          mask_3[i][j] = sobel_mask_3[i][j];
-          mask_4[i][j] = sobel_mask_4[i][j];
-          mask_5[i][j] = sobel_mask_5[i][j];
-          mask_6[i][j] = sobel_mask_6[i][j];
-          mask_7[i][j] = sobel_mask_7[i][j];
-        }
-      }
-   }  /* ends if detect_type == SOBEL */
-
-}  /* ends setup_masks */
+   perform_convolution(the_image, out_image,
+                       detect_type, threshold,
+                       rows, cols,
+                       bits_per_pixel,
+                       high);
+   fix_edges(out_image, 1, rows, cols);
+return(1);
+}  /* ends detect_edges */
