@@ -28,6 +28,7 @@
 
 #include "cips.h"
 
+int sort_elements();
 
 short e_mask[3][3] = {
        {-9,  0, -9},
@@ -53,7 +54,7 @@ short contrast[3][3] = {
    ***************************************************/
 
 
-homogeneity(the_image, out_image,
+int homogeneity(the_image, out_image,
             rows, cols, bits_per_pixel,
             threshold, high)
    int    high, threshold;
@@ -89,10 +90,10 @@ homogeneity(the_image, out_image,
           for(a=-1; a<=1; a++){
              for(b=-1; b<=1; b++){
 
-                diff = the_image[i][j] - 
+                diff = the_image[i][j] -
                         the_image[i+a][j+b];
                 absdiff = abs(diff);
-                if(absdiff > max_diff) 
+                if(absdiff > max_diff)
                    max_diff = absdiff;
 
              }  /* ends loop over b */
@@ -117,6 +118,7 @@ homogeneity(the_image, out_image,
        }
    }  /* ends if threshold == 1 */
 
+return(1);
 } /* ends homogeneity */
 
 
@@ -137,7 +139,7 @@ homogeneity(the_image, out_image,
    *
    ***************************************************/
 
-difference_edge(the_image, out_image,
+int difference_edge(the_image, out_image,
                 rows, cols, bits_per_pixel,
                 threshold, high)
    int    high, threshold;
@@ -205,6 +207,7 @@ difference_edge(the_image, out_image,
        }
    }  /* ends if threshold == 1 */
 
+return(1);
 } /* ends difference_edge */
 
 
@@ -222,7 +225,7 @@ difference_edge(the_image, out_image,
    *
    ***************************************************/
 
-contrast_edge(the_image, out_image,
+int contrast_edge(the_image, out_image,
               rows, cols, bits_per_pixel,
               threshold, high)
    int    high, threshold;
@@ -231,7 +234,7 @@ contrast_edge(the_image, out_image,
 {
    int ad, d;
    int a, b, absdiff, absmax, diff, i, j,
-       length, max, new_hi, new_low, 
+       length, max, new_hi, new_low,
        sum_d, sum_n, width;
 
    new_hi  = 250;
@@ -271,9 +274,9 @@ contrast_edge(the_image, out_image,
 
          out_image[i][j] = sum_n/d;
 
-         if(out_image[i][j] > max) 
+         if(out_image[i][j] > max)
             out_image[i][j] = max;
-         if(out_image[i][j] < 0) 
+         if(out_image[i][j] < 0)
             out_image[i][j] = 0;
 
 
@@ -296,6 +299,7 @@ contrast_edge(the_image, out_image,
        }
    }  /* ends if threshold == 1 */
 
+return(1);
 } /* ends contrast_edge */
 
 
@@ -314,7 +318,7 @@ contrast_edge(the_image, out_image,
      *
      *******************************************/
 
-range(the_image, out_image,
+int range(the_image, out_image,
       rows, cols, bits_per_pixel,
       size, threshold, high)
    int    high, threshold, size;
@@ -385,6 +389,7 @@ range(the_image, out_image,
 
    free(elements);
 
+return(1);
 }  /* ends range */
 
 
@@ -396,13 +401,13 @@ range(the_image, out_image,
    *   variance(...
    *
    *   This function replaces the pixel in the center
-   *   of a 3x3 area with the square root of the sum 
-   *   of squares of the differences between the 
+   *   of a 3x3 area with the square root of the sum
+   *   of squares of the differences between the
    *   center pixel and its eight neighbors.
    *
    ***************************************************/
 
-variance(the_image, out_image,
+int variance(the_image, out_image,
          rows, cols, bits_per_pixel,
          threshold, high)
    int    high, threshold;
@@ -463,6 +468,5 @@ variance(the_image, out_image,
        }
    }  /* ends if threshold == 1 */
 
+return(1);
 } /* ends variance */
-
-
