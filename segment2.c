@@ -52,6 +52,144 @@ struct stacksp{
 
 struct stacksp *stackp;
 
+int is_not_emptyp();
+int pushp();
+int popp();
+int is_close();
+int detect_type();
+int detect_edges();
+int quick_edge();
+int homogeneity();
+int difference_edge();
+int contrast_edge();
+int gaussian_edge();
+int range();
+int variance();
+int zero_histogram();
+int calculate_histogram();
+int threshold_image_array();
+int read_image_array();
+
+
+
+
+   /********************************************
+   *
+   *  pixel_label_and_check_neighbors(...
+   *
+   *  This function labels a pixel with an object
+   *  label and then checks the pixel's 8
+   *  neighbors.  If any of the neigbors are
+   *  set, then they are also labeled.
+   *
+   *  It also updates the target or ave pixel
+   *  value of the pixels in the region being
+   *  grown.
+   *
+   ***********************************************/
+
+int pixel_label_and_check_neighbor(input_image,
+                         output_image, target,
+                         sum, count,
+                         g_label,
+                         r, e, diff,
+                         first_call,
+                         rows, cols)
+int   *count,
+      e,
+      *first_call,
+      r;
+long  cols, rows;
+short **input_image,
+      **output_image,
+      g_label,
+      *sum,
+      *target,
+      diff;
+{
+char response[80];
+   int already_labeled = 0,
+       i, j;
+
+/**printf("\nDEBUG>placn> start rx=%d ey=%d",r,e);**/
+   if (output_image[r][e] != 0)
+      already_labeled = 1;
+
+   output_image[r][e] = g_label;
+   *count  = *count + 1;
+   if(*count > 1){
+      *sum    = *sum + input_image[r][e];
+      *target = *sum / *count;
+   }
+
+      /***************************************
+      *
+      *   Look at the 8 neighors of the
+      *   point r,e.
+      *
+      *   Ensure the points are close enough
+      *   to the target and do not equal
+      *   FORGET_IT.
+      *
+      *   Ensure the points you are checking
+      *   are in the image, i.e. not less
+      *   than zero and not greater than
+      *   rows-1 or cols-1.
+      *
+      ***************************************/
+
+   for(i=(r-1); i<=(r+1); i++){
+      for(j=(e-1); j<=(e+1); j++){
+
+         if((i>=0)       &&  /* ensure point in in image */
+            (i<=rows-1)  &&
+            (j>=0)       &&
+            (j<=cols-1)){
+
+            if( input_image[i][j] != FORGET_IT   &&
+                is_close(input_image[i][j],
+                            *target, diff)       &&
+                output_image[i][j] == 0){
+
+               pushp(i, j);
+
+            }  /* ends if is_close */
+         }  /* end if i and j are on the image */
+      }  /* ends loop over i rows           */
+   }  /* ends loop over j columns        */
+
+return(1);
+}  /* ends pixel_label_and_check_neighbors  */
+
+
+
+
+
+
+   /********************************************
+   *
+   *  is_close(...
+   *
+   *  This function tests to see if two pixel
+   *  values are close enough together.  It
+   *  uses the delta parameter to make this
+   *  judgement.
+   *
+   ***********************************************/
+
+int is_close(a, b, delta)
+   short a, b, delta;
+{
+   int   result = 0;
+   short diff;
+
+   diff = a-b;
+   if(diff < 0) diff = diff*(-1);
+   if(diff < delta)
+      result = 1;
+   return(result);
+}  /* ends is_close */
+
 
 
      /*******************************************
@@ -69,7 +207,7 @@ struct stacksp *stackp;
      *
      ********************************************/
 
-find_cutoff_point(histogram, percent, 
+int find_cutoff_point(histogram, percent,
                   cutoff, rows, cols)
    unsigned long histogram[];
    float    percent;
@@ -99,6 +237,7 @@ find_cutoff_point(histogram, percent,
    if(i >= (GRAY_LEVELS+1)) i = GRAY_LEVELS;
    *cutoff = i;
    printf("\nCutoff is %d sum=%ld", *cutoff, sum);
+return(1);
 }  /* ends find_cutoff_point */
 
 
@@ -116,7 +255,7 @@ find_cutoff_point(histogram, percent,
      *******************************************/
 
 
-erode_image_array(the_image, out_image,
+int erode_image_array(the_image, out_image,
                   value, threshold,
                   rows, cols)
    short  **the_image,
@@ -156,6 +295,7 @@ erode_image_array(the_image, out_image,
       }  /* ends loop over j */
    }  /* ends loop over i */
 
+return(1);
 }  /* ends erode_image_array */
 
 
@@ -181,7 +321,7 @@ erode_image_array(the_image, out_image,
     *
     ***********************************************/
 
-pixel_grow(input, output, diff, 
+int pixel_grow(input, output, diff,
            min_area, max_area,
            rows, cols)
    long  cols, rows;
@@ -271,7 +411,7 @@ printf("-i=%3d label=%3d", i, g_label);
                            output, &target, &sum,
                            &count, g_label,
                            pop_i, pop_j,
-                           diff, 
+                           diff,
                            &first_call,
                            rows, cols);
          }  /* ends while stack_empty == 0 */
@@ -315,124 +455,10 @@ printf("-i=%3d label=%3d", i, g_label);
    }  /* ends loop over i */
 
    printf("\nGROW> found %d objects", g_label);
-
+return(1);
 } /* ends pixel_grow  */
 
 
-
-
-
-   /********************************************
-   *
-   *  pixel_label_and_check_neighbors(...
-   *
-   *  This function labels a pixel with an object
-   *  label and then checks the pixel's 8
-   *  neighbors.  If any of the neigbors are
-   *  set, then they are also labeled.
-   *
-   *  It also updates the target or ave pixel
-   *  value of the pixels in the region being
-   *  grown.
-   *
-   ***********************************************/
-
-pixel_label_and_check_neighbor(input_image,
-                         output_image, target,
-                         sum, count, 
-                         g_label, 
-                         r, e, diff,
-                         first_call,
-                         rows, cols)
-int   *count,
-      e,
-      *first_call,
-      r;
-long  cols, rows;
-short **input_image,
-      **output_image,
-      g_label,
-      *sum,
-      *target,
-      diff;
-{
-char response[80];
-   int already_labeled = 0,
-       i, j;
-
-/**printf("\nDEBUG>placn> start rx=%d ey=%d",r,e);**/
-   if (output_image[r][e] != 0)
-      already_labeled = 1;
-
-   output_image[r][e] = g_label;
-   *count  = *count + 1;
-   if(*count > 1){
-      *sum    = *sum + input_image[r][e];
-      *target = *sum / *count;
-   }
-
-      /***************************************
-      *
-      *   Look at the 8 neighors of the
-      *   point r,e.
-      *
-      *   Ensure the points are close enough
-      *   to the target and do not equal
-      *   FORGET_IT.
-      *
-      *   Ensure the points you are checking
-      *   are in the image, i.e. not less
-      *   than zero and not greater than
-      *   rows-1 or cols-1.
-      *
-      ***************************************/
-
-   for(i=(r-1); i<=(r+1); i++){
-      for(j=(e-1); j<=(e+1); j++){
- 
-         if((i>=0)       &&  /* ensure point in in image */
-            (i<=rows-1)  &&
-            (j>=0)       &&
-            (j<=cols-1)){
-
-            if( input_image[i][j] != FORGET_IT   &&
-                is_close(input_image[i][j],
-                            *target, diff)       &&
-                output_image[i][j] == 0){
-
-               pushp(i, j);
-
-            }  /* ends if is_close */
-         }  /* end if i and j are on the image */
-      }  /* ends loop over i rows           */
-   }  /* ends loop over j columns        */
-}  /* ends pixel_label_and_check_neighbors  */
-
-
-
-   /********************************************
-   *
-   *  is_close(...
-   *
-   *  This function tests to see if two pixel
-   *  values are close enough together.  It
-   *  uses the delta parameter to make this
-   *  judgement.
-   *
-   ***********************************************/
-
-is_close(a, b, delta)
-   short a, b, delta;
-{
-   int   result = 0;
-   short diff;
-
-   diff = a-b;
-   if(diff < 0) diff = diff*(-1);
-   if(diff < delta)
-      result = 1;
-   return(result);
-}  /* ends is_close */
 
 
 
@@ -453,15 +479,15 @@ is_close(a, b, delta)
      *******************************************/
 
 
-edge_region(the_image, out_image,
+int edge_region(the_image, out_image,
             edge_type, min_area,
             max_area, diff, percent, set_value,
             erode, rows, cols, bits_per_pixel)
    float    percent;
    int      edge_type;
    long     bits_per_pixel, cols, rows;
-   short    diff, erode, 
-            max_area, min_area, 
+   short    diff, erode,
+            max_area, min_area,
             set_value,
             **the_image,
             **out_image;
@@ -482,55 +508,55 @@ edge_region(the_image, out_image,
    if(edge_type == 1  ||
       edge_type == 2  ||
       edge_type == 3)
-      detect_edges(the_image, out_image, 
+      detect_edges(the_image, out_image,
                    edge_type, 0, 0,
                    rows, cols,
                    bits_per_pixel);
 
    if(edge_type == 4){
-      quick_edge(the_image, out_image, 
+      quick_edge(the_image, out_image,
                  0, 0,
                  rows, cols,
                  bits_per_pixel);
    }  /* ends if 4 */
 
    if(edge_type == 5){
-      homogeneity(the_image, out_image, 
+      homogeneity(the_image, out_image,
                   rows, cols,
                   bits_per_pixel,
                   0, 0);
    }  /* ends if 5 */
 
    if(edge_type == 6){
-      difference_edge(the_image, out_image, 
+      difference_edge(the_image, out_image,
                       rows, cols,
                       bits_per_pixel,
                       0, 0);
    }  /* ends if 6 */
 
    if(edge_type == 7){
-      contrast_edge(the_image, out_image, 
+      contrast_edge(the_image, out_image,
                     rows, cols,
                     bits_per_pixel,
                     0, 0);
    }  /* ends if 7 */
 
    if(edge_type == 8){
-      gaussian_edge(the_image, out_image, 
+      gaussian_edge(the_image, out_image,
                     rows, cols,
                     bits_per_pixel,
                     3, 0, 0);
    }  /* ends if 8 */
 
    if(edge_type == 10){
-      range(the_image, out_image, 
+      range(the_image, out_image,
             rows, cols,
             bits_per_pixel,
             3, 0, 0);
    }  /* ends if 10 */
 
    if(edge_type == 11){
-      variance(the_image, out_image, 
+      variance(the_image, out_image,
                rows, cols,
                bits_per_pixel,
                0, 0);
@@ -553,12 +579,12 @@ il, ie, ll, le);**/
       *
       *******************************/
    zero_histogram(histogram, GRAY_LEVELS+1);
-   calculate_histogram(the_image, histogram, 
+   calculate_histogram(the_image, histogram,
                        rows, cols);
    find_cutoff_point(histogram, percent, &cutoff,
                      rows, cols);
    threshold_image_array(the_image, out_image,
-                         GRAY_LEVELS, cutoff, 
+                         GRAY_LEVELS, cutoff,
                          set_value, rows, cols);
 
    if(erode != 0){
@@ -593,7 +619,7 @@ il, ie, ll, le);**/
    pixel_grow(the_image, out_image, diff,
               min_area, max_area,
               rows, cols);
-
+return(1);
 }  /* ends edge_region */
 
 
@@ -609,7 +635,7 @@ il, ie, ll, le);**/
      *******************************************/
 
 
-gray_shade_region(the_image, out_image, 
+int gray_shade_region(the_image, out_image,
                   diff, min_area, max_area,
                   rows, cols)
    long   cols, rows;
@@ -624,7 +650,7 @@ printf("\nDEBUG> GSR> before calling pixel grow");
               min_area, max_area,
               rows, cols);
 printf("\nDEBUG> GSR> after calling pixel grow");
-
+return(1);
 }  /* ends gray_shade_region */
 
 
@@ -652,7 +678,7 @@ printf("\nDEBUG> GSR> after calling pixel grow");
      *
      *******************************************/
 
-edge_gray_shade_region(in_name, the_image,
+int edge_gray_shade_region(in_name, the_image,
             out_image, edge_type,
             min_area, max_area, diff, percent,
             set_value, erode,
@@ -661,8 +687,8 @@ edge_gray_shade_region(in_name, the_image,
    float    percent;
    int      edge_type;
    long     bits_per_pixel, cols, rows;
-   short    diff, erode, 
-            max_area, min_area, 
+   short    diff, erode,
+            max_area, min_area,
             set_value,
             **the_image,
             **out_image;
@@ -682,54 +708,54 @@ edge_gray_shade_region(in_name, the_image,
    if(edge_type == 1  ||
       edge_type == 2  ||
       edge_type == 3)
-      detect_edges(the_image, out_image, 
+      detect_edges(the_image, out_image,
                    edge_type, 0, 0,
                    rows, cols,
                    bits_per_pixel);
 
    if(edge_type == 4){
-      quick_edge(the_image, out_image, 
+      quick_edge(the_image, out_image,
                  0, 0,
                  rows, cols,
                  bits_per_pixel);
    }  /* ends if 4 */
    if(edge_type == 5){
-      homogeneity(the_image, out_image, 
+      homogeneity(the_image, out_image,
                   rows, cols,
                   bits_per_pixel,
                   0, 0);
    }  /* ends if 5 */
 
    if(edge_type == 6){
-      difference_edge(the_image, out_image, 
+      difference_edge(the_image, out_image,
                       rows, cols,
                       bits_per_pixel,
                       0, 0);
    }  /* ends if 6 */
 
    if(edge_type == 7){
-      contrast_edge(the_image, out_image, 
+      contrast_edge(the_image, out_image,
                     rows, cols,
                     bits_per_pixel,
                     0, 0);
    }  /* ends if 7 */
 
    if(edge_type == 8){
-      gaussian_edge(the_image, out_image, 
+      gaussian_edge(the_image, out_image,
                     rows, cols,
                     bits_per_pixel,
                     3, 0, 0);
    }  /* ends if 8 */
 
    if(edge_type == 10){
-      range(the_image, out_image, 
+      range(the_image, out_image,
             rows, cols,
             bits_per_pixel,
             3, 0, 0);
    }  /* ends if 10 */
 
    if(edge_type == 11){
-      variance(the_image, out_image, 
+      variance(the_image, out_image,
                rows, cols,
                bits_per_pixel,
                0, 0);
@@ -758,7 +784,7 @@ il, ie, ll, le);**/
    find_cutoff_point(histogram, percent, &cutoff,
                      rows, cols);
    threshold_image_array(the_image, out_image,
-                         GRAY_LEVELS, cutoff, 
+                         GRAY_LEVELS, cutoff,
                          set_value, rows, cols);
 
 
@@ -768,7 +794,7 @@ il, ie, ll, le);**/
          for(j=0; j<cols; j++)
             the_image[i][j] = out_image[i][j];
       erode_image_array(the_image, out_image,
-                        set_value, erode, 
+                        set_value, erode,
                         rows, cols);
    }  /* ends if erode */
 
@@ -804,6 +830,7 @@ il, ie, ll, le);**/
               min_area, max_area,
               rows, cols);
 
+return(1);
 }  /* ends edge_gray_shade_region */
 
 
@@ -811,15 +838,16 @@ il, ie, ll, le);**/
 
 
 
-show_stackp()
+int show_stackp()
 {
 char r[80];
    struct stacksp *temp;
    temp = stackp;
    while(temp != NULL){
-      printf("\n\t\t\t\t%d %d %x %x",temp->x,temp->y, temp, temp->next);
+      /**printf("\n\t\t\t\t%d %d %x %x",temp->x,temp->y, temp, temp->next);**/
       temp = temp->next;
    }
+return(1);
 }
 
 
@@ -836,7 +864,7 @@ int is_not_emptyp(pointer)
 
 
 
-pushp(x, y)
+int pushp(x, y)
    short  x, y;
 {
    struct stacksp *new_one;
@@ -847,11 +875,12 @@ pushp(x, y)
    new_one->x    = x;
    new_one->y    = y;
    stackp        = new_one;
+return(1);
 }  /* ends push */
 
 
 
-popp(x, y)
+int popp(x, y)
    short  *x, *y;
 {
    struct stacksp *temp;
@@ -861,7 +890,5 @@ popp(x, y)
    *y       = stackp->y;
    stackp   = stackp->next;
    free(temp);
+return(1);
 }  /* ends pop */
-
-
-
