@@ -33,22 +33,31 @@
 
 #include "cips.h"
 
-
+int does_not_exist();
+int get_image_size();
+int create_file_if_needed();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int get_bitsperpixel();
+int edge_region();
+int gray_shade_region();
+int edge_gray_shade_region();
 
 short **the_image;
 short **out_image;
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
 
    char     name1[80], name2[80], low_high[80], type[80];
    float    percent;
-   int      i, j, 
+   int      i, j,
             looking = 1;
    long     length, width, bits_per_pixel;
-   short    value,  value2, value3, 
+   short    value,  value2, value3,
             value4, value5, value6;
    struct   tiff_header_struct image_header;
 
@@ -109,7 +118,7 @@ main(argc, argv)
 
        /******************************************
        *
-       *  Read the input image header, allocate 
+       *  Read the input image header, allocate
        *  the image arrays, and read the input
        *  image.
        *
@@ -117,7 +126,7 @@ main(argc, argv)
 
    get_image_size(name1, &length, &width);
    get_bitsperpixel(name1, &bits_per_pixel);
-  
+
    the_image = allocate_image_array(length, width);
    out_image = allocate_image_array(length, width);
 
@@ -126,9 +135,9 @@ main(argc, argv)
 
 
    if(type[0] == 'e'  || type[0] == 'E'){
-      edge_region(the_image, out_image, 
-                  value, value2, 
-                  value3, value4, percent, 
+      edge_region(the_image, out_image,
+                  value, value2,
+                  value3, value4, percent,
                   value5, value6,
                   length,
                   width,
@@ -138,7 +147,7 @@ main(argc, argv)
 
 
    if(type[0] == 'g'  || type[0] == 'G'){
-      gray_shade_region(the_image, out_image, 
+      gray_shade_region(the_image, out_image,
                         value,
                         value2, value3,
                         length,
@@ -149,8 +158,8 @@ main(argc, argv)
 
    if(type[0] == 'c'  || type[0] == 'C'){
       edge_gray_shade_region(name1,
-               the_image, out_image, 
-               value, value2, value3, value4, 
+               the_image, out_image,
+               value, value2, value3, value4,
                percent, value5, value6,
                length,
                width,
