@@ -8,7 +8,7 @@
     *
     *    Purpose:
     *       This file contains the main calling
-    *       routine for a program which 
+    *       routine for a program which
     *       cuts a piece from one image and pastes
     *       it into another.
     *
@@ -26,16 +26,23 @@
     *       8 April 1992 - created
     *      12 August 1998 - modified to work on
     *           entire image array at once.
-    *      18 September 1998 - modified to work with 
+    *      18 September 1998 - modified to work with
     *            all I O routines in imageio.c.
     *
     *************************************************/
 
 #include "cips.h"
 
+int does_not_exist();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int check_cut_and_paste_limits();
+int paste_image_piece();
+int write_image_array();
+int free_image_array();
 
-
-main(argc, argv)
+int main(argc, argv)
    int  argc;
    char *argv[];
 {
@@ -111,9 +118,9 @@ main(argc, argv)
        **************************/
 
    check_cut_and_paste_limits(
-      il1, ie1, 
-      ll1, le1, 
-      il2, ie2, 
+      il1, ie1,
+      ll1, le1,
+      il2, ie2,
       length1, width1,
       length2, width2,
       &is_ok);
@@ -121,7 +128,7 @@ main(argc, argv)
 printf("\nMAIN> is_ok=%d", is_ok);
 
    if(is_ok)
-      paste_image_piece(the_image, out_image, 
+      paste_image_piece(the_image, out_image,
                         il1, ie1, ll1, le1,
                         il2, ie2);
 
