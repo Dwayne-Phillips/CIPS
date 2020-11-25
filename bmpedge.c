@@ -38,7 +38,7 @@ struct ctstruct{
 
 
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -56,7 +56,7 @@ main(argc, argv)
 
    long   height, width;
 
-   
+
       /******************************************
       *
       *   Ensure the command line is correct.
@@ -85,8 +85,8 @@ main(argc, argv)
    the_image = allocate_image_array(height, width);
    out_image = allocate_image_array(height, width);
    read_bmp_image(image_name, the_image);
-   
-   
+
+
    create_bmp_file_if_needed(image_name, image_name2, the_image);
 
    read_bmp_image(image_name, the_image);
@@ -107,9 +107,9 @@ printf("\nMAIN> Back from the edge detector");
    write_bmp_image(image_name2, out_image);
 printf("\nMAIN> wrote %s", image_name2);
 
-   free_image_array(the_image, 
+   free_image_array(the_image,
       image_header.image_length);
-   free_image_array(out_image, 
+   free_image_array(out_image,
       image_header.image_length);
 
 }  /* ends main */
@@ -123,7 +123,7 @@ printf("\nMAIN> wrote %s", image_name2);
 
 
 
-read_bmp_file_header(file_name,
+int read_bmp_file_header(file_name,
                      file_header)
    char *file_name;
    struct bmpfileheader *file_header;
@@ -162,7 +162,7 @@ read_bmp_file_header(file_name,
 }  /* ends read_bmp_file_header */
 
 
-print_bmp_file_header(struct bmpfileheader *file_header)
+int print_bmp_file_header(struct bmpfileheader *file_header)
 {
  printf("\nfile type %x", file_header->filetype);
  printf("\nfile size %d", file_header->filesize);
@@ -171,7 +171,7 @@ print_bmp_file_header(struct bmpfileheader *file_header)
 
 
 
-read_bm_header(file_name,
+int read_bm_header(file_name,
                bmheader)
    char *file_name;
    struct bitmapheader *bmheader;
@@ -242,7 +242,7 @@ read_bm_header(file_name,
 }  /* ends read_bm_header */
 
 
-print_bm_header(struct bitmapheader *bmheader)
+int print_bm_header(struct bitmapheader *bmheader)
 {
  printf("\nwidth %d", bmheader->width);
  printf("\nheight %d", bmheader->height);
@@ -254,7 +254,7 @@ print_bm_header(struct bitmapheader *bmheader)
 
 
 
-read_color_table(file_name, rgb, size)
+int read_color_table(file_name, rgb, size)
    char   *file_name;
    struct ctstruct *rgb;
    int    size;
@@ -284,7 +284,7 @@ read_color_table(file_name, rgb, size)
 
 
 
-print_color_table(struct ctstruct *rgb, int size)
+int print_color_table(struct ctstruct *rgb, int size)
 {
    int i;
 
@@ -298,7 +298,7 @@ print_color_table(struct ctstruct *rgb, int size)
 
 
 
-flip_image_array(the_image, rows, cols)
+int flip_image_array(the_image, rows, cols)
    long   cols, rows;
    short  **the_image;
 {
@@ -332,7 +332,7 @@ flip_image_array(the_image, rows, cols)
 
 
 
-read_bmp_image(file_name, array)
+int read_bmp_image(file_name, array)
    char  *file_name;
    short **array;
 {
@@ -403,13 +403,13 @@ read_bmp_image(file_name, array)
    *
    *   create_allocate_bmp_file(...
    *
-   *   The calling routine must set the 
+   *   The calling routine must set the
    *   height and width.  This routine will set
    *   everything else.
    *
    **********************************************/
 
-create_allocate_bmp_file(file_name,
+int create_allocate_bmp_file(file_name,
                          file_header,
                          bmheader)
    char  *file_name;
@@ -426,7 +426,7 @@ create_allocate_bmp_file(file_name,
    bmheader->planes       =   1;
    bmheader->bitsperpixel =   8;
    bmheader->compression  =   0;
-   bmheader->sizeofbitmap = bmheader->height * 
+   bmheader->sizeofbitmap = bmheader->height *
                             (bmheader->width + pad);
    bmheader->horzres      = 300;
    bmheader->vertres      = 300;
@@ -436,7 +436,7 @@ create_allocate_bmp_file(file_name,
    file_header->filetype     = 0x4D42;
    file_header->reserved1    =  0;
    file_header->reserved2    =  0;
-   file_header->bitmapoffset = 14 + 
+   file_header->bitmapoffset = 14 +
                                bmheader->size +
                                bmheader->colorsused*4;
    file_header->filesize     = file_header->bitmapoffset +
@@ -524,7 +524,7 @@ create_allocate_bmp_file(file_name,
 
       /*********************************************
       *
-      *   Write a zero image.  
+      *   Write a zero image.
       *
       *********************************************/
 
@@ -542,7 +542,7 @@ create_allocate_bmp_file(file_name,
 
 
 
-create_bmp_file_if_needed(in_name, out_name, out_image)
+int create_bmp_file_if_needed(in_name, out_name, out_image)
    char in_name[], out_name[];
    short **out_image;
 {
@@ -562,7 +562,7 @@ create_bmp_file_if_needed(in_name, out_name, out_image)
 
 
 
-write_bmp_image(file_name, array)
+int write_bmp_image(file_name, array)
    char   *file_name;
    short  **array;
 {
@@ -615,7 +615,7 @@ write_bmp_image(file_name, array)
    }  /* ends loop over i */
 
    position   = fseek(image_file,
-                      file_header.bitmapoffset, 
+                      file_header.bitmapoffset,
                       SEEK_SET);
 
    pad = calculate_pad(width);
