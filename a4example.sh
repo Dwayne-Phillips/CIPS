@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# validated November 2020
+# you have to make sure you are in the right directory
+
 ~/cips/himage a4.tif a4hist.tif 400 400
 ~/cips/side a4.tif a4hist.tif a4side.tif Side-by-side
 
