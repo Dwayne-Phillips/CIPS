@@ -16,6 +16,7 @@
 
 #include "cips.h"
 
+int swap();
 
 
 
@@ -30,7 +31,7 @@
     *
     ***********************************************/
 
-fix_edges(im, w, rows, cols)
+int fix_edges(im, w, rows, cols)
       int   w;
       short **im;
       long  rows, cols;
@@ -59,7 +60,7 @@ printf("\nFIX> rows=%ld cols=%ld w=%d",rows,cols,w);
        im[rows-i][j] = im[rows-i-1][j];
       }
    }
-
+return(1);
 }  /* ends fix_edges */
 
 
@@ -75,7 +76,7 @@ printf("\nFIX> rows=%ld cols=%ld w=%d",rows,cols,w);
     *
     ***********************************************/
 
-sort_elements(elements, count)
+int sort_elements(elements, count)
    int   *count;
    short elements[];
 {
@@ -87,6 +88,7 @@ sort_elements(elements, count)
             swap(&elements[i], &elements[i+1]);
       }
    }
+return(1);
 }  /* ends sort_elements */
 
 
@@ -100,12 +102,12 @@ sort_elements(elements, count)
     *
     ***********************************************/
 
-swap(a, b)
+int swap(a, b)
    short *a, *b;
 {
    short temp;
    temp  = *a;
    *a    = *b;
    *b    = temp;
+return(1);
 }  /* ends swap */
-
