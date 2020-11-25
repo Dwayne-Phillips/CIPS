@@ -6,80 +6,120 @@ CFLAGS=-I.
 DEPS=cips.h
 
 hello0: hello0.c
-	gcc -o hello0 hello0.c 
+	gcc -o hello0 hello0.c
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 
+FINDTOBJS=findt.o imageio.o tiffs.c
+findt: $(FINDTOBJS)
+			$(CC) -o $@ $^ $(CFLAGS)
+
+
+HIDETOBJS=hidet.o imageio.o
+hidet: $(HIDETOBJS)
+		$(CC) -o $@ $^ $(CFLAGS)
+
+GEOMETRYOBJS=geometry.o geosubs.o imageio.o
+geometry: $(GEOMETRYOBJS)
+						$(CC) -o $@ $^ $(CFLAGS)
+
+
+FLIPOBJS=flip.o imageio.o
+flip: $(FLIPOBJS)
+				$(CC) -o $@ $^ $(CFLAGS)
+
+
+BMP2TIFFOBJS=bmp2tif.o imageio.o
+bmp2tif: $(BMP2TIFFOBJS)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+BMPedgeOBJS=bmpedge.o imageio.o
+bmpedge: $(BMPedgeOBJS)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+DUMPBOBJS=dumpb.o imageio.o
+dumpb: $(DUMPBOBJS)
+		$(CC) -o $@ $^ $(CFLAGS)
+
+
+DUMPIOBJS=dumpi.o imageio.o
+dumpi: $(DUMPIOBJS)
+			$(CC) -o $@ $^ $(CFLAGS)
+
 CREATOBJS=create.o imageio.o
-create: $(CREATOBJS) 
+create: $(CREATOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 GEOMETRYOBJS=geometry.o geosubs.o imageio.o
-geometry: $(GEOMETRYOBJS) 
+geometry: $(GEOMETRYOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 STRETCHOBJS=stretch.o geosubs.o imageio.o
-stretch: $(STRETCHOBJS) 
+stretch: $(STRETCHOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 MAINOVEROBJS=mainover.o overlay.o imageio.o
-mainover: $(MAINOVEROBJS) 
+mainover: $(MAINOVEROBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 BOOLEANOBJS=boolean.o boole.o imageio.o
-boolean: $(BOOLEANOBJS) 
+boolean: $(BOOLEANOBJS)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+CIPSCATOBJS=cipscat.o
+cipscat: $(CIPSCATOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 ISOOBJS=iso.o imageio.o
-iso: $(ISOOBJS) 
+iso: $(ISOOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 HISTEQOBJS=histeq.o hist.o imageio.o
-histeq: $(HISTEQOBJS) 
+histeq: $(HISTEQOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 HIMAGEOBJS=imageio.o hist.o himage.o
-himage: $(HIMAGEOBJS) 
+himage: $(HIMAGEOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 INVERTOBJS=invert.o imageio.o
-invert: $(INVERTOBJS) 
+invert: $(INVERTOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 MAINASOBJS=mainas.o imageio.o addsub.o
-mainas: $(MAINASOBJS) 
+mainas: $(MAINASOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 MAINCPOBJS=maincp.o imageio.o cutp.o
-maincp: $(MAINCPOBJS) 
+maincp: $(MAINCPOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 MAINSEGOBJS=mainseg.o hist.o imageio.o segment.o
-mainseg: $(MAINSEGOBJS) 
+mainseg: $(MAINSEGOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 MAIN2SEGOBJS=main2seg.o hist.o imageio.o segment.o \
              edge2.o edge3.o edge.o filter.o \
              segment2.o utility.o
-main2seg: $(MAIN2SEGOBJS) 
+main2seg: $(MAIN2SEGOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 MAINSKOBJS=mainsk.o imageio.o skeleton.o ed.o utility.o
-mainsk: $(MAINSKOBJS) 
+mainsk: $(MAINSKOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 MEDGEOBJS=medge.o imageio.o edges.o utility.o
-medge: $(MEDGEOBJS) 
+medge: $(MEDGEOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 MFILTEROBJS=mfilter.o imageio.o filter.o utility.o
-mfilter: $(MFILTEROBJS) 
+mfilter: $(MFILTEROBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 SIDEOBS=imageio.o hist.o side.o
-side: $(SIDEOBS) 
+side: $(SIDEOBS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 ####################### TEST PLATFORM ###############
@@ -90,17 +130,14 @@ hello: $(HELLOOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 TESTBEDOBJS=testbed.o imageio.o hist.o
-testbed: $(TESTBEDOBJS) 
+testbed: $(TESTBEDOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 TESTSEGOBJS=testseg.o imageio.o segment.o hist.o
-testseg: $(TESTSEGOBJS) 
+testseg: $(TESTSEGOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 
 IIIOBJS=iii.o imageio.o segment.o hist.o
-iii: $(IIIOBJS) 
+iii: $(IIIOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
-
-
-
