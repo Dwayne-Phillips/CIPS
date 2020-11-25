@@ -17,7 +17,7 @@
     *
     *    Modifications:
     *       20 October 1993- created
-    *       27 August 1998 - modified to work on 
+    *       27 August 1998 - modified to work on
     *            entire images at once.
     *
     ********************************************/
@@ -26,7 +26,7 @@
 
 #define FILL 150
 
-
+int bilinear_interpolate();
 
 
 
@@ -49,7 +49,7 @@
      *
      *******************************************/
 
-geometry(the_image, out_image,
+int geometry(the_image, out_image,
         x_angle,
         x_stretch, y_stretch,
         x_displace, y_displace,
@@ -160,7 +160,7 @@ geometry(the_image, out_image,
                 the_image[new_i][new_j];
          }  /* ends if bilinear */
          else{
-            out_image[i][j] = 
+            out_image[i][j] =
                bilinear_interpolate(the_image,
                                     tmpx, tmpy,
                                     rows, cols);
@@ -169,6 +169,7 @@ geometry(the_image, out_image,
       }  /* ends loop over j */
    }  /* ends loop over i */
 
+return(1);
 }  /* ends geometry */
 
 
@@ -191,7 +192,7 @@ geometry(the_image, out_image,
      *
      *******************************************/
 
-arotate(the_image, out_image,
+int arotate(the_image, out_image,
         angle,
         m, n, bilinear,
         rows, cols)
@@ -259,7 +260,7 @@ arotate(the_image, out_image,
                 the_image[new_i][new_j];
          }  /* ends if bilinear */
          else{
-            out_image[i][j] = 
+            out_image[i][j] =
                bilinear_interpolate(the_image,
                                     tmpx, tmpy,
                                     rows, cols);
@@ -268,6 +269,7 @@ arotate(the_image, out_image,
       }  /* ends loop over j */
    }  /* ends loop over i */
 
+return(1);
 }  /* ends arotate */
 
 
@@ -292,7 +294,7 @@ arotate(the_image, out_image,
      *
      *******************************************/
 
-bilinear_interpolate(the_image, x, y, rows, cols)
+int bilinear_interpolate(the_image, x, y, rows, cols)
    double x, y;
    long   cols, rows;
    short  **the_image;
@@ -331,15 +333,15 @@ bilinear_interpolate(the_image, x, y, rows, cols)
    one_minus_x = 1.0 - fraction_x;
    one_minus_y = 1.0 - fraction_y;
 
-   tmp_double = one_minus_x * 
+   tmp_double = one_minus_x *
           (double)(the_image[floor_y][floor_x]) +
-          fraction_x * 
+          fraction_x *
           (double)(the_image[floor_y][ceil_x]);
    p1         = tmp_double;
 
-   tmp_double = one_minus_x * 
+   tmp_double = one_minus_x *
           (double)(the_image[ceil_y][floor_x]) +
-          fraction_x * 
+          fraction_x *
           (double)(the_image[ceil_y][ceil_x]);
    p2         = tmp_double;
 
@@ -366,16 +368,16 @@ bilinear_interpolate(the_image, x, y, rows, cols)
      *
      *******************************************/
 
-get_geometry_options(operation, angle, 
-                     x_displace, y_displace, 
-                     x_stretch, y_stretch, 
-                     x_cross,  y_cross, 
+get_geometry_options(operation, angle,
+                     x_displace, y_displace,
+                     x_stretch, y_stretch,
+                     x_cross,  y_cross,
                      bilinear, m, n)
    char  operation[];
    int   *bilinear;
    short *m, *n, *x_displace, *y_displace;
    float *angle,
-         *x_cross, *y_cross, 
+         *x_cross, *y_cross,
          *x_stretch, *y_stretch;
 {
    int not_finished, response;
