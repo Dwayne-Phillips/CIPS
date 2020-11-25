@@ -9,8 +9,8 @@
     *
     *  Purpose:
     *     This file contains the main calling
-    *     routine and subroutines to overlay  
-    *     text on top of an image.  
+    *     routine and subroutines to overlay
+    *     text on top of an image.
     *
     *  External Calls:
     *      imageio.c - create_image_file
@@ -22,14 +22,22 @@
     *
     *  Modifications:
     *     16 February 1998 - created
-    *     22 September 1998 - modified to work with 
+    *     22 September 1998 - modified to work with
     *           all I O routines in imageio.c.
     *
     *************************************************/
 
 #include "cips.h"
 
-main(argc, argv)
+int does_not_exist();
+int are_not_same_size();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+
+
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -44,7 +52,7 @@ main(argc, argv)
    if(argc < 4){
     printf("\n\nNot enough parameters:");
     printf("\n");
-    printf("\n   usage: hidet image-file text-file factor  ");
+    printf("\n   usage: hidet image-file text-file-image factor  ");
     exit(0);
    }
 
@@ -59,7 +67,7 @@ main(argc, argv)
    }
 
    if(does_not_exist(water_name)){
-      printf("\nERROR input file %s does not exist",
+      printf("\nERROR output file %s does not exist",
              water_name);
       exit(0);
    }
@@ -93,4 +101,3 @@ main(argc, argv)
    free_image_array(out_image, length);
 
 }  /* ends main  */
-
