@@ -22,20 +22,28 @@
     *
     *    Modifications:
     *       26 October 1993 - created
-    *       27 August 1998 - modified to work on 
+    *       27 August 1998 - modified to work on
     *            entire images at once.
-    *       19 September 1998 - modified to work with 
+    *       19 September 1998 - modified to work with
     *           all I O routines in imageio.c.
     *
     ********************************************/
 
 #include "cips.h"
 
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int geometry();
+int arotate();
 
 short **the_image;
 short **out_image;
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -99,6 +107,7 @@ main(argc, argv)
       y_cross    = atof(argv[10]);
       bilinear   = atoi(argv[11]);
    }
+
 
    if(strncmp(argv[3], "rotate", 3) == 0){
       strcpy(name1,  argv[1]);
