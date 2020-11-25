@@ -9,9 +9,9 @@
    *       zero_histogram
    *       smooth_histogram
    *
-   *   Purpose: These functions calculate 
+   *   Purpose: These functions calculate
    *      the histogram of an input image array.
-   *      They also modify an image by equalizing 
+   *      They also modify an image by equalizing
    *      its histogram.
    *
    *   Modifications:
@@ -47,13 +47,14 @@
         *
         ******************************************/
 
-zero_histogram(histogram, gray_levels)
+int zero_histogram(histogram, gray_levels)
    int      gray_levels;
    unsigned long histogram[];
 {
    int i;
    for(i=0; i<gray_levels; i++)
       histogram[i] = 0;
+return(1);
 }  /* ends zero_histogram */
 
 
@@ -68,7 +69,7 @@ zero_histogram(histogram, gray_levels)
         *
         ******************************************/
 
-calculate_histogram(image, histogram, length, width)
+int calculate_histogram(image, histogram, length, width)
    int    length, width;
    short  **image;
    unsigned long histogram[];
@@ -81,6 +82,7 @@ calculate_histogram(image, histogram, length, width)
          histogram[k] = histogram[k] + 1;
       }
    }
+return(1);
 }  /* ends calculate_histogram */
 
 
@@ -98,7 +100,7 @@ calculate_histogram(image, histogram, length, width)
       *
       *********************************************/
 
-smooth_histogram(histogram, gray_levels)
+int smooth_histogram(histogram, gray_levels)
    int      gray_levels;
    unsigned long histogram[];
 {
@@ -121,6 +123,7 @@ smooth_histogram(histogram, gray_levels)
    for(i=0; i<gray_levels; i++)
       histogram[i] = new_hist[i];
 
+return(1);
 }  /* ends smooth_histogram */
 
 
@@ -135,10 +138,10 @@ smooth_histogram(histogram, gray_levels)
           *
           ******************************************/
 
-perform_histogram_equalization(image, 
+int perform_histogram_equalization(image,
                                histogram,
                                gray_levels,
-                               new_grays, 
+                               new_grays,
                                length,
                                width)
    int   gray_levels, new_grays;
@@ -168,16 +171,18 @@ perform_histogram_equalization(image,
          image[i][j] = sum_of_h[k] * constant;
       }
    }
+return(1);
 }  /* ends perform_histogram_equalization */
 
 
 
 
 
-hist_long_clear_buffer(string)
+int hist_long_clear_buffer(string)
    char string[];
 {
    int i;
    for(i=0; i<300; i++)
       string[i] = ' ';
+return(1);
 }
