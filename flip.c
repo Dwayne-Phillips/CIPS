@@ -75,12 +75,19 @@
 
 #include "cips.h"
 
+int flip_image();
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
 
 
 short **the_image;
 short **out_image;
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -91,6 +98,7 @@ main(argc, argv)
 
    if(argc != 4){
     printf("\n\nusage: flip in-file out-file type");
+    printf("\n         type is 1 2 3 4 (90 degree increments)\n");
     exit(0);
    }
 
@@ -133,7 +141,7 @@ main(argc, argv)
 
 
 
-flip_image(the_image, out_image, 
+int flip_image(the_image, out_image,
            type,
            rows, cols)
    int   type;
@@ -255,5 +263,5 @@ flip_image(the_image, out_image,
       }  /* ends loop over i */
    }  /* ends if type == 5 */
 
-
+return(1);
 }  /* ends flip_image */
