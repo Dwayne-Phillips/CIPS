@@ -16,7 +16,7 @@
     *
     *       Modifications:
     *          3 April 1992 - created
-    *         12 August 1998 - modified to work 
+    *         12 August 1998 - modified to work
     *             with an entire image array.
     *
     *************************************************/
@@ -37,7 +37,7 @@
      *
      *******************************************/
 
-paste_image_piece(the_image, out_image, 
+int paste_image_piece(the_image, out_image,
                   il1, ie1, ll1, le1,
                   il2, ie2)
    int    il1, ie1, ll1, le1, il2, ie2;
@@ -55,7 +55,7 @@ paste_image_piece(the_image, out_image,
          out_image[il2+i][ie2+j] = the_image[il1+i][ie1+j];
       }
    }
-
+   return(1);
 }  /* ends paste_image_piece */
 
 
@@ -73,13 +73,13 @@ paste_image_piece(the_image, out_image,
      *******************************************/
 
 
-check_cut_and_paste_limits(
-      il1, ie1, 
-      ll1, le1, 
-      il2, ie2, 
-      image1_length, 
+int check_cut_and_paste_limits(
+      il1, ie1,
+      ll1, le1,
+      il2, ie2,
+      image1_length,
       image1_width,
-      image2_length, 
+      image2_length,
       image2_width,
       is_ok)
    int il1, ie1, ll1, le1, il2, ie2,
@@ -126,5 +126,5 @@ check_cut_and_paste_limits(
    }
 
    *is_ok = result;
-
+   return(1);
 }  /* ends check_cut_and_paste_limits */
