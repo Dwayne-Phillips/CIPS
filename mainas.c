@@ -28,16 +28,25 @@
    *      1 April 1992 - created
    *     10 August 1998 - modified to work on entire
    *         images at one time.
-   *     18 September 1998 - modified to work with 
+   *     18 September 1998 - modified to work with
    *           all I O routines in imageio.c.
    *
    *************************************************/
 
 #include "cips.h"
 
+int does_not_exist();
+int are_not_same_size();
+int get_image_size();
+int get_bitsperpixel();
+int create_image_file();
+int read_image_array();
+int add_image_array();
+int subtract_image_array();
+int write_image_array();
+int free_image_array();
 
-
-main(argc, argv)
+int main(argc, argv)
    int  argc;
    char *argv[];
 {
@@ -81,14 +90,14 @@ main(argc, argv)
 
        /******************************************
        *
-       *  Ensure the two input images have the 
+       *  Ensure the two input images have the
        *  same sizes.
        *
        *******************************************/
 
    if(are_not_same_size(name1, name2)){
       printf(
-      "\nERROR Image files %s and %s are not same size", 
+      "\nERROR Image files %s and %s are not same size",
       name1, name2);
       exit(0);
    }
@@ -103,7 +112,7 @@ main(argc, argv)
    get_bitsperpixel(name1, &bits_per_pixel);
    image1 = allocate_image_array(length, width);
    image2 = allocate_image_array(length, width);
-   
+
        /******************************************
        *
        *  Create the output file and read the
@@ -117,7 +126,7 @@ main(argc, argv)
 
        /********************************************
        *
-       *   Add or subtract the input images and 
+       *   Add or subtract the input images and
        *   write the result to the output image.
        *
        ********************************************/
