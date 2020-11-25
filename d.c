@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
+/**  #include <malloc.h>  **/
 
 #undef DEBUG    
 
@@ -55,7 +55,7 @@ int state_doesnt_exist(struct node *,
 
 /************************************************/
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 
 char response[80];
