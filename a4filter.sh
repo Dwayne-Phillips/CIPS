@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# validated November 2020
+# Make sure you are in the right directory
+
 ~/cips/mfilter a4.tif tmp.tif g H 1
 ~/cips/side a4.tif tmp.tif a4high1.tif Side-by-side
 rm tmp.tif
