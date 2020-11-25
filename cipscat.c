@@ -1,4 +1,6 @@
 
+
+
        /*********************************************
        *
        *   file d:\cips\cipscat.c
@@ -7,7 +9,7 @@
        *     main
        *
        *   Purpose:
-       *     This file contains a program that 
+       *     This file contains a program that
        *     concatenates .c files together, but
        *     only copies the first occurence of the
        *     include cips.h statement.
@@ -92,36 +94,36 @@ int main(int argc, char *argv[])
       *****************************************/
 
    strcpy(output_file_name, argv[argc-1]);
-   if((output_file = fopen(output_file_name, "wt")) 
+   if((output_file = fopen(output_file_name, "wt"))
                              == NULL){
-      printf("\ncipscat: Error file %s\n", 
+      printf("\ncipscat: Error file %s\n",
               output_file_name);
       exit(1);
    }
 
    fputc('\n', output_file);
-   sprintf(string, 
+   sprintf(string,
            "   /*************************** \n");
    fputs(string, output_file);
-   sprintf(string, 
+   sprintf(string,
            "   * \n");
    fputs(string, output_file);
-   sprintf(string, "   *   %s \n", 
+   sprintf(string, "   *   %s \n",
            output_file_name);
    fputs(string, output_file);
-   sprintf(string, 
+   sprintf(string,
       "   *   COMPOSITE FILE COMPRISING: \n");
    fputs(string, output_file);
 
    for(i=1; i<(argc-2); i++){
-      sprintf(string, "   *   %s \n", 
+      sprintf(string, "   *   %s \n",
               argv[i]);
       fputs(string, output_file);
    }
-   sprintf(string, 
+   sprintf(string,
            "   * \n");
    fputs(string, output_file);
-   sprintf(string, 
+   sprintf(string,
            "   ***************************\\ \n");
    fputs(string, output_file);
    fputc('\n', output_file);
@@ -131,9 +133,9 @@ int main(int argc, char *argv[])
       /*****************************************
       *
       *   Loop through the input files.
-      *   Copy all of the first one to the 
+      *   Copy all of the first one to the
       *   output.  For the rest, look for the
-      *   include cips.h statement and do not copy 
+      *   include cips.h statement and do not copy
       *   that to the output.
       *
       *****************************************/
@@ -141,9 +143,9 @@ int main(int argc, char *argv[])
    for(i=1; i<(argc-2); i++){
 
       strcpy(input_file_name, argv[i]);
-      if((input_file = fopen(input_file_name, "rt")) 
+      if((input_file = fopen(input_file_name, "rt"))
                                 == NULL){
-         printf("\ncipscat: Error file %s\n", 
+         printf("\ncipscat: Error file %s\n",
                  input_file_name);
          exit(2);
       }  /* ends if fopen input_file */
