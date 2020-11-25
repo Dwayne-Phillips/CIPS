@@ -14,7 +14,7 @@
 
        /***********************************************
        *
-       *       file d:\cips\edge.c
+       *       file edge.c
        *
        *       Functions: This file contains
        *          detect_edges
@@ -22,20 +22,13 @@
        *          get_edge_options
        *          perform_convolution
        *          quick_edge
-       *          fix_edges
        *
        *       Purpose:
        *          These functions implement several
        *          types of basic edge detection.
        *
        *       External Calls:
-       *          wtiff.c - round_off_image_size
-       *                    create_file_if_needed
-       *                    write_array_into_tiff_image
-       *          tiff.c - read_tiff_header
-       *          rtiff.c - read_tiff_image
-       *          numcvrt.c - get_integer
-       *
+       *          utility.c - fix_edges
        *
        *       Modifications:
        *          27 January 1991 - created
@@ -55,9 +48,7 @@
 
 #include "cips.h"
 
-
-
-
+int fix_edges();
 
 short quick_mask[3][3] =  {
        {-1,  0, -1},
@@ -213,38 +204,81 @@ short sobel_mask_7[3][3] =  {
 
 
 
-  /**************************************************
-  *
-  *   detect_edges(...
-  *
-  *   This function detects edges in an area of one
-  *   image and sends the result to another image
-  *   on disk.  It reads the input image from disk,
-  *   calls a convolution function, and then writes
-  *   the result out to disk.  If needed, it
-  *   allocates space on disk for the output image.
-  *
-  ***************************************************/
+          /***********************************************
+           *
+           *    setup_masks(...
+           *
+           *    This function copies the mask values defined
+           *    at the top of this file into the mask
+           *    arrays mask_0 through mask_7.
+           *
+           ***********************************************/
 
 
 
+       int setup_masks(detect_type, mask_0, mask_1, mask_2, mask_3,
+                   mask_4, mask_5, mask_6, mask_7)
+          int    detect_type;
+          short  mask_0[3][3],
+                 mask_1[3][3],
+                 mask_2[3][3],
+                 mask_3[3][3],
+                 mask_4[3][3],
+                 mask_5[3][3],
+                 mask_6[3][3],
+                 mask_7[3][3];
+       {
+          int i, j;
 
-detect_edges(the_image, out_image,
-             detect_type, threshold, high,
-             rows, cols, bits_per_pixel)
-   int    detect_type, high, threshold;
-   long   rows, cols, bits_per_pixel;
-   short  **the_image, **out_image;
+          if(detect_type == KIRSCH){
+             for(i=0; i<3; i++){
+               for(j=0; j<3; j++){
+                 mask_0[i][j] = kirsch_mask_0[i][j];
+                 mask_1[i][j] = kirsch_mask_1[i][j];
+                 mask_2[i][j] = kirsch_mask_2[i][j];
+                 mask_3[i][j] = kirsch_mask_3[i][j];
+                 mask_4[i][j] = kirsch_mask_4[i][j];
+                 mask_5[i][j] = kirsch_mask_5[i][j];
+                 mask_6[i][j] = kirsch_mask_6[i][j];
+                 mask_7[i][j] = kirsch_mask_7[i][j];
+               }
+             }
+          }  /* ends if detect_type == KIRSCH */
 
-{
-   perform_convolution(the_image, out_image,
-                       detect_type, threshold,
-                       rows, cols, 
-                       bits_per_pixel, 
-                       high);
-   fix_edges(out_image, 1, rows, cols);
-}  /* ends detect_edges */
 
+          if(detect_type == PREWITT){
+             for(i=0; i<3; i++){
+               for(j=0; j<3; j++){
+                 mask_0[i][j] = prewitt_mask_0[i][j];
+                 mask_1[i][j] = prewitt_mask_1[i][j];
+                 mask_2[i][j] = prewitt_mask_2[i][j];
+                 mask_3[i][j] = prewitt_mask_3[i][j];
+                 mask_4[i][j] = prewitt_mask_4[i][j];
+                 mask_5[i][j] = prewitt_mask_5[i][j];
+                 mask_6[i][j] = prewitt_mask_6[i][j];
+                 mask_7[i][j] = prewitt_mask_7[i][j];
+               }
+             }
+          }  /* ends if detect_type == PREWITT */
+
+
+          if(detect_type == SOBEL){
+             for(i=0; i<3; i++){
+               for(j=0; j<3; j++){
+                 mask_0[i][j] = sobel_mask_0[i][j];
+                 mask_1[i][j] = sobel_mask_1[i][j];
+                 mask_2[i][j] = sobel_mask_2[i][j];
+                 mask_3[i][j] = sobel_mask_3[i][j];
+                 mask_4[i][j] = sobel_mask_4[i][j];
+                 mask_5[i][j] = sobel_mask_5[i][j];
+                 mask_6[i][j] = sobel_mask_6[i][j];
+                 mask_7[i][j] = sobel_mask_7[i][j];
+               }
+             }
+          }  /* ends if detect_type == SOBEL */
+
+       return(1);
+       }  /* ends setup_masks */
 
 
 
@@ -261,7 +295,7 @@ detect_edges(the_image, out_image,
      *
      ********************************************************/
 
-perform_convolution(image, out_image,
+int perform_convolution(image, out_image,
                     detect_type, threshold,
                     rows, cols, bits_per_pixel, high)
    short **image,
@@ -276,7 +310,7 @@ perform_convolution(image, out_image,
        i,
        is_present,
        j,
-       sum; 
+       sum;
 
    short  mask_0[3][3],
           mask_1[3][3],
@@ -476,6 +510,7 @@ if( (i%10) == 0){ printf("%4d", i); }
        }
    }  /* ends if threshold == 1 */
 
+return(1);
 }  /* ends perform_convolution */
 
 
@@ -494,7 +529,7 @@ if( (i%10) == 0){ printf("%4d", i); }
      *******************************************/
 
 
-quick_edge(the_image, out_image,
+int quick_edge(the_image, out_image,
            threshold, high, rows, cols, bits_per_pixel)
    int    high, threshold;
    long   rows, cols, bits_per_pixel;
@@ -551,9 +586,9 @@ quick_edge(the_image, out_image,
        }
    }  /* ends if threshold == 1 */
 
-   fix_edges(out_image, 1, 
-             rows-1, cols-1); 
-
+   fix_edges(out_image, 1,
+             rows-1, cols-1);
+return(1);
 }  /* ends quick_edge */
 
 
@@ -563,167 +598,45 @@ quick_edge(the_image, out_image,
 
 
 
-   /***********************************************
-    *
-    *    setup_masks(...
-    *
-    *    This function copies the mask values defined
-    *    at the top of this file into the mask
-    *    arrays mask_0 through mask_7.
-    *
-    ***********************************************/
 
 
 
-setup_masks(detect_type, mask_0, mask_1, mask_2, mask_3,
-            mask_4, mask_5, mask_6, mask_7)
-   int    detect_type;
-   short  mask_0[3][3],
-          mask_1[3][3],
-          mask_2[3][3],
-          mask_3[3][3],
-          mask_4[3][3],
-          mask_5[3][3],
-          mask_6[3][3],
-          mask_7[3][3];
+  /**************************************************
+  *
+  *   detect_edges(...
+  *
+  *   This function detects edges in an area of one
+  *   image and sends the result to another image
+  *   on disk.  It reads the input image from disk,
+  *   calls a convolution function, and then writes
+  *   the result out to disk.  If needed, it
+  *   allocates space on disk for the output image.
+  *
+  ***************************************************/
+
+
+
+
+int detect_edges(the_image, out_image,
+             detect_type, threshold, high,
+             rows, cols, bits_per_pixel)
+   int    detect_type, high, threshold;
+   long   rows, cols, bits_per_pixel;
+   short  **the_image, **out_image;
+
 {
-   int i, j;
-
-   if(detect_type == KIRSCH){
-      for(i=0; i<3; i++){
-        for(j=0; j<3; j++){
-          mask_0[i][j] = kirsch_mask_0[i][j];
-          mask_1[i][j] = kirsch_mask_1[i][j];
-          mask_2[i][j] = kirsch_mask_2[i][j];
-          mask_3[i][j] = kirsch_mask_3[i][j];
-          mask_4[i][j] = kirsch_mask_4[i][j];
-          mask_5[i][j] = kirsch_mask_5[i][j];
-          mask_6[i][j] = kirsch_mask_6[i][j];
-          mask_7[i][j] = kirsch_mask_7[i][j];
-        }
-      }
-   }  /* ends if detect_type == KIRSCH */
-
-
-   if(detect_type == PREWITT){
-      for(i=0; i<3; i++){
-        for(j=0; j<3; j++){
-          mask_0[i][j] = prewitt_mask_0[i][j];
-          mask_1[i][j] = prewitt_mask_1[i][j];
-          mask_2[i][j] = prewitt_mask_2[i][j];
-          mask_3[i][j] = prewitt_mask_3[i][j];
-          mask_4[i][j] = prewitt_mask_4[i][j];
-          mask_5[i][j] = prewitt_mask_5[i][j];
-          mask_6[i][j] = prewitt_mask_6[i][j];
-          mask_7[i][j] = prewitt_mask_7[i][j];
-        }
-      }
-   }  /* ends if detect_type == PREWITT */
-
-
-   if(detect_type == SOBEL){
-      for(i=0; i<3; i++){
-        for(j=0; j<3; j++){
-          mask_0[i][j] = sobel_mask_0[i][j];
-          mask_1[i][j] = sobel_mask_1[i][j];
-          mask_2[i][j] = sobel_mask_2[i][j];
-          mask_3[i][j] = sobel_mask_3[i][j];
-          mask_4[i][j] = sobel_mask_4[i][j];
-          mask_5[i][j] = sobel_mask_5[i][j];
-          mask_6[i][j] = sobel_mask_6[i][j];
-          mask_7[i][j] = sobel_mask_7[i][j];
-        }
-      }
-   }  /* ends if detect_type == SOBEL */
-
-
-
-}  /* ends setup_masks */
-
-
-
-#ifdef NEVER
-
-
-   /***********************************************
-    *
-    *    get_edge_options(...
-    *
-    *    This function queries the user for the
-    *    parameters need to perform edge
-    *    detection.
-    *
-    ***********************************************/
-
-
-get_edge_options(detect_type, threshold, high, size)
-    int *detect_type, *high, *size, *threshold;
-{
-    int not_finished, response;
-    not_finished = 1;
-    while(not_finished){
-
-      printf("\nThe Edge Detector options are:\n");
-      printf("\n\t1.  Type of edge detector is %d", *detect_type);
-      printf("\n\t      (recall 1=Prewitt     2=Kirsch");
-      printf("\n\t              3=Sobel       4=quick");
-      printf("\n\t              5=homogeneity 6=difference");
-      printf("\n\t              7=contrast    8=gaussian");
-      printf("\n\t              10=range      11=variance");
-      printf("\n\t2.  Threshold output is %d (0=off 1=on)", *threshold);
-      printf("\n\t3.  High threshold is %d", *high);
-      printf("\n\t4.  Size is %d (gaussian only)", *size);
-      printf("\n\nEnter choice (0 = no change) _\b");
-
-
-      get_integer(&response);
-
-      if(response == 0){
-        not_finished = 0;
-      }
-
-
-      if(response == 1){
-        printf("\n\nEnter type of edge detector");
-        printf("\n\t      (recall 1=Prewitt     2=Kirsch");
-        printf("\n\t              3=Sobel       4=quick");
-        printf("\n\t              5=homogeneity 6=difference");
-        printf("\n\t              7=contrast    8=gaussian");
-        printf("\n\t              10=range      11=variance");
-        printf("\n  _\b");
-        get_integer(detect_type);
-      }
-
-      if(response == 2){
-        printf("\n\nEnter threshold output (0=off 1=on)");
-        printf("\n  _\b");
-        get_integer(threshold);
-      }
-
-      if(response == 3){
-        printf("\n\nEnter high threshold");
-        printf("\n  _\b");
-        get_integer(high);
-      }
-
-      if(response == 4){
-        printf("\n\nEnter size for gaussian (7 or 9)");
-        printf("\n  _\b");
-        get_integer(size);
-      }
-    }  /* ends while not_finished */
-
-}  /* ends get_edge_options */
-
-#endif
-
-
-
-
+   perform_convolution(the_image, out_image,
+                       detect_type, threshold,
+                       rows, cols,
+                       bits_per_pixel,
+                       high);
+   fix_edges(out_image, 1, rows, cols);
+return(1);
+}  /* ends detect_edges */
 
     /***********************************************
     *
-    *    file d:\cips\edge2.c
+    *    file edge2.c
     *
     *    Functions: This file contains
     *       homogeneity
@@ -737,13 +650,7 @@ get_edge_options(detect_type, threshold, high, size)
     *       types of advanced edge detection.
     *
     *    External Calls:
-    *       wtiff.c - round_off_image_size
-    *                 create_file_if_needed
-    *                 write_array_into_tiff_image
-    *       tiff.c - read_tiff_header
-    *       rtiff.c - read_tiff_image
-    *       numcvrt.c - get_integer
-    *       edge.c - fix_edges
+    *       utility.c - sort_elements
     *
     *    Modifications:
     *       26 March 1991 - created
@@ -755,6 +662,7 @@ get_edge_options(detect_type, threshold, high, size)
     *************************************************/
 
 
+int sort_elements();
 
 short e_mask[3][3] = {
        {-9,  0, -9},
@@ -780,7 +688,7 @@ short contrast[3][3] = {
    ***************************************************/
 
 
-homogeneity(the_image, out_image,
+int homogeneity(the_image, out_image,
             rows, cols, bits_per_pixel,
             threshold, high)
    int    high, threshold;
@@ -816,10 +724,10 @@ homogeneity(the_image, out_image,
           for(a=-1; a<=1; a++){
              for(b=-1; b<=1; b++){
 
-                diff = the_image[i][j] - 
+                diff = the_image[i][j] -
                         the_image[i+a][j+b];
                 absdiff = abs(diff);
-                if(absdiff > max_diff) 
+                if(absdiff > max_diff)
                    max_diff = absdiff;
 
              }  /* ends loop over b */
@@ -844,6 +752,7 @@ homogeneity(the_image, out_image,
        }
    }  /* ends if threshold == 1 */
 
+return(1);
 } /* ends homogeneity */
 
 
@@ -864,7 +773,7 @@ homogeneity(the_image, out_image,
    *
    ***************************************************/
 
-difference_edge(the_image, out_image,
+int difference_edge(the_image, out_image,
                 rows, cols, bits_per_pixel,
                 threshold, high)
    int    high, threshold;
@@ -932,6 +841,7 @@ difference_edge(the_image, out_image,
        }
    }  /* ends if threshold == 1 */
 
+return(1);
 } /* ends difference_edge */
 
 
@@ -949,7 +859,7 @@ difference_edge(the_image, out_image,
    *
    ***************************************************/
 
-contrast_edge(the_image, out_image,
+int contrast_edge(the_image, out_image,
               rows, cols, bits_per_pixel,
               threshold, high)
    int    high, threshold;
@@ -958,7 +868,7 @@ contrast_edge(the_image, out_image,
 {
    int ad, d;
    int a, b, absdiff, absmax, diff, i, j,
-       length, max, new_hi, new_low, 
+       length, max, new_hi, new_low,
        sum_d, sum_n, width;
 
    new_hi  = 250;
@@ -998,9 +908,9 @@ contrast_edge(the_image, out_image,
 
          out_image[i][j] = sum_n/d;
 
-         if(out_image[i][j] > max) 
+         if(out_image[i][j] > max)
             out_image[i][j] = max;
-         if(out_image[i][j] < 0) 
+         if(out_image[i][j] < 0)
             out_image[i][j] = 0;
 
 
@@ -1023,6 +933,7 @@ contrast_edge(the_image, out_image,
        }
    }  /* ends if threshold == 1 */
 
+return(1);
 } /* ends contrast_edge */
 
 
@@ -1041,7 +952,7 @@ contrast_edge(the_image, out_image,
      *
      *******************************************/
 
-range(the_image, out_image,
+int range(the_image, out_image,
       rows, cols, bits_per_pixel,
       size, threshold, high)
    int    high, threshold, size;
@@ -1112,6 +1023,7 @@ range(the_image, out_image,
 
    free(elements);
 
+return(1);
 }  /* ends range */
 
 
@@ -1123,13 +1035,13 @@ range(the_image, out_image,
    *   variance(...
    *
    *   This function replaces the pixel in the center
-   *   of a 3x3 area with the square root of the sum 
-   *   of squares of the differences between the 
+   *   of a 3x3 area with the square root of the sum
+   *   of squares of the differences between the
    *   center pixel and its eight neighbors.
    *
    ***************************************************/
 
-variance(the_image, out_image,
+int variance(the_image, out_image,
          rows, cols, bits_per_pixel,
          threshold, high)
    int    high, threshold;
@@ -1190,8 +1102,8 @@ variance(the_image, out_image,
        }
    }  /* ends if threshold == 1 */
 
+return(1);
 } /* ends variance */
-
 
 
 
@@ -1208,17 +1120,12 @@ variance(the_image, out_image,
     *       types of advanced edge detection.
     *
     *    External Calls:
-    *       wtiff.c - round_off_image_size
-    *                 create_file_if_needed
-    *                 write_array_into_tiff_image
-    *                 round_off_image_size
-    *       tiff.c - read_tiff_header
-    *       rtiff.c - read_tiff_image
-    *       numcvrt.c - get_integer
-    *       edge.c - fix_edges
+    *       none
     *
     *    Modifications:
     *       26 March 1991 - created
+    *       May 10, 1998 - modified routines to work
+    *           with an entire image in one array.
     *
     ***********************************************/
 
