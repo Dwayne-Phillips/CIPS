@@ -10,7 +10,7 @@
     *  Purpose:
     *     This file contains the main calling
     *     routine and subroutines to find
-    *     text on hidden top of an image.  
+    *     text on hidden top of an image.
     *
     *  External Calls:
     *     tiff.c - read_tiff_header
@@ -24,11 +24,16 @@
 
 #include "cips.h"
 
+int read_tiff_image();
+int read_tiff_header();
+int write_image_array();
+int write_array_into_tiff_image();
+int find_text();
 
 short the_image[ROWS][COLS];
 short out_image[ROWS][COLS];
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -46,7 +51,7 @@ main(argc, argv)
    if(argc < 3){
     printf("\n\nNot enough parameters:");
     printf("\n");
-    printf("\n   usage: hidet image-file text-file ");
+    printf("\n   usage: findt image-file text-file ");
     exit(0);
    }
 
@@ -72,7 +77,7 @@ gets(response);
 
          find_text(name, name2,
             the_image, out_image,
-            il+i*ROWS, ie+j*COLS, 
+            il+i*ROWS, ie+j*COLS,
             il+i*ROWS+ROWS, ie+j*COLS+COLS);
 
       } /* ends loop over j */
@@ -94,7 +99,7 @@ gets(response);
    *
    ***************************************************/
 
-find_text(factor, in1_name, in2_name, 
+int find_text(factor, in1_name, in2_name,
           the_image, out_image,
           il, ie, ll, le)
    char   in1_name[], in2_name[];
@@ -133,4 +138,5 @@ find_text(factor, in1_name, in2_name,
    write_array_into_tiff_image(in2_name, out_image,
                                il, ie, ll, le);
 
+return(1);
 } /* ends find_text */
