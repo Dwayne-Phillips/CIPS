@@ -25,10 +25,17 @@
    *
    *************************************************/
 
+int does_not_exist();
+int get_image_size();
+int create_allocate_tiff_file();
+int read_image_array();
+int write_image_array();
+int free_image_array();
+
 #include "cips.h"
 
 
-main(argc, argv)
+int main(argc, argv)
    int  argc;
    char *argv[];
 {
@@ -53,7 +60,7 @@ main(argc, argv)
    }
 
    cc = strstr(argv[1], ".bmp");
-   if(cc == NULL){  
+   if(cc == NULL){
       printf("\nERROR %s must be a bmp file",
              argv[1]);
     exit(0);
@@ -73,7 +80,7 @@ main(argc, argv)
    image_header.image_length   = l;
    image_header.image_width    = w;;
    image_header.strip_offset   = 1000;
-   create_allocate_tiff_file(argv[2], 
+   create_allocate_tiff_file(argv[2],
                              &image_header);
 
    read_image_array(argv[1], the_image);
