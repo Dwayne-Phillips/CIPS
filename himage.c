@@ -31,12 +31,23 @@
    *          7 Arpil 1992 - created
    *         15 August 1998 - modified to work with
    *              an entire image array at once.
-   *         22 September 1998 - modified to work with 
+   *         22 September 1998 - modified to work with
    *              all I O routines in imageio.c.
    *
    *************************************************/
 
 #include "cips.h"
+
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int create_allocate_bmp_file();
+int create_allocate_tiff_file();
+int calculate_histogram();
+
 
 #define W    300
 #define L    300
@@ -129,7 +140,7 @@ int main(argc, argv)
       image_header.image_length   = l;
       image_header.image_width    = w;;
       image_header.strip_offset   = 1000;
-      create_allocate_tiff_file(argv[2], 
+      create_allocate_tiff_file(argv[2],
                                 &image_header);
    }  /* ends tif */
 
@@ -138,8 +149,8 @@ int main(argc, argv)
       ok = 1;
       bmheader.height = l;
       bmheader.width  = w;
-      create_allocate_bmp_file(argv[2], 
-                               &bmp_file_header, 
+      create_allocate_bmp_file(argv[2],
+                               &bmp_file_header,
                                &bmheader);
    }  /* ends tif */
 
@@ -159,7 +170,7 @@ int main(argc, argv)
 
    for(i=0; i<GRAY_LEVELS+1; i++) histogram[i] = 0;
 
-   calculate_histogram(image, histogram, 
+   calculate_histogram(image, histogram,
                        length, width);
 
 
@@ -194,6 +205,3 @@ int main(argc, argv)
    free_image_array(hist, l);
 
 }  /* ends main */
-
-
-
