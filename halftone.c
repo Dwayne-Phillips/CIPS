@@ -8,7 +8,7 @@
    *
    *   Purpose:
    *      This file contains the main calling
-   *      routine that performs histogram 
+   *      routine that performs histogram
    *      equalization.
    *
    *   External Calls:
@@ -22,14 +22,22 @@
    *      ht.c - half_tone
    *
    *   Modifications:
-   *     30 September 1998 - created to work with 
+   *     30 September 1998 - created to work with
    *         all I O routines in imageio.c.
    *
    *************************************************/
 
 #include "cips.h"
 
-main(argc, argv)
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int half_tone();
+
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -40,7 +48,7 @@ main(argc, argv)
    short **the_image, **out_image;
    short threshold;
 
-   
+
       /******************************************
       *
       *   Ensure the command line is correct.
@@ -49,19 +57,19 @@ main(argc, argv)
 
    if(argc != 4){
     printf(
-    "\nusage: halftone input-image output-image threshold");
+    "\nusage: halftone input-image output-image threshold\n");
     exit(0);
    }
 
    strcpy(in_name,  argv[1]);
    strcpy(out_name, argv[2]);
    threshold = atoi(argv[3]);
-   
+
       /******************************************
       *
       *   Ensure the input image exists.
       *   Create the output image file.
-      *   Allocate an image array, read the input 
+      *   Allocate an image array, read the input
       *   image, half_tone it, and write
       *   the result.
       *
