@@ -27,8 +27,16 @@
 
 #include "cips.h"
 
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int create_allocate_bmp_file();
 
-main(argc, argv)
+
+int main(argc, argv)
    int  argc;
    char *argv[];
 {
@@ -53,7 +61,7 @@ main(argc, argv)
    }
 
    cc = strstr(argv[1], ".tif");
-   if(cc == NULL){  
+   if(cc == NULL){
       printf("\nERROR %s must be a tiff file",
              argv[1]);
     exit(0);
@@ -70,8 +78,8 @@ main(argc, argv)
    the_image       = allocate_image_array(l, w);
    bmheader.height = l;
    bmheader.width  = w;
-   create_allocate_bmp_file(argv[2], 
-                            &bmp_file_header, 
+   create_allocate_bmp_file(argv[2],
+                            &bmp_file_header,
                             &bmheader);
 
    read_image_array(argv[1], the_image);
