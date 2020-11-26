@@ -2,14 +2,14 @@
 
 #include <stdio.h>
 
-main()
+int main()
 {
    char buffer[80];
-   printf("\nSILLY hello out there"); 
-   
+   printf("\nSILLY hello out there");
+
    printf("\nEnter your name:");
    gets(buffer);
-   printf("\n\nyou entered>>%s<<\n", buffer);  
+   printf("\n\nyou entered>>%s<<\n", buffer);
 
 /******
    hello2();
@@ -17,4 +17,4 @@ main()
 ******/
 
    return(0);
-}  
+}
