@@ -13,7 +13,7 @@
     *          transform on a 3D image.
     *
     *       External Calls:
-    *          imageio.c 
+    *          imageio.c
     *             create_resized_image_file
     *             read_image_array
     *             write_image_array
@@ -33,24 +33,34 @@
 #define MOREROWS 100
 #define DEGREESPERRADIAN 57.29577952
 
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int create_resized_image_file();
+int lineup();
+
+
 short **the_image;
 short **out_image;
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
-   char in_name[MAX_NAME_LENGTH], 
+   char in_name[MAX_NAME_LENGTH],
         out_name[MAX_NAME_LENGTH];
    double tantheta, cosa, cosb, sina, sinb;
    float scale;
-   int  alpha, beta, col0, 
-        i, ii, j, jj, 
+   int  alpha, beta, col0,
+        i, ii, j, jj,
         row0, space, value;
    long length1, length2, width1, width2;
    short height, max;
 
-      /* Check the command line and obtain 
+      /* Check the command line and obtain
          the parameters. */
 
    if(argc != 7){
@@ -61,7 +71,7 @@ main(argc, argv)
      "\n    beta is angle up from horizontal"
      "\n    space is spacing to draw lines on output"
      "\n    value = 0 use black dots on top of image"
-     "\n    value = 1 use actual image values");
+     "\n    value = 1 use actual image values\n");
     exit(0);
    }
 
@@ -88,23 +98,23 @@ main(argc, argv)
    sinb = sin((double)(beta)/DEGREESPERRADIAN);
    cosb = cos((double)(beta)/DEGREESPERRADIAN);
 
-      /* get size of input file and calculate size 
-         of output file.  output file will depend 
+      /* get size of input file and calculate size
+         of output file.  output file will depend
          on the angle theta */
 
    get_image_size(in_name, &length1, &width1);
-   length2 = (double)(width1)*sinb + 
-             (double)(length1)*sina + 
+   length2 = (double)(width1)*sinb +
+             (double)(length1)*sina +
              MOREROWS + MOREROWS;
-   width2  = (double)(width1)*cosb + 
+   width2  = (double)(width1)*cosb +
              (double)(length1)*cosa;
 
-   row0 = MOREROWS/2 + 
-          MOREROWS + 
+   row0 = MOREROWS/2 +
+          MOREROWS +
           (double)(width1)*sinb;
    col0 = 0;
-   
-   create_resized_image_file(in_name, out_name, 
+
+   create_resized_image_file(in_name, out_name,
                              length2, width2);
 
       /* allocate the image arrays */
@@ -148,11 +158,11 @@ main(argc, argv)
       for(j=0; j<width1; j++){
 
          if(i%space == 0){
-            ii = row0 + 
-                 (double)(i)*sina - 
+            ii = row0 +
+                 (double)(i)*sina -
                  (double)(j)*sinb;
-            jj = col0 + 
-                 (double)(i)*cosa + 
+            jj = col0 +
+                 (double)(i)*cosa +
                  (double)(j)*cosb;
 
             out_image[ii][jj] = the_image[i][j];
@@ -162,7 +172,7 @@ main(argc, argv)
             if(value == 0)
                out_image[ii-height][jj] = 0;
             else
-               out_image[ii-height][jj] = 
+               out_image[ii-height][jj] =
                   the_image[i][j];
          }  /* ends if j mod space */
 
@@ -177,14 +187,12 @@ main(argc, argv)
 
 
 
-lineup(image, start_row, end_row, column)
+int lineup(image, start_row, end_row, column)
    int   start_row, end_row, column;
    short **image;
 {
-   int i; 
+   int i;
    for(i=start_row; i>end_row; i--)
       image[i][column] = FILL2;
+return(1);
 }  /* ends lineup */
-
-
-
