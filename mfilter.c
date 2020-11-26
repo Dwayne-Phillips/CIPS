@@ -29,7 +29,7 @@
        *      15 February 1992 - created
        *      01 January 1993 - added calls to
        *          high_pixel and low_pixel.
-       *      18 September 1998 - modified to work with 
+       *      18 September 1998 - modified to work with
        *           all I O routines in imageio.c.
        *
        ***********************************************/
@@ -38,6 +38,17 @@
 
 #include "cips.h"
 
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int get_bitsperpixel();
+int filter_image();
+int high_pixel();
+int low_pixel();
+int median_filter();
 
 int main(argc, argv)
    int argc;
@@ -50,7 +61,7 @@ int main(argc, argv)
    long     bits_per_pixel, length, width;
    short    **the_image, **out_image, filter[3][3];
 
-   
+
       /******************************************
       *
       *   Ensure the command line is correct.
@@ -77,7 +88,7 @@ int main(argc, argv)
     "\n H -  2"
     "\n H -  3"
     "\n Using the High-Low-Median type requirs entering "
-    "\n the size of the filtered area 3 (3x3) 5, 7, 9, etc.");
+    "\n the size of the filtered area 3 (3x3) 5, 7, 9, etc.\n");
     exit(0);
    }
 
@@ -89,7 +100,7 @@ int main(argc, argv)
              name1);
       exit(0);
    }  /* ends if does_not_exist */
-   
+
       /******************************************
       *
       *   Read the input image header, allocate
@@ -104,7 +115,7 @@ int main(argc, argv)
    the_image = allocate_image_array(length, width);
    out_image = allocate_image_array(length, width);
    read_image_array(name1, the_image);
-   
+
       /******************************************
       *
       *   Call the proper image filter function
@@ -114,7 +125,7 @@ int main(argc, argv)
 
 
      /* General filtering case */
-   if(argc == 6){  
+   if(argc == 6){
       strcpy(low_high, argv[4]);
       type = atoi(argv[5]);
       filter_image(the_image, out_image,
@@ -126,24 +137,24 @@ int main(argc, argv)
 
 
      /* High, Low, and Median filtering cases */
-   if(argc == 5){  
+   if(argc == 5){
       strcpy(low_high, argv[3]);
       size = atoi(argv[4]);
       if(low_high[0] == 'h' || low_high[0] == 'H')
          high_pixel(the_image, out_image,
                     length,
                     width,
-                    size); 
+                    size);
       if(low_high[0] == 'l' || low_high[0] == 'L')
          low_pixel(the_image, out_image,
                    length,
                    width,
-                   size); 
+                   size);
       if(low_high[0] == 'm' || low_high[0] == 'M')
          median_filter(the_image, out_image,
                        length,
                        width,
-                       size); 
+                       size);
    }  /* ends if argc == 5 */
 
       /******************************************
