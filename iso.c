@@ -13,7 +13,7 @@
     *          where the vertical is angled.
     *
     *       External Calls:
-    *          imageio.c 
+    *          imageio.c
     *             create_resized_image_file
     *             read_image_array
     *             write_image_array
@@ -28,6 +28,16 @@
 
 #include "cips.h"
 
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int create_resized_image_file();
+int lineup();
+
+
 #define FILL     200
 #define FILL2    150
 #define MOREROWS 100
@@ -36,11 +46,11 @@
 short **the_image;
 short **out_image;
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
-   char in_name[MAX_NAME_LENGTH], 
+   char in_name[MAX_NAME_LENGTH],
         out_name[MAX_NAME_LENGTH];
    double tantheta;
    float scale;
@@ -50,7 +60,7 @@ main(argc, argv)
    long bigxshift, xshift;
    short height, max;
 
-      /* Check the command line and obtain 
+      /* Check the command line and obtain
          the parameters. */
 
    if(argc != 6){
@@ -60,7 +70,7 @@ main(argc, argv)
     "\n    (stay away from 90 degrees)"
     "\n    space is spacing to draw lines on output"
     "\n    value = 0 use black dots on top of image"
-    "\n    value = 1 use actual image values");
+    "\n    value = 1 use actual image values\n");
     exit(0);
    }
 
@@ -78,8 +88,8 @@ main(argc, argv)
       exit(0);
    }  /* ends if does_not_exist */
 
-      /* get size of input file and calculate size 
-         of output file.  output file will depend 
+      /* get size of input file and calculate size
+         of output file.  output file will depend
          on the angle theta */
 
    get_image_size(in_name, &length1, &width1);
@@ -88,8 +98,8 @@ main(argc, argv)
    if(bigxshift < 0) bigxshift  = bigxshift * (-1);
    length2 = length1 + MOREROWS + MOREROWS;
    width2  = width1 + bigxshift;
-   
-   create_resized_image_file(in_name, out_name, 
+
+   create_resized_image_file(in_name, out_name,
                              length2, width2);
 
       /* allocate the image arrays */
@@ -152,7 +162,7 @@ main(argc, argv)
             if(value == 0)
                out_image[ii-height][jj] = 0;
             else
-               out_image[ii-height][jj] = 
+               out_image[ii-height][jj] =
                   the_image[i][j];
          }  /* ends if j%space  */
 
@@ -168,14 +178,12 @@ main(argc, argv)
 
 
 
-lineup(image, start_row, end_row, column)
+int lineup(image, start_row, end_row, column)
    int   start_row, end_row, column;
    short **image;
 {
-   int i; 
+   int i;
    for(i=start_row; i>end_row; i--)
       image[i][column] = FILL2;
+return(1);
 }  /* ends lineup */
-
-
-
