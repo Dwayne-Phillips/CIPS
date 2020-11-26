@@ -1,4 +1,11 @@
 
+/*******************
+
+November 2020
+This was a test stuff. It is no
+longer needed.
+
+******************/
 
    /************************************************
    *
@@ -20,7 +27,7 @@
    *          7 Arpil 1992 - created
    *         15 August 1998 - modified to work with
    *              an entire image array at once.
-   *         18 September 1998 - modified to work with 
+   *         18 September 1998 - modified to work with
    *              all I O routines in imageio.c.
    *
    *************************************************/
