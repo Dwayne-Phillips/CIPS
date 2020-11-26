@@ -29,7 +29,7 @@
     *      4 December 1993 - created
     *     16 September 1998 - modified to work on entire
     *         images at one time.
-    *     22 September 1998 - modified to work with 
+    *     22 September 1998 - modified to work with
     *           all I O routines in imageio.c.
     *
     *********************************************/
@@ -38,10 +38,20 @@
 #define FILL 150
 
 
+int bilinear_interpolate();
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int create_resized_image_file();
+int stretch();
+
 short **the_image;
 short **out_image;
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -50,10 +60,10 @@ main(argc, argv)
 
    float    x_stretch, y_stretch;
 
-   int      bilinear; 
+   int      bilinear;
    long     tmp_length, tmp_width;
    long     length, width;
-   
+
    struct bmpfileheader      bmp_file_header;
    struct bitmapheader       bmheader;
    struct bitmapheader       bmheader2;
@@ -126,17 +136,17 @@ main(argc, argv)
      *
      *   stretch(..
      *
-     *   This routine performs the image 
-     *   stretching. If bilinear == 0, it uses 
-     *   the roundoff approach for enlarging 
-     *   an area. If bilinear == 1, it calls the 
-     *   bilinear_interpolate routine to get 
-     *   the value of a pixel that lies 
+     *   This routine performs the image
+     *   stretching. If bilinear == 0, it uses
+     *   the roundoff approach for enlarging
+     *   an area. If bilinear == 1, it calls the
+     *   bilinear_interpolate routine to get
+     *   the value of a pixel that lies
      *   between pixels.
      *
      ********************************************/
 
-stretch(the_image, out_image,
+int stretch(the_image, out_image,
         x_stretch, y_stretch,
         bilinear,
         out_rows, out_cols,
@@ -192,6 +202,5 @@ stretch(the_image, out_image,
 
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+return(1);
 }  /* ends stretch */
-
