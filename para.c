@@ -15,7 +15,7 @@
       The input is just text.  Paragraphs are delimited
       by having a blank line between them.
 
-      This program borrows from the pageit program.  
+      This program borrows from the pageit program.
       Pageit formatted text to be printed.
 
       Para formats text for another file with no page
@@ -26,16 +26,16 @@
       and (2) the output file.
 
       Input File
-         The input file is unformatted ASCII text 
-         created with vi or something simple like 
-         that.  The lines can be as long or short 
-         as you want (so long as they fit on the 
-         screen of course).  The separate paragraphs, 
+         The input file is unformatted ASCII text
+         created with vi or something simple like
+         that.  The lines can be as long or short
+         as you want (so long as they fit on the
+         screen of course).  The separate paragraphs,
          leave a blank line.
 
       Output File
-         The output file is also ASCII text.  
-         Instead of ragged text, the lines all fit 
+         The output file is also ASCII text.
+         Instead of ragged text, the lines all fit
          There are no pages.  The text flows from
          para to para with a blank line between.
 
@@ -50,15 +50,15 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
+/** #include <malloc.h> **/
 #include <string.h>
 
 #define L              100
 #define LPP             66
 #define CPL             85
 #define FOOTER           5
-#define LEFT_MARGIN      0 
-#define RIGHT_MARGIN    20 
+#define LEFT_MARGIN      0
+#define RIGHT_MARGIN    20
 #define END_OF_LIST   0x00
 #define SPACE          ' '
 #define VERSION    "Para Version 1 - January 1999"
@@ -83,7 +83,7 @@ void   fill_string(char *, int, char);
 void   output_line(char *, FILE *);
 struct word_list_struct * read_a_paragraph(FILE *,
                                            int *);
-struct line_list_struct * read_the_lines(FILE *, 
+struct line_list_struct * read_the_lines(FILE *,
                                          int *);
 void   write_a_paragraph(struct word_list_struct *,
                          FILE *);
@@ -91,7 +91,7 @@ void   write_a_paragraph(struct word_list_struct *,
 /*****************************************************/
 /*****************************************************/
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 
    char  in_file_name[L],
@@ -115,7 +115,7 @@ main(int argc, char *argv[])
    if(argc != 3){
    printf("\n\nusage: para in-file out-file ");
    printf(
-   "\n%s", VERSION);
+   "\n%s\n", VERSION);
       exit(1);
    }
 
@@ -152,7 +152,7 @@ main(int argc, char *argv[])
 /*****************************************************/
 /*****************************************************/
 
-/* 
+/*
    struct word_list_struct * convert_lines_to_words(...
 
 */
@@ -214,7 +214,7 @@ struct word_list_struct * convert_lines_to_words(
 
       if(first_time){
          first_time = 0;
-         new_word = (struct word_list_struct *) 
+         new_word = (struct word_list_struct *)
             calloc(1, sizeof(struct word_list_struct));
          strcpy(new_word->word, aword);
          new_word->next_word = END_OF_LIST;
@@ -223,7 +223,7 @@ struct word_list_struct * convert_lines_to_words(
       }  /* ends if first_time */
 
       else{  /* else not first_time */
-         new_word = (struct word_list_struct *) 
+         new_word = (struct word_list_struct *)
             calloc(1, sizeof(struct word_list_struct));
          strcpy(new_word->word, aword);
          new_word->next_word = END_OF_LIST;
@@ -237,39 +237,39 @@ struct word_list_struct * convert_lines_to_words(
    return(result);
 
 }  /* ends convert_lines_to_words */
-       
 
-
-
-/*****************************************************/
-/*****************************************************/
-
-       
 
 
 
 /*****************************************************/
 /*****************************************************/
 
-/* 
+
+
+
+
+/*****************************************************/
+/*****************************************************/
+
+/*
    void fill_string(...
 */
 
-void fill_string(char *string, int size, 
+void fill_string(char *string, int size,
                  char fill_char)
 {
    int i;
    for(i=0; i<size; i++)
       string[i] = fill_char;
 }  /* ends fill_string */
-       
+
 
 
 
 /*****************************************************/
 /*****************************************************/
 
-/* 
+/*
 struct line_list_struct * read_the_lines(...
         FILE *, int *);
 */
@@ -292,7 +292,7 @@ struct line_list_struct * read_the_lines(
       }  /* ends if fgets is NULL */
 
       if(first_pass){
-         new_one = (struct line_list_struct *) 
+         new_one = (struct line_list_struct *)
            calloc(1, sizeof(struct line_list_struct));
          temp               = new_one;
          result             = new_one;
@@ -302,7 +302,7 @@ struct line_list_struct * read_the_lines(
       }  /* ends if first_pass */
 
       else{  /* else not first_pass */
-         new_one = (struct line_list_struct *) 
+         new_one = (struct line_list_struct *)
            calloc(1, sizeof(struct line_list_struct));
          temp->next_line    = new_one;
          temp               = new_one;
@@ -326,7 +326,7 @@ struct line_list_struct * read_the_lines(
 /*****************************************************/
 /*****************************************************/
 
-/* 
+/*
    struct word_list_struct * read_a_paragraph(...
 */
 
@@ -350,7 +350,7 @@ struct word_list_struct * read_a_paragraph(
 /*****************************************************/
 /*****************************************************/
 
-/* 
+/*
    void write_a_paragraph(...
 
    traversing_list == 0 means this is the last word
@@ -437,7 +437,7 @@ void write_a_paragraph(
       }  /* ends 1 1 */
 
    }  /* ends while traversing_list */
-   
+
    fill_string(line, L, '\0');
    fill_string(line, LEFT_MARGIN, SPACE);
    strcat(line, "\n");
@@ -451,11 +451,11 @@ void write_a_paragraph(
 /*****************************************************/
 /*****************************************************/
 
-/* 
+/*
    void output_line(...
 */
 
-void output_line(char *line, 
+void output_line(char *line,
                  FILE *output_file)
 {
    fputs(line, output_file);
