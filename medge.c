@@ -10,7 +10,7 @@
    *
    *   Purpose:
    *      This file contains the main calling
-   *      routine that performs edge 
+   *      routine that performs edge
    *      detection.
    *
    *   External Calls:
@@ -20,24 +20,24 @@
    *                  get_image_size
    *                  allocate_image_array
    *                  free_image_array
-   *      edge.c - 
+   *      edge.c -
    *          detect_edges
    *          setup_masks
    *          get_edge_options
    *          perform_convolution
    *          quick_edge
-   *      edge2.c - 
+   *      edge2.c -
    *          homogeneity
    *          difference_edge
    *          contrast_edge
    *          range
    *          variance
-   *      edge3.c - 
+   *      edge3.c -
    *          gaussian_edge
    *          enhance_edges
    *
    *   Modifications:
-   *     18 September 1998 - created to work with 
+   *     18 September 1998 - created to work with
    *           all I O routines in imageio.c.
    *
    *************************************************/
@@ -45,6 +45,24 @@
 
 
 #include "cips.h"
+
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int get_bitsperpixel();
+int show_edge_usage();
+int quick_edge();
+int perform_convolution();
+int homogeneity();
+int difference_edge();
+int contrast_edge();
+int range();
+int variance();
+int gaussian_edge();
+int enhance_edges();
 
 
 int main(argc, argv)
@@ -60,7 +78,7 @@ int main(argc, argv)
    short **the_image, **out_image;
    struct   tiff_header_struct image_header;
 
-   
+
       /******************************************
       *
       *   Ensure the command line is correct.
@@ -93,7 +111,7 @@ int main(argc, argv)
       high      = atoi(argv[5]);
       quick_edge(the_image, out_image,
                  threshold, high,
-                 height, width, 
+                 height, width,
                  bits_per_pixel);
    }  /* ends if q */
 
@@ -104,7 +122,7 @@ int main(argc, argv)
       perform_convolution(
                  the_image, out_image,
                  type, threshold,
-                 height, width, 
+                 height, width,
                  bits_per_pixel, high);
    }  /* ends if b */
 
@@ -112,7 +130,7 @@ int main(argc, argv)
       threshold = atoi(argv[4]);
       high      = atoi(argv[5]);
       homogeneity(the_image, out_image,
-                  height, width, 
+                  height, width,
                   bits_per_pixel,
                   threshold, high);
    }  /* ends if h */
@@ -121,7 +139,7 @@ int main(argc, argv)
       threshold = atoi(argv[4]);
       high      = atoi(argv[5]);
       difference_edge(the_image, out_image,
-                      height, width, 
+                      height, width,
                       bits_per_pixel,
                       threshold, high);
    }  /* ends if d */
@@ -130,7 +148,7 @@ int main(argc, argv)
       threshold = atoi(argv[4]);
       high      = atoi(argv[5]);
       contrast_edge(the_image, out_image,
-                    height, width, 
+                    height, width,
                     bits_per_pixel,
                     threshold, high);
    }  /* ends if c */
@@ -140,7 +158,7 @@ int main(argc, argv)
       high      = atoi(argv[5]);
       size      = atoi(argv[6]);
       range(the_image, out_image,
-            height, width, 
+            height, width,
             bits_per_pixel,
             size, threshold, high);
    }  /* ends if r */
@@ -149,7 +167,7 @@ int main(argc, argv)
       threshold = atoi(argv[4]);
       high      = atoi(argv[5]);
       variance(the_image, out_image,
-               height, width, 
+               height, width,
                bits_per_pixel,
                threshold, high);
    }  /* ends if v */
@@ -159,7 +177,7 @@ int main(argc, argv)
       high      = atoi(argv[5]);
       size      = atoi(argv[6]);
       gaussian_edge(the_image, out_image,
-               height, width, 
+               height, width,
                bits_per_pixel,
                size, threshold, high);
    }  /* ends if g */
@@ -167,7 +185,7 @@ int main(argc, argv)
    if(argv[1][0] == 'e' || argv[1][0] == 'E'){
       high      = atoi(argv[4]);
       enhance_edges(the_image, out_image,
-               height, width, 
+               height, width,
                bits_per_pixel, high);
    }  /* ends if q */
 
@@ -178,7 +196,7 @@ int main(argc, argv)
 }  /* ends main */
 
 
-show_edge_usage()
+int show_edge_usage()
 {
 printf("\nusage of medge"
 "\n  Quick edge detector"
@@ -200,4 +218,5 @@ printf("\nusage of medge"
 "\n  Enhance edges"
 "\nmedge E in-file out-file high "
 "\n");
+return(1);
 }  /* ends show_edge_usage */
