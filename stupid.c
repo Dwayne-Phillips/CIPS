@@ -1,4 +1,12 @@
 
+/**************************
+
+November 2020
+This file contained segments of code
+for testing. It does not compile
+and that is okay.
+
+**************************/
 
 /* silly change */
 /* another silly change */
@@ -33,7 +41,7 @@ read_tiff_image(image_file_name, the_image)
 }  /*  ends read_tiff_image */
 
 
-read_line(image_file, the_image, line_number, 
+read_line(image_file, the_image, line_number,
           image_header, ie, le)
    FILE   *image_file;
    int    ie, le, line_number;
@@ -67,7 +75,7 @@ create_file_if_needed(in_name, out_name, out_image)
 
 
 
-create_allocate_tiff_file(file_name, 
+create_allocate_tiff_file(file_name,
                           image_header)
    char   file_name[];
    struct tiff_header_struct *image_header;
@@ -84,7 +92,7 @@ write_tiff_image(image_file_name, array)
 }  /*  ends write_tiff_image */
 
 
-write_line(image_file, array, line_number, 
+write_line(image_file, array, line_number,
            image_header, ie, le)
    FILE   *image_file;
    int    ie, le, line_number;
@@ -276,4 +284,3 @@ int are_not_same_size(file1, file2)
    char *file1, *file2;
 {
 }  /* ends are_not_same_size */
-
