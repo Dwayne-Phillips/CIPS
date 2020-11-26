@@ -35,11 +35,11 @@ correctly
       and (2) the output file.
 
       Input File
-         The input file is unformatted ASCII text 
-         created with vi or something simple like 
-         that.  The lines can be as long or short 
-         as you want (so long as they fit on the 
-         screen of course).  
+         The input file is unformatted ASCII text
+         created with vi or something simple like
+         that.  The lines can be as long or short
+         as you want (so long as they fit on the
+         screen of course).
 
          The formatting commands are:
          <START> start of a record
@@ -54,25 +54,25 @@ correctly
          <PM>  publication month
          <R> read date
          <E> emphasize this line
-         .  level of indent 
-         # a period at the start shows the level 
+         .  level of indent
+         # a period at the start shows the level
          # of the statement
-         # one period is first level, two periods 
+         # one period is first level, two periods
          # is second level etc.
-         # 
-         # If a line does not begin with a special character, 
+         #
+         # If a line does not begin with a special character,
          # it is a continuation
          # of the previous line.
          #
-         <END> 
+         <END>
 
       Output File
-         The output file is paginated ASCII text.  
-         Instead of ragged text, the lines all fit 
-         inside a formatted line.  Each page has a 
-         header and footer.  The header may have a 
-         heading title, date, and page number.  
-         The user chooses to have or not have these 
+         The output file is paginated ASCII text.
+         Instead of ragged text, the lines all fit
+         inside a formatted line.  Each page has a
+         header and footer.  The header may have a
+         heading title, date, and page number.
+         The user chooses to have or not have these
          via the command line.
 
    Revision History:
@@ -87,15 +87,15 @@ correctly
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
+/** #include <malloc.h> **/
 #include <string.h>
 
 #define L              100
 #define LPP             66
 #define CPL             85
 #define FOOTER           5
-#define LEFT_MARGIN     10 
-#define RIGHT_MARGIN     5 
+#define LEFT_MARGIN     10
+#define RIGHT_MARGIN     5
 #define END_OF_LIST   0x00
 #define SPACE          ' '
 #define VERSION    "kf Version 1 - December 1999"
@@ -121,23 +121,23 @@ int    number_of_indent_levels(char *);
 void   fill_page(FILE *, int *, int *);
 void   fill_string(char *, int, char);
 int    lpp(int, int);
-void   output_line(char *, FILE *, int *, int *, 
+void   output_line(char *, FILE *, int *, int *,
                    char *, int, int, int);
-void   print_report_header(FILE *, int *, int *, 
+void   print_report_header(FILE *, int *, int *,
                    char *, int, int);
 struct word_list_struct * read_a_paragraph(FILE *,
                                            int *);
-struct line_list_struct * read_the_lines(FILE *, 
+struct line_list_struct * read_the_lines(FILE *,
                                          int *);
-struct line_list_struct * read_a_record(FILE *, 
+struct line_list_struct * read_a_record(FILE *,
                                         int *);
 void   traverse_line_list(struct line_list_struct *);
 void   traverse_word_list(struct word_list_struct *);
 void   write_a_paragraph(struct word_list_struct *,
-                         FILE *, int *, int *, 
+                         FILE *, int *, int *,
                          char *, int, int, int);
 void   write_a_record(struct line_list_struct *,
-                      FILE *, int *, int *, 
+                      FILE *, int *, int *,
                       char *, int, int, int);
 
 void   strip_characters(char *, char *);
@@ -145,7 +145,7 @@ void   strip_characters(char *, char *);
 /**************************************************/
 /**************************************************/
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 
    char  in_file_name[L],
@@ -178,7 +178,7 @@ main(int argc, char *argv[])
    "\n         -t ... = put the following title in the header",
    LPP);
    printf(
-   "\n%s", VERSION);
+   "\n%s\n", VERSION);
       exit(1);
    }
 
@@ -234,8 +234,8 @@ main(int argc, char *argv[])
       exit(2);
    }
 
-   print_report_header(out_file, &line_counter, 
-                       &page_counter, title, 
+   print_report_header(out_file, &line_counter,
+                       &page_counter, title,
                        print_date, print_page);
    while(file_done == 0){
       line_list = read_a_record(in_file, &file_done);
@@ -259,12 +259,12 @@ main(int argc, char *argv[])
 /**************************************************/
 /**************************************************/
 
-/* 
+/*
    struct word_list_struct * convert_lines_to_words(...
 
 */
 
-       
+
 struct word_list_struct * convert_lines_to_words(
        struct line_list_struct *line_list)
 {
@@ -332,7 +332,7 @@ struct word_list_struct * convert_lines_to_words(
 
       if(first_time){
          first_time = 0;
-         new_word = (struct word_list_struct *) 
+         new_word = (struct word_list_struct *)
             calloc(1, sizeof(struct word_list_struct));
          strcpy(new_word->word, aword);
          new_word->next_word = END_OF_LIST;
@@ -341,7 +341,7 @@ struct word_list_struct * convert_lines_to_words(
       }  /* ends if first_time */
 
       else{  /* else not first_time */
-         new_word = (struct word_list_struct *) 
+         new_word = (struct word_list_struct *)
             calloc(1, sizeof(struct word_list_struct));
          strcpy(new_word->word, aword);
          new_word->next_word = END_OF_LIST;
@@ -361,16 +361,16 @@ struct word_list_struct * convert_lines_to_words(
 /**************************************************/
 /**************************************************/
 
-/* 
+/*
    int lpp(...
 
    This routine returns the number of lines per page.
-   This is my first use of a static variable.  
+   This is my first use of a static variable.
    The first call to this routine sets the static
-   result to the value given.  All other calls to 
-   the routine have the set parameter equal to zero.  
-   In those cases the result does not change, it 
-   remains what it was in the first call, and is 
+   result to the value given.  All other calls to
+   the routine have the set parameter equal to zero.
+   In those cases the result does not change, it
+   remains what it was in the first call, and is
    returned as such.
 */
 
@@ -381,32 +381,32 @@ int lpp(int lines_per_page, int set)
       result = lines_per_page;
    return(result);
 }  /* ends lpp */
-       
+
 
 
 
 /**************************************************/
 /**************************************************/
 
-/* 
+/*
    void fill_string(...
 */
 
-void fill_string(char *string, int size, 
+void fill_string(char *string, int size,
                  char fill_char)
 {
    int i;
    for(i=0; i<size; i++)
       string[i] = fill_char;
 }  /* ends fill_string */
-       
+
 
 
 
 /**************************************************/
 /**************************************************/
 
-/* 
+/*
 struct line_list_struct * read_the_lines(...
         FILE *, int *);
 
@@ -432,7 +432,7 @@ struct line_list_struct * read_the_lines(
       }  /* ends if fgets is NULL */
 
       if(first_pass){
-         new_one = (struct line_list_struct *) 
+         new_one = (struct line_list_struct *)
            calloc(1, sizeof(struct line_list_struct));
          temp               = new_one;
          result             = new_one;
@@ -443,7 +443,7 @@ struct line_list_struct * read_the_lines(
       }  /* ends if first_pass */
 
       else{  /* else not first_pass */
-         new_one = (struct line_list_struct *) 
+         new_one = (struct line_list_struct *)
            calloc(1, sizeof(struct line_list_struct));
          temp->next_line    = new_one;
          temp               = new_one;
@@ -460,7 +460,7 @@ struct line_list_struct * read_the_lines(
    until it finds a blank line that is the quit signal.
    The quit signal comes after reading the lines.
    BUT WE want the quit signal (a new para marker) to
-   come at the start of a new paragraph.  If I 
+   come at the start of a new paragraph.  If I
    read the first line of the new para I will lose it.
    So how do I know that the next para is starting
    without reading that line??????? 19 Dec 99
@@ -484,7 +484,7 @@ struct line_list_struct * read_the_lines(
 /**************************************************/
 /**************************************************/
 
-/* 
+/*
    struct word_list_struct * read_a_paragraph(...
 */
 
@@ -508,7 +508,7 @@ struct word_list_struct * read_a_paragraph(
 /**************************************************/
 /**************************************************/
 
-/* 
+/*
    void write_a_paragraph(...
 
    traversing_list == 0 means this is the last word
@@ -539,9 +539,9 @@ struct word_list_struct * read_a_paragraph(
 
 void write_a_paragraph(
                 struct word_list_struct *word_list,
-                FILE *output_file, 
-                int *line_counter, 
-                int *page_counter, 
+                FILE *output_file,
+                int *line_counter,
+                int *page_counter,
                 char *title,
                 int  print_date,
                 int  print_page,
@@ -588,8 +588,8 @@ gets(response);
 /*printf("\nTHE LINE IS %s",line);*/
          strip_characters(line, line2);
          add_indents(line2, spaces);
-         output_line(line2, output_file, 
-                     line_counter, page_counter, 
+         output_line(line2, output_file,
+                     line_counter, page_counter,
                      title, print_date, print_page,
                      double_space);
       }  /* ends if 0 0 */
@@ -598,8 +598,8 @@ gets(response);
          strcat(line, "\n");
          strip_characters(line, line2);
          add_indents(line2, spaces);
-         output_line(line2, output_file, 
-                     line_counter, page_counter, 
+         output_line(line2, output_file,
+                     line_counter, page_counter,
                      title, print_date, print_page,
                      double_space);
          fill_string(line, L, '\0');
@@ -607,8 +607,8 @@ gets(response);
          strcat(line, "\n");
          strip_characters(line, line2);
          add_indents(line2, spaces);
-         output_line(line2, output_file, 
-                     line_counter, page_counter, 
+         output_line(line2, output_file,
+                     line_counter, page_counter,
                      title, print_date, print_page,
                      double_space);
       }  /* ends 0 1 */
@@ -624,15 +624,15 @@ gets(response);
 
       if(traversing_list == 1 && too_long == 1){
 /************
-printf("\nTRAVERSING AND LINE TOO LONG");      
+printf("\nTRAVERSING AND LINE TOO LONG");
 printf("\nLINE IS:%s",line);
 printf("\nLINE2 IS:%s",line2);
 **************/
          strcat(line, "\n");
          strip_characters(line, line2);
          add_indents(line2, spaces);
-         output_line(line2, output_file, 
-                     line_counter, page_counter, 
+         output_line(line2, output_file,
+                     line_counter, page_counter,
                      title, print_date, print_page,
                      double_space);
          fill_string(line, L, '\0');
@@ -655,15 +655,15 @@ gets(response);
 /**************************************************/
 /**************************************************/
 
-/* 
+/*
    void output_line(...
 */
 
-void output_line(char *line, 
-                 FILE *output_file, 
-                 int  *line_counter, 
+void output_line(char *line,
+                 FILE *output_file,
+                 int  *line_counter,
                  int  *page_counter,
-                 char *title, 
+                 char *title,
                  int  print_date,
                  int  print_page,
                  int  double_space)
@@ -706,12 +706,12 @@ void output_line(char *line,
 /**************************************************/
 /**************************************************/
 
-/* 
+/*
    void fill_page(...
 */
 
 void fill_page(FILE *file_pointer,
-               int *line_counter, 
+               int *line_counter,
                int *page_counter)
 {
    char temp[L];
@@ -743,7 +743,7 @@ void fill_page(FILE *file_pointer,
 /**************************************************/
 /**************************************************/
 
-/* 
+/*
    void print_header(...
 */
 
@@ -842,7 +842,7 @@ void print_report_header(FILE *file_pointer,
 /**************************************************/
 /**************************************************/
 
-/* 
+/*
    void strip_characters(...
 */
 
@@ -871,7 +871,7 @@ void strip_characters(char *input, char *output)
          }
       }  /* ends loop over i */
    }  /* period case */
-   
+
    if(input[0] == '<'){
       not_yet = 1;
       j = 0;
@@ -886,20 +886,20 @@ void strip_characters(char *input, char *output)
    }  /* < case */
 
 }  /* ends strip_characters */
-       
+
 
 
 
 /***********************************************/
 /***********************************************/
 
-/* 
+/*
 struct line_list_struct * read_a_record(...
         FILE *, int *);
 
 Read until hitting <START>.
 Do not put the <START> line in the list of lines.
-Put all the lines in the line list until 
+Put all the lines in the line list until
    hitting <END>
 Do not put the <END> line in the list of lines.
 */
@@ -940,7 +940,7 @@ struct line_list_struct * read_a_record(
       else{ /* not END so process line */
 
          if(first_pass){
-            new_one = (struct line_list_struct *) 
+            new_one = (struct line_list_struct *)
               calloc(1, sizeof(struct line_list_struct));
             temp               = new_one;
             result             = new_one;
@@ -949,9 +949,9 @@ struct line_list_struct * read_a_record(
             strcpy(new_one->line, aline);
 /*printf("\nput this line in the list\n%s\n", aline);*/
          }  /* ends if first_pass */
-   
+
          else{  /* else not first_pass */
-            new_one = (struct line_list_struct *) 
+            new_one = (struct line_list_struct *)
               calloc(1, sizeof(struct line_list_struct));
             temp->next_line    = new_one;
             temp               = new_one;
@@ -961,7 +961,7 @@ struct line_list_struct * read_a_record(
          }  /* ends else not first_pass */
 
       }  /* ends else not END */
-   
+
    }  /* ends while reading */
 
    return(result);
@@ -974,7 +974,7 @@ struct line_list_struct * read_a_record(
 /***********************************************/
 /***********************************************/
 
-/* 
+/*
 
 void   traverse_line_list(struct line_list_struct *)
 
@@ -997,7 +997,7 @@ void   traverse_line_list(struct line_list_struct *this_list)
 /***********************************************/
 /***********************************************/
 
-/* 
+/*
 
 void   traverse_word_list(struct word_list_struct *)
 
@@ -1020,7 +1020,7 @@ void   traverse_word_list(struct word_list_struct *this_list)
 /**************************************************/
 /**************************************************/
 
-/* 
+/*
    void write_a_record(...
 
    traversing_list == 0 means this is the last word
@@ -1051,9 +1051,9 @@ void   traverse_word_list(struct word_list_struct *this_list)
 
 void write_a_record(
                 struct line_list_struct *line_list,
-                FILE *out_file, 
-                int *line_counter, 
-                int *page_counter, 
+                FILE *out_file,
+                int *line_counter,
+                int *page_counter,
                 char *title,
                 int  print_date,
                 int  print_page,
@@ -1078,7 +1078,7 @@ void write_a_record(
    the_next_line = line_list;
 
    while(temp != END_OF_LIST){
-      
+
       /****************************
       if(temp->line[0] == '\n'   ||
          temp->line[0] == ' '    ||
@@ -1149,16 +1149,16 @@ void write_a_record(
       /* put a few blank lines after each record */
    fill_string(line, L, '\0');
    strcat(line, "\n");
-   output_line(line, out_file, 
-               line_counter, page_counter, 
+   output_line(line, out_file,
+               line_counter, page_counter,
                title, print_date, print_page,
                double_space);
-   output_line(line, out_file, 
-               line_counter, page_counter, 
+   output_line(line, out_file,
+               line_counter, page_counter,
                title, print_date, print_page,
                double_space);
-   output_line(line, out_file, 
-               line_counter, page_counter, 
+   output_line(line, out_file,
+               line_counter, page_counter,
                title, print_date, print_page,
                double_space);
 
@@ -1172,9 +1172,9 @@ void write_a_record(
 
 int number_of_indent_levels(char *line)
 {
-   int i, 
+   int i,
        result = 0;
- 
+
    for(i=0; i<L; i++){
       if(line[i] == '.')
          result++;
@@ -1192,7 +1192,7 @@ int number_of_indent_levels(char *line)
 
 void add_indents(char *line, int spaces)
 {
-   int i, 
+   int i,
        result = 0;
    char temp[L];
 
@@ -1204,5 +1204,5 @@ void add_indents(char *line, int spaces)
 
    for(i=0; i<L; i++)
       line[i] = temp[i];
- 
+
 }  /* ends add_indents */
