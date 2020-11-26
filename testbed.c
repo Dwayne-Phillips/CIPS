@@ -10,7 +10,7 @@
    *
    *   Purpose:
    *      This file contains the main calling
-   *      routine that performs histogram 
+   *      routine that performs histogram
    *      equalization.
    *
    *   External Calls:
@@ -24,12 +24,21 @@
    *               perform_histogram_equalization
    *
    *   Modifications:
-   *     18 September 1998 - created to work with 
+   *     18 September 1998 - created to work with
    *           all I O routines in imageio.c.
    *
    *************************************************/
 
 #include "cips.h"
+
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int calculate_histogram();
+int perform_histogram_equalization();
 
 
 /*********
@@ -46,7 +55,7 @@ short** allocate_xxx_array(length, width)
    short** the_array = (short**) malloc(length * sizeof(short*));
    for(i=0; i<length; i++){
       the_array[i] = (short*) malloc(width * sizeof(short));
-      if(the_array[i] == '\0'){
+      if(the_array[i] == NULL){
          printf("\n\tmalloc of the_image[%d] failed", i);
       }  /* ends if */
    }  /* ends loop over i */
@@ -91,7 +100,7 @@ int main(argc, argv)
    unsigned long histogram[GRAY_LEVELS+1];
    struct tiff_header_struct tiff_file_header;
 
-   
+
       /******************************************
       *
       *   Ensure the command line is correct.
@@ -107,14 +116,14 @@ int main(argc, argv)
 
    strcpy(in_name,  argv[1]);
    strcpy(out_name, argv[2]);
-   
+
    if(does_not_exist(in_name)){
       printf("\nERROR input file %s does not exist",
              in_name);
       printf("\n      "
              "usage: testbed input-image output-image");
       exit(0);
-   } 
+   }
 
    get_image_size(in_name, &height, &width);
    the_image = allocate_image_array(height, width);
@@ -124,11 +133,11 @@ int main(argc, argv)
    for(j=0; j<10; j++)
       printf("-%3d-", the_image[5][j]);
    create_image_file(in_name, out_name);
-   printf("\nTB> height=%d width=%d\n", height, width);
+   printf("\nTB> height=%ld width=%ld\n", height, width);
 
    for(i=0; i<GRAY_LEVELS+1; i++) histogram[i] = 0;
 
-   calculate_histogram(the_image, histogram, 
+   calculate_histogram(the_image, histogram,
                        height, width);
 
    perform_histogram_equalization(
@@ -162,7 +171,7 @@ printf("-%3d-", the_image[5][j]);
 
    for(i=0; i<GRAY_LEVELS+1; i++) histogram[i] = 0;
 
-   calculate_histogram(the_image, histogram, 
+   calculate_histogram(the_image, histogram,
                        height, width);
 printf("\nTB> Calculated the histogram");
    perform_histogram_equalization(
@@ -203,7 +212,7 @@ printf("\nCIF> created allocated tiff file\n");
 
    for(i=0; i<GRAY_LEVELS+1; i++) histogram[i] = 0;
 
-   calculate_histogram(the_image, histogram, 
+   calculate_histogram(the_image, histogram,
                        height, width);
 
    perform_histogram_equalization(
