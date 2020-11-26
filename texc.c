@@ -3,21 +3,25 @@
 
    usage:  texc input_file output_file
 
-   Replace the TeX special characters with 
+   Replace the TeX special characters with
    the \ and special character.
 
    This is a helpful utility when converting a
    text file to a tex file.  The text files
-   use many of the TeX special characters and 
-   the \ needs to be put in front of the 
+   use many of the TeX special characters and
+   the \ needs to be put in front of the
    special characters.
 
    27 February 2000
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 
-main(argc, argv)
+int clear_out_buffer();
+int insert_slash();
+
+int main(argc, argv)
   int  argc;
   char *argv[];
 {
@@ -26,7 +30,7 @@ main(argc, argv)
 
   if(argc != 3){
     printf("\nusage: texc input_file output_file\n");
-    exit (1);
+    exit(1);
   }
 
   if((input_file = fopen (argv[1], "rt")) == NULL){
@@ -46,7 +50,7 @@ main(argc, argv)
 
 
 
-insert_slash(input_file, output_file)
+int insert_slash(input_file, output_file)
    FILE *input_file;
    FILE *output_file;
 {
@@ -65,7 +69,7 @@ insert_slash(input_file, output_file)
                  string[i] == '}'   ||
                  string[i] == '^'   ||
                  string[i] == '~'   ||
-                 string[i] == '%'   ||  
+                 string[i] == '%'   ||
                  string[i] == '\\'){
                    outs[k] = '\\';
                    k++;
@@ -84,10 +88,11 @@ insert_slash(input_file, output_file)
          clear_out_buffer(string, 300);
          clear_out_buffer(outs,   300);
      }  /* ends while fgets */
+return(1);
 }  /* ends insert_slash */
 
 
-clear_out_buffer(string, n)
+int clear_out_buffer(string, n)
         char string[];
         int n;
 {
@@ -95,4 +100,5 @@ clear_out_buffer(string, n)
      for(i=0; i<n; i++)
             string[i] = ' ';
      string[0] = '\0';
+return(1);
 }
