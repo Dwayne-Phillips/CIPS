@@ -1,4 +1,5 @@
 
+
    /***********************************************
    *
    *   file d:\cips\side.c
@@ -34,14 +35,25 @@
    *      19 April 1992 - created
    *      13 August 1998 - modified to work on an
    *           entire image at one time.
-   *      19 September 1998 - modified to work with 
+   *      19 September 1998 - modified to work with
    *            all I O routines in imageio.c.
    *
    *************************************************/
 
 #include "cips.h"
 
-
+int print_side_usage();
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int read_tiff_header();
+int create_allocate_tiff_file();
+int read_bmp_file_header();
+int read_bm_header();
+int create_allocate_bmp_file();
 
 int main(argc, argv)
    int  argc;
@@ -50,7 +62,7 @@ int main(argc, argv)
 
    char     method[80], name1[80], name2[80], name3[80];
    int      i, j;
-   long     length1, length2, length3, 
+   long     length1, length2, length3,
             width1, width2, width3;
    short    **image1, **image2, **image3;
    struct bmpfileheader      bmp_file_header;
@@ -83,14 +95,14 @@ int main(argc, argv)
    }
 
    if(does_not_exist(name1)){
-      printf("\nERROR: Input file %s does not exist", 
+      printf("\nERROR: Input file %s does not exist",
              name1);
       print_side_usage();
       exit(2);
    }
 
    if(does_not_exist(name2)){
-      printf("\nERROR: Input file %s does not exist", 
+      printf("\nERROR: Input file %s does not exist",
              name2);
       print_side_usage();
       exit(3);
@@ -148,13 +160,13 @@ int main(argc, argv)
    }
 
    if(is_a_bmp(name1)){
-      read_bmp_file_header(name1, 
+      read_bmp_file_header(name1,
                            &bmp_file_header);
       read_bm_header(name1, &bmheader);
       bmheader.height = length3;
       bmheader.width  = width3;
-      create_allocate_bmp_file(name3, 
-                               &bmp_file_header, 
+      create_allocate_bmp_file(name3,
+                               &bmp_file_header,
                                &bmheader);
    }
 
@@ -165,7 +177,7 @@ int main(argc, argv)
        *   two input images.
        *
        *********************************************/
-   
+
    image1 = allocate_image_array(length1, width1);
    image2 = allocate_image_array(length2, width2);
    image3 = allocate_image_array(length3, width3);
@@ -220,7 +232,7 @@ int main(argc, argv)
 
 
 
-print_side_usage()
+int print_side_usage()
 {
    printf(
     "\n"
@@ -229,4 +241,5 @@ print_side_usage()
     "\n        where method is Top-to-bottom "
     "or Side-by-side"
     "\n");
+return(1);
 }
