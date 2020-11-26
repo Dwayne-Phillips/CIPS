@@ -9,8 +9,8 @@
        *
        *   Purpose:
        *      This file contains the main calling
-       *      routine that calls the erosion, 
-       *      dilation, outline, and skeleton 
+       *      routine that calls the erosion,
+       *      dilation, outline, and skeleton
        *      functions.
        *
        *   External Calls:
@@ -40,23 +40,42 @@
        *      7 March 1993 - created
        *      21 August 1998 - modified to work on entire
        *           images at once.
-       *      19 September 1998 - modified to work with 
+       *      19 September 1998 - modified to work with
        *            all I O routines in imageio.c.
        *
        ***********************************************/
 
 #include "cips.h"
 
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int thinning();
+int dilate_not_join();
+int erosion();
+int dilation();
+int mask_erosion();
+int mask_dilation();
+int interior_outline();
+int exterior_outline();
+int opening();
+int closing();
+int special_closing();
+int special_opening();
+int edm();
+int mat();
+int show_mainsk_usage();
 
-
-
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
 
    char     name1[80], name2[80], type[80];
-   int      i, j, mask_type, 
+   int      i, j, mask_type,
             number, threshold;
    long     length, width;
    short    value;
@@ -103,7 +122,7 @@ main(argc, argv)
        *****************************************/
 
    get_image_size(name1, &length, &width);
-  
+
    the_image = allocate_image_array(length, width);
    out_image = allocate_image_array(length, width);
 
@@ -155,7 +174,7 @@ main(argc, argv)
 
             /* mask_erosion */
    if(strncmp("mer", type, 3) == 0){
-      mask_erosion(the_image, out_image, 
+      mask_erosion(the_image, out_image,
                    value, mask_type,
                    length,
                    width);
@@ -171,7 +190,7 @@ main(argc, argv)
 
             /* interior_outline */
    if(strncmp("int", type, 3) == 0){
-      interior_outline(the_image, out_image, 
+      interior_outline(the_image, out_image,
                        value, mask_type,
                        length,
                        width);
@@ -179,7 +198,7 @@ main(argc, argv)
 
             /* exterior_outline */
    if(strncmp("ext", type, 3) == 0){
-      exterior_outline(the_image, out_image, 
+      exterior_outline(the_image, out_image,
                        value, mask_type,
                        length,
                        width);
@@ -187,7 +206,7 @@ main(argc, argv)
 
             /* opening */
    if(strncmp("ope", type, 3) == 0){
-      opening(the_image, out_image, 
+      opening(the_image, out_image,
               value, mask_type, number,
               length,
               width);
@@ -195,7 +214,7 @@ main(argc, argv)
 
             /* closing */
    if(strncmp("clo", type, 3) == 0){
-      closing(the_image, out_image, 
+      closing(the_image, out_image,
               value, mask_type, number,
               length,
               width);
@@ -203,7 +222,7 @@ main(argc, argv)
 
             /* special opening */
    if(strncmp("spo", type, 3) == 0){
-      special_opening(the_image, out_image, 
+      special_opening(the_image, out_image,
                       value, threshold, number,
                       length,
                       width);
@@ -211,7 +230,7 @@ main(argc, argv)
 
             /* special closing */
    if(strncmp("spc", type, 3) == 0){
-      special_closing(the_image, out_image, 
+      special_closing(the_image, out_image,
                       value, threshold, number,
                       length,
                       width);
@@ -219,15 +238,15 @@ main(argc, argv)
 
             /* Euclidean Distance Measure */
    if(strncmp("edm", type, 3) == 0){
-      edm(the_image, out_image, 
-          value, 
+      edm(the_image, out_image,
+          value,
           length,
           width);
    }  /* ends Euclidean distance mesaure */
 
             /* medial axis transform */
    if(strncmp("mat", type, 3) == 0){
-      mat(the_image, out_image, 
+      mat(the_image, out_image,
           value,
           length,
           width);
@@ -245,7 +264,7 @@ main(argc, argv)
 
 
 
-show_mainsk_usage()
+int show_mainsk_usage()
 {
    char response[80];
 
@@ -303,4 +322,6 @@ printf("\n   THINNING"
 "\n threshold is 0-8 inclusive"
 "\n number is number of erosions or dilations"
 "\n");
+
+return(1);
 }
