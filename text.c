@@ -1,4 +1,6 @@
 
+
+
     /************************************************
     *
     *   file d:\cips\text.c
@@ -15,7 +17,6 @@
     *   External Calls:
     *      wtiff.c - create_allocate_tiff_file
     *                read_tiff_image
-    *      gpcips.c - my_clear_text_screen
     *
     *   Modifications:
     *      16 February 1998 - created
@@ -30,6 +31,18 @@
 #define COUNTER_LIMIT 8
 #define IE_START      7
 #define VAL         200
+
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int create_allocate_tiff_file();
+int read_tiff_image();
+int write_array_into_tiff_image();
+int copy_array_into_image();
+
 
 short image[ROWS][COLS];
 
@@ -444,7 +457,7 @@ short a0[R][C] = { {  0,  0,  0,  0,  0,  0,  0},
 
 
 
-main(argc, argv)
+int main(argc, argv)
    int  argc;
    char *argv[];
 {
@@ -453,7 +466,6 @@ main(argc, argv)
    int    lsave, esave;
    struct tiff_header_struct image_header;
 
-   my_clear_text_screen();
 
    if(argc < 6){
       printf("\n usage: ilabel file-name il ie l w text");
@@ -474,8 +486,8 @@ main(argc, argv)
    image_header.strip_offset   = 1000;
 
    if(does_not_exist(argv[1]))
-      create_allocate_tiff_file(argv[1], 
-                                &image_header, 
+      create_allocate_tiff_file(argv[1],
+                                &image_header,
                                 image);
    else
       printf("\n%s already exists", argv[1]);
@@ -483,7 +495,7 @@ main(argc, argv)
    il = atoi(argv[2]);
    ie = atoi(argv[3]);
 
-   read_tiff_image(argv[1], image, il-R, ie-C, 
+   read_tiff_image(argv[1], image, il-R, ie-C,
                    il-R+ROWS, ie-C+COLS);
 
 printf("\nDEBUG> reading from %d %d",il-R, ie-C);
@@ -619,7 +631,7 @@ printf("\nDEBUG> Writing output file %d %d", il, ie);
 }
 
 
-copy_array_into_image(a, the_image, il, ie)
+int copy_array_into_image(a, the_image, il, ie)
    short a[R][C], the_image[ROWS][COLS];
    int   il, ie;
 {
@@ -628,4 +640,5 @@ copy_array_into_image(a, the_image, il, ie)
       for(j=0; j<C; j++)
          the_image[il+i][ie+j] = a[i][j];
 
+return(1);
 }  /* ends copy_array_into_image */
