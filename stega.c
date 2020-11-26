@@ -27,32 +27,47 @@
     *
     *  Modifications:
     *     5 April 1998 - created
-    *     22 September 1998 - modified to work with 
+    *     22 September 1998 - modified to work with
     *           all I O routines in imageio.c.
     *
     *************************************************/
 
 #include "cips.h"
 #define EIGHT 8
+#define SEVEN 7
+
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int get_lsb();
+int create_resized_image_file();
+int is_odd();
+int hide_image();
+int hide_pixels();
+int uncover_image();
+int uncover_pixels();
+int stega_show_usage();
 
 
-
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
 
-   char  cover_image_name[80], 
+   char  cover_image_name[80],
          message_image_name[80];
    int   hide    = 0,
-         i, 
-         j, 
+         i,
+         j,
          lsb,
          n,
          uncover = 0;
 
-   long  clength, 
-         mlength, 
+   long  clength,
+         mlength,
          cwidth,
          mwidth;
 
@@ -99,11 +114,11 @@ main(argc, argv)
 
    if(hide){
       if(does_not_exist(cover_image_name)){
-         printf("\n%s does not exist, quitting", 
+         printf("\n%s does not exist, quitting",
          cover_image_name);
       }
       if(does_not_exist(message_image_name)){
-         printf("\n%s does not exist, quitting", 
+         printf("\n%s does not exist, quitting",
          message_image_name);
       }
 
@@ -117,11 +132,11 @@ main(argc, argv)
          *
          ******************************************/
 
-      get_image_size(cover_image_name, 
+      get_image_size(cover_image_name,
                      &clength, &cwidth);
-      get_image_size(message_image_name, 
+      get_image_size(message_image_name,
                      &mlength, &mwidth);
-      
+
       if(mlength != clength){
          printf("\n\nmlength NOT EQUAL TO clength");
          printf("\nQUITING");
@@ -162,7 +177,7 @@ main(argc, argv)
 
       /******************************************
       *
-      *   Uncover the cover image from the 
+      *   Uncover the cover image from the
       *   message image.
       *
       ******************************************/
@@ -171,7 +186,7 @@ main(argc, argv)
 printf("\nMAIN> Uncover");
 
       if(does_not_exist(cover_image_name)){
-         printf("\n%s does not exist, quitting", 
+         printf("\n%s does not exist, quitting",
          cover_image_name);
       }  /* ends if does_not_exist */
 
@@ -182,13 +197,13 @@ printf("\nMAIN> Uncover");
          *
          ******************************************/
 
-      get_image_size(cover_image_name, 
+      get_image_size(cover_image_name,
                      &clength, &cwidth);
       mlength = clength;
       mwidth  = cwidth/n;
       create_resized_image_file(cover_image_name,
-                                message_image_name, 
-                                mlength, mwidth); 
+                                message_image_name,
+                                mlength, mwidth);
       lsb = get_lsb(cover_image_name);
 
          /******************************************
@@ -242,7 +257,7 @@ int hide_image(cover_image,
                n)
    int   lsb, n;
    long  clength, cwidth, mlength, mwidth;
-   short **cover_image, 
+   short **cover_image,
          **message_image;
 {
    char response[80];
@@ -259,6 +274,7 @@ int hide_image(cover_image,
                   mlength);
    }  /* ends loop over h_counter */
 
+return(1);
 }  /* ends hide_image */
 
 
@@ -278,16 +294,16 @@ int hide_image(cover_image,
    *
    *********************************************/
 
-int hide_pixels(cover_image, 
+int hide_pixels(cover_image,
                 message_image,
-                mie, 
+                mie,
                 cie,
                 lsb,
                 n,
                 mlength)
    int   cie, lsb, mie, n;
    long  mlength;
-   short **cover_image, 
+   short **cover_image,
          **message_image;
 {
    char result,
@@ -327,7 +343,7 @@ printf("\nHP> mie=%d   cie=%d   lsb=%d", mie, cie, lsb);
 
          /***********************************
          *
-         *   Find out if the jth bit is 
+         *   Find out if the jth bit is
          *   a 1 or 0.  If it is non-zero,
          *   set the LSB of the message image's
          *   pixel.  Else, clear that LSB.
@@ -341,14 +357,14 @@ printf("\nHP> mie=%d   cie=%d   lsb=%d", mie, cie, lsb);
             if(lsb)
                new_message = new_message | mask1[0];
             else
-               new_message = new_message | mask1[EIGHT];
+               new_message = new_message | mask1[SEVEN];
          } /* ends if set lsb */
 
          else{ /* clear lsb */
             if(lsb)
                new_message = new_message & mask2[0];
             else
-               new_message = new_message & mask2[EIGHT];
+               new_message = new_message & mask2[SEVEN];
          }  /* ends if clear lsb */
 
          cover_image[i][cie+c_counter] = new_message;
@@ -356,6 +372,8 @@ printf("\nHP> mie=%d   cie=%d   lsb=%d", mie, cie, lsb);
 
       }  /* ends loop over j */
    }  /* ends loop over i */
+
+return(1);
 }  /* ends hide_pixels */
 
 
@@ -365,7 +383,7 @@ printf("\nHP> mie=%d   cie=%d   lsb=%d", mie, cie, lsb);
    *   uncover_image(...
    *
    *   This routine pulls the message image out
-   *   of the cover image (the opposite of 
+   *   of the cover image (the opposite of
    *   the cover_image routine).
    *
    *********************************************/
@@ -380,13 +398,13 @@ int uncover_image(cover_image,
                   n)
    int   lsb, n;
    long  clength, cwidth, mlength, mwidth;
-   short **cover_image, 
+   short **cover_image,
          **message_image;
 {
    int h_counter;
 
    for(h_counter=0; h_counter<mwidth; h_counter++){
-      uncover_pixels(cover_image, 
+      uncover_pixels(cover_image,
                      message_image,
                      h_counter,
                      h_counter*n,
@@ -394,7 +412,7 @@ int uncover_image(cover_image,
                      n,
                      mlength);
    }  /* ends loop over h_counter */
-
+return(1);
 }  /* ends uncover_image */
 
 
@@ -411,23 +429,23 @@ int uncover_image(cover_image,
    *
    *********************************************/
 
-int uncover_pixels(cover_image, 
+int uncover_pixels(cover_image,
                 message_image,
-                mie, 
+                mie,
                 cie,
                 lsb,
                 n,
                 mlength)
    int   cie, lsb, mie, n;
    long  mlength;
-   short **cover_image, 
+   short **cover_image,
          **message_image;
 {
    char result,
         new_message,
         sample;
 
-   char mask1[EIGHT] =  
+   char mask1[EIGHT] =
                         {0x80,  /* 1000 0000 */
                          0x40,  /* 0100 0000 */
                          0x20,  /* 0010 0000 */
@@ -436,7 +454,7 @@ int uncover_pixels(cover_image,
                          0x04,  /* 0000 0100 */
                          0x02,  /* 0000 0010 */
                          0x01}; /* 0000 0001 */
-   char mask2[EIGHT] = 
+   char mask2[EIGHT] =
                        {0x7F,  /* 0111 1111 */
                         0xBF,  /* 1011 1111 */
                         0xDF,  /* 1101 1111 */
@@ -447,14 +465,14 @@ int uncover_pixels(cover_image,
                         0xFE}; /* 1111 1110 */
 
    int c, c_counter, i, j;
-printf("\nUP> mie=%d   cie=%d   lsb=%d", 
+printf("\nUP> mie=%d   cie=%d   lsb=%d",
 mie, cie, lsb);
 
       /*************************************
       *
-      *  If a pixel in the cover image is 
-      *  odd, its lsb has been set, so 
-      *  the corresponding bit in the 
+      *  If a pixel in the cover image is
+      *  odd, its lsb has been set, so
+      *  the corresponding bit in the
       *  message image should be set.
       *
       *************************************/
@@ -474,6 +492,7 @@ mie, cie, lsb);
       }  /* ends loop over j */
       message_image[i][mie] = new_message;
    }  /* ends loop over i */
+return(1);
 }  /* ends uncover_pixels */
 
 
@@ -482,7 +501,7 @@ mie, cie, lsb);
    *
    *   is_odd(...
    *
-   *   This routine determines if a short is 
+   *   This routine determines if a short is
    *   an odd number.  If it is, this routine
    *   returns a 1, else it returns a 0.
    *
@@ -497,7 +516,7 @@ int is_odd(number)
 }  /* ends is_odd */
 
 
-stega_show_usage()
+int stega_show_usage()
 {
 printf("\n\nNot enough parameters:");
 printf("\n");
@@ -507,5 +526,6 @@ printf("   "
 "\n                 or"
 "\nstega -u cover-image-name message-image-name n"
 "\n       to uncover the cover image from "
-"the message image");
+"the message image\n");
+return(1);
 }
