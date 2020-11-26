@@ -16,23 +16,27 @@
        *      26 November 1999 - created
        *
        ************************************************/
-      
+
 
        /******************************************
        *
        *   The k constants are for diffuse and
-       *   specular reflectivity.  They are 
+       *   specular reflectivity.  They are
        *   constants for a surface between 0 and 1.
        *
        *   eta is a factor for the reflectance
-       *   of the object.  A large eta is for 
+       *   of the object.  A large eta is for
        *   a shiny object that approaches a perfect
-       *   mirror.  A small eta is for a dull 
+       *   mirror.  A small eta is for a dull
        *   surface.
        *
        ******************************************/
 
 #include "cips.h"
+
+int cross_product();
+int angle_between();
+int magnitude_of();
 
 #undef NEVER
 
@@ -43,7 +47,7 @@
 #define ONEEIGHTY      3.141592654
 
 
-lambert(the_image, out_image,
+int lambert(the_image, out_image,
         k_diffuse, k_specular, eta,
         L,
         rows, cols)
@@ -97,7 +101,7 @@ lambert(the_image, out_image,
             /*************************************
             *
             *   Calculate the vector N that is
-            *   normal to the triangle whose 
+            *   normal to the triangle whose
             *   corners are
             *   [i][j]    [i][j+1]
             *   [i+1][j]
@@ -124,7 +128,7 @@ lambert(the_image, out_image,
 
             /*************************************
             *
-            *   Calculate the dot product of 
+            *   Calculate the dot product of
             *   N and V.  N and V are both unit
             *   vectors (their magnitudes are 1).
             *   The dot product becomes the cosine
@@ -140,7 +144,7 @@ lambert(the_image, out_image,
             *   This is because there is no
             *   reflectance.
             *
-            *   I am calculating vr the simple 
+            *   I am calculating vr the simple
             *   way so I don't need to find
             *   the values of R(x,y,z).
             *
@@ -212,9 +216,9 @@ print_vector(N);
          if(diffuse_term > max_diffuse_term)
             max_diffuse_term = diffuse_term;
 
-         out_image[i][j] = k_diffuse*AMBIENT + 
+         out_image[i][j] = k_diffuse*AMBIENT +
                            SOURCE*(specular_term+diffuse_term);
-         if(out_image[i][j] < 0) 
+         if(out_image[i][j] < 0)
             out_image[i][j] = 0;
          if(out_image[i][j] > GRAY_LEVELS-1)
             out_image[i][j] = GRAY_LEVELS-1;
@@ -236,7 +240,7 @@ printf("\ni=%d j=%d image[%d][%d]=%d image[%d][%d]=%d image[%d][%d]=%d",
       i, j, i, j, the_image[i][j], i+1, j, the_image[i+1][j],
       i, j+1, the_image[i][j+1]);
 printf("\nv1[2] should be %d-%d=%d, it is %f",
-         the_image[i+1][j],the_image[i][j], 
+         the_image[i+1][j],the_image[i][j],
          the_image[i+1][j] - the_image[i][j], v1[2]);
 printf("\nv2[2] should be %d-%d=%d, it is %f",
          the_image[i][j+1],the_image[i][j],
@@ -281,6 +285,7 @@ gets(response);
 printf("\n\nmax_specular=%f    max_diffuse=%f",
 max_specular_term, max_diffuse_term);
 
+return(1);
 }  /* ends lambert */
 
 
@@ -294,13 +299,14 @@ max_specular_term, max_diffuse_term);
      *
      *******************************************/
 
-magnitude_of(v, answer)
+int magnitude_of(v, answer)
    float v[], *answer;
 {
    double d, n;
    n  = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
    d  = sqrt(n);
    *answer = d;
+return(1);
 }  /* ends dot_product */
 
 
@@ -314,12 +320,13 @@ magnitude_of(v, answer)
      *
      *******************************************/
 
-dot_product(v1, v2)
+int dot_product(v1, v2)
    float v1[], v2[];
 {
    float result = 0.0;
    result = v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2];
    return(result);
+return(1);
 }  /* ends dot_product */
 
 
@@ -332,12 +339,13 @@ dot_product(v1, v2)
      *
      *******************************************/
 
-cross_product(v1, v2, result)
+int cross_product(v1, v2, result)
    float v1[], v2[], result[];
 {
    result[0] = v1[1]*v2[2] - v2[1]*v1[2];
    result[1] = v1[2]*v2[0] - v2[2]*v1[0];
    result[2] = v1[0]*v2[1] - v2[0]*v1[1];
+return(1);
 }  /* ends cross_product */
 
 
@@ -350,7 +358,7 @@ cross_product(v1, v2, result)
      *
      *******************************************/
 
-angle_between(v1, v2, angle)
+int angle_between(v1, v2, angle)
    float *angle, v1[], v2[];
 {
    double d, d1, d2, dt, n, result = 0.0, t;
@@ -396,17 +404,18 @@ if(d < 0.1){
 /**************
    printf("\nangle_between>> result=%f",result);
 **************/
-
+return(1);
 }  /* ends angle_between */
 
 
 
 
 
-print_vector(x)
+int print_vector(x)
    float *x;
 {
    printf("\n %f  %f  %f",x[0],x[1],x[2]);
+return(1);
 }  /* ends print_vector */
 
 
