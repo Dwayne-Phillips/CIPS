@@ -1,5 +1,14 @@
 
 
+/**********************
+
+November 2020
+This file tested some input output
+routines. It is no longer needed
+and will not compile. That is okay.
+
+***********************/
+
 #include "cips.h"
 
 
@@ -479,7 +488,7 @@ flip_image_array(the_image, rows, cols)
       *   read_bmp_image(...
       *
       *   This function reads the image array
-      *   from a bmp file.  
+      *   from a bmp file.
       *
       *   It only works for 8-bit images.
       *
@@ -556,7 +565,7 @@ read_bmp_image(file_name, array)
    *
    *   create_allocate_bmp_file(...
    *
-   *   The calling routine must set the 
+   *   The calling routine must set the
    *   height and width.  This routine will set
    *   everything else.
    *
@@ -579,7 +588,7 @@ create_allocate_bmp_file(file_name,
    bmheader->planes       =   1;
    bmheader->bitsperpixel =   8;
    bmheader->compression  =   0;
-   bmheader->sizeofbitmap = bmheader->height * 
+   bmheader->sizeofbitmap = bmheader->height *
                             (bmheader->width + pad);
    bmheader->horzres      = 300;
    bmheader->vertres      = 300;
@@ -589,7 +598,7 @@ create_allocate_bmp_file(file_name,
    file_header->filetype     = 0x4D42;
    file_header->reserved1    =  0;
    file_header->reserved2    =  0;
-   file_header->bitmapoffset = 14 + 
+   file_header->bitmapoffset = 14 +
                                bmheader->size +
                                bmheader->colorsused*4;
    file_header->filesize     = file_header->bitmapoffset +
@@ -677,7 +686,7 @@ create_allocate_bmp_file(file_name,
 
       /*********************************************
       *
-      *   Write a zero image.  
+      *   Write a zero image.
       *
       *********************************************/
 
@@ -790,7 +799,7 @@ write_bmp_image(file_name, array)
    }  /* ends loop over i */
 
    position   = fseek(image_file,
-                      file_header.bitmapoffset, 
+                      file_header.bitmapoffset,
                       SEEK_SET);
 
    pad = calculate_pad(width);
@@ -979,7 +988,7 @@ int is_a_bmp(file_name)
    *
    *   This function looks at a file to see if it
    *   is a tiff file.  First look at the file
-   *   extension.  Next look at the first four 
+   *   extension.  Next look at the first four
    *   bytes of the header.
    *
    ***********************************************/
@@ -1043,7 +1052,7 @@ read_image_array(file_name, array)
       read_tiff_image(file_name, array);
       ok = 1;
    }
-   
+
    if(is_a_bmp(file_name)){
       read_bmp_image(file_name, array);
       ok = 1;
@@ -1082,7 +1091,7 @@ write_image_array(file_name, array)
       write_tiff_image(file_name, array);
       ok = 1;
    }
-   
+
    if(is_a_bmp(file_name)){
       write_bmp_image(file_name, array);
       ok = 1;
