@@ -15,14 +15,17 @@
     *  External Calls:
     *
     *  Modifications:
-    *     9 April 1998 - create    
+    *     9 April 1998 - create
     *
     *************************************************/
 
 #include "cips.h"
 
+int verbose_read_tiff_header();
+int extract_long_from_buffer();
+int extract_short_from_buffer();
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -34,7 +37,7 @@ main(argc, argv)
    if(argc < 2){
     printf("\n\nNot enough parameters:");
     printf("\n");
-    printf("\n   usage: header image-file ");
+    printf("\n   usage: header image-file \n");
     exit(0);
    }
 
@@ -52,13 +55,13 @@ main(argc, argv)
        *
        *   verbose_read_tiff_header(...
        *
-       *   This function reads the header of a TIFF 
+       *   This function reads the header of a TIFF
        *   file and places the needed information into
        *   the struct tiff_header_struct.
        *
        ***********************************************/
 
-verbose_read_tiff_header(file_name, image_header)
+int verbose_read_tiff_header(file_name, image_header)
    char file_name[];
    struct tiff_header_struct *image_header;
 {
@@ -116,7 +119,7 @@ printf("\nHeader> OK opened file %s", file_name);
         *
         *************************************/
 
-   extract_long_from_buffer(buffer, lsb, 4, 
+   extract_long_from_buffer(buffer, lsb, 4,
                             &offset_to_ifd);
 printf("\nHeader> Offset is %ld", offset_to_ifd);
 
@@ -131,10 +134,10 @@ printf("\nHeader> Offset is %ld", offset_to_ifd);
         *
         *************************************/
 
-      position   = fseek(image_file, offset_to_ifd, 
+      position   = fseek(image_file, offset_to_ifd,
                          SEEK_SET);
       bytes_read = fread(buffer, 1, 2, image_file);
-      extract_short_from_buffer(buffer, lsb, 0, 
+      extract_short_from_buffer(buffer, lsb, 0,
                                 &entry_count);
 
 printf("\nHeader> entry count = %d", entry_count);
@@ -153,7 +156,7 @@ printf("\nHeader> entry count = %d", entry_count);
 
       for(i=0; i<entry_count; i++){
        bytes_read = fread(buffer, 1, 12, image_file);
-       extract_short_from_buffer(buffer, lsb, 0, 
+       extract_short_from_buffer(buffer, lsb, 0,
                                  &tag_type);
 
 printf("\nHeader> Loop i %3d     tag type %4d", i, tag_type);
@@ -165,12 +168,12 @@ printf("\nHeader> Loop i %3d     tag type %4d", i, tag_type);
                                        &field_type);
              extract_short_from_buffer(buffer, lsb, 4,
                                     &length_of_field);
-             extract_long_from_buffer(buffer, lsb, 8, 
+             extract_long_from_buffer(buffer, lsb, 8,
                                       &subfile);
              break;
 
           case 256: /* ImageWidth */
-             extract_short_from_buffer(buffer, lsb, 2, 
+             extract_short_from_buffer(buffer, lsb, 2,
                                        &field_type);
              extract_short_from_buffer(buffer, lsb, 4,
                                     &length_of_field);
@@ -180,12 +183,12 @@ printf("\nHeader> Loop i %3d     tag type %4d", i, tag_type);
               image_width = s_image_width;
              }
              else
-              extract_long_from_buffer(buffer, lsb, 8, 
+              extract_long_from_buffer(buffer, lsb, 8,
                                        &image_width);
              break;
 
           case 257: /* ImageLength */
-             extract_short_from_buffer(buffer, lsb, 2, 
+             extract_short_from_buffer(buffer, lsb, 2,
                                        &field_type);
              extract_short_from_buffer(buffer, lsb, 4,
                                     &length_of_field);
@@ -200,7 +203,7 @@ printf("\nHeader> Loop i %3d     tag type %4d", i, tag_type);
              break;
 
           case 258: /* BitsPerSample */
-             extract_short_from_buffer(buffer, lsb, 2, 
+             extract_short_from_buffer(buffer, lsb, 2,
                                        &field_type);
              extract_short_from_buffer(buffer, lsb, 4,
                                     &length_of_field);
@@ -215,7 +218,7 @@ printf("\nHeader> Loop i %3d     tag type %4d", i, tag_type);
              break;
 
           case 273: /* StripOffset */
-             extract_short_from_buffer(buffer, lsb, 2, 
+             extract_short_from_buffer(buffer, lsb, 2,
                                        &field_type);
              extract_short_from_buffer(buffer, lsb, 4,
                                     &length_of_field);
@@ -237,7 +240,7 @@ printf("\nHeader> Loop i %3d     tag type %4d", i, tag_type);
       }  /* ends loop over i directory entries */
 
       bytes_read = fread(buffer, 1, 4, image_file);
-      extract_long_from_buffer(buffer, lsb, 0, 
+      extract_long_from_buffer(buffer, lsb, 0,
                                &offset_to_ifd);
       if(offset_to_ifd == 0) not_finished = 0;
 
@@ -256,4 +259,5 @@ printf("\nHeader> Loop i %3d     tag type %4d", i, tag_type);
       printf("\n\nTIFF.C> ERROR - could not open "
              "tiff file --%s--", file_name);
    }
+return(1);
 }  /* ends verbose_read_tiff_header */
