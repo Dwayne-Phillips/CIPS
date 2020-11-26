@@ -27,10 +27,18 @@
 
 #include "cips.h"
 
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int show_mainl_usage();
+int lambert();
 
 
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -77,7 +85,7 @@ main(argc, argv)
        *****************************************/
 
    get_image_size(name1, &length, &width);
-  
+
    the_image = allocate_image_array(length, width);
    out_image = allocate_image_array(length, width);
 
@@ -91,7 +99,7 @@ main(argc, argv)
        **********************************************/
 
 
-   lambert(the_image, out_image, 
+   lambert(the_image, out_image,
            k_diffuse, k_specular, eta, L,
            length, width);
 
@@ -113,7 +121,7 @@ main(argc, argv)
 
 
 
-show_mainl_usage()
+int show_mainl_usage()
 {
    char response[80];
 
@@ -124,5 +132,5 @@ printf(
 " Light-x y z (n.n)"
 " "
 "\n");
-
+return(1);
 }  /* ends show_mainl_usage */
