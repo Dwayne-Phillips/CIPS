@@ -25,21 +25,33 @@
        *
        *   Modifications:
        *      6 March 1993 - created
-       *      22 August 1998 - modified to work on 
+       *      22 August 1998 - modified to work on
        *           entire images at once.
-       *      19 September 1998 - modified to work with 
+       *      19 September 1998 - modified to work with
        *           all I O routines in imageio.c.
        *
        ********************************************/
 
 #include "cips.h"
 
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int non_zero_overlay();
+int are_not_same_size();
+int zero_overlay();
+int greater_overlay();
+int less_overlay();
+int average_overlay();
 
 
 short **the_image;
 short **out_image;
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -97,7 +109,7 @@ main(argc, argv)
 
    if(are_not_same_size(name1, name2)){
       printf(
-       "\n Images %s and %s are not the same size", 
+       "\n Images %s and %s are not the same size",
        name1, name2);
       exit(1);
    }  /* ends if sizes not the same */
