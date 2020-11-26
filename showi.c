@@ -19,7 +19,7 @@
    *                  free_image_array
    *
    *   Modifications:
-   *      1 October 1998 - created to work with 
+   *      1 October 1998 - created to work with
    *           all I O routines in imageio.c.
    *
    *************************************************/
@@ -28,7 +28,17 @@
 #define  SHEIGHT 20
 #define  SWIDTH  15
 
-main(argc, argv)
+int show_screen();
+int is_in_image();
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+
+
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -37,7 +47,7 @@ main(argc, argv)
    int   ie, il, not_done, temp_ie, temp_il;
    long  height, width;
    short **the_image;
-   
+
       /******************************************
       *
       *   Ensure the command line is correct.
@@ -45,19 +55,19 @@ main(argc, argv)
       ******************************************/
 
    if(argc != 4){
-    printf("\nusage: showi input-image il ie");
+    printf("\nusage: showi input-image il ie\n");
     exit(0);
    }
 
    strcpy(in_name,  argv[1]);
    il = atoi(argv[2]);
    ie = atoi(argv[3]);
-   
+
       /******************************************
       *
       *   Ensure the input image exists.
       *   Allocate an image array.
-      *   Read the image and show it on the 
+      *   Read the image and show it on the
       *   screen.
       *
       ******************************************/
@@ -137,9 +147,7 @@ int is_in_image(il, ie, height, width)
 }  /* ends is_in_image */
 
 
-
-
-show_screen(the_image, il, ie)
+int show_screen(the_image, il, ie)
    int  il, ie;
    short **the_image;
 {
@@ -155,5 +163,5 @@ show_screen(the_image, il, ie)
          printf("-%3d", the_image[i][j]);
       }
    }
-
+return(1);
 }  /* ends show_screen */
