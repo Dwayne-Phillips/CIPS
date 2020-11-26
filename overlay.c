@@ -12,8 +12,8 @@
     *          average_overlay
     *
     *       Purpose:
-    *          These functions implement the 
-    *          functions that overlay one image 
+    *          These functions implement the
+    *          functions that overlay one image
     *          on top of another image.
     *
     *       External Calls:
@@ -21,7 +21,7 @@
     *
     *       Modifications:
     *          6 March 1993 - created
-    *         22 August 1998 - modified to work on 
+    *         22 August 1998 - modified to work on
     *               entire images at once.
     *
     *********************************************/
@@ -42,7 +42,7 @@
    *
    ***********************************************/
 
-non_zero_overlay(the_image, out_image,
+int non_zero_overlay(the_image, out_image,
                  rows, cols)
    short  **the_image,
           **out_image;
@@ -57,7 +57,7 @@ non_zero_overlay(the_image, out_image,
             out_image[i][j] = the_image[i][j];
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+return(1);
 } /* ends non_zero_overlay */
 
 
@@ -75,7 +75,7 @@ non_zero_overlay(the_image, out_image,
    *
    ***********************************************/
 
-zero_overlay(the_image, out_image,
+int zero_overlay(the_image, out_image,
              rows, cols)
    short **the_image,
          **out_image;
@@ -90,7 +90,7 @@ zero_overlay(the_image, out_image,
             out_image[i][j] = the_image[i][j];
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+return(1);
 } /* ends zero_overlay */
 
 
@@ -108,7 +108,7 @@ zero_overlay(the_image, out_image,
    *
    ***********************************************/
 
-greater_overlay(the_image, out_image,
+int greater_overlay(the_image, out_image,
                 rows, cols)
    short **the_image,
          **out_image;
@@ -123,7 +123,7 @@ greater_overlay(the_image, out_image,
             out_image[i][j] = the_image[i][j];
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+return(1);
 } /* ends greater_overlay */
 
 
@@ -141,7 +141,7 @@ greater_overlay(the_image, out_image,
    *
    ***********************************************/
 
-less_overlay(the_image, out_image,
+int less_overlay(the_image, out_image,
              rows, cols)
    short **the_image,
          **out_image;
@@ -157,7 +157,7 @@ less_overlay(the_image, out_image,
             out_image[i][j] = the_image[i][j];
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+return(1);
 } /* ends less_overlay */
 
 
@@ -175,7 +175,7 @@ less_overlay(the_image, out_image,
    *
    ***********************************************/
 
-average_overlay(the_image, out_image,
+int average_overlay(the_image, out_image,
                 rows, cols)
    short **the_image,
          **out_image;
@@ -190,5 +190,5 @@ average_overlay(the_image, out_image,
             (the_image[i][j] + out_image[i][j])/2;
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+return(1);
 } /* ends average_overlay */
