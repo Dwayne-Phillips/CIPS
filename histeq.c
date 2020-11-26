@@ -9,7 +9,7 @@
    *
    *   Purpose:
    *      This file contains the main calling
-   *      routine that performs histogram 
+   *      routine that performs histogram
    *      equalization.
    *
    *   External Calls:
@@ -23,12 +23,22 @@
    *               perform_histogram_equalization
    *
    *   Modifications:
-   *     18 September 1998 - created to work with 
+   *     18 September 1998 - created to work with
    *           all I O routines in imageio.c.
    *
    *************************************************/
 
 #include "cips.h"
+
+int calculate_histogram();
+int perform_histogram_equalization();
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+
 
 int main(argc, argv)
    int argc;
@@ -42,7 +52,7 @@ int main(argc, argv)
    short **the_image;
    unsigned long histogram[GRAY_LEVELS+1];
 
-   
+
       /******************************************
       *
       *   Ensure the command line is correct.
@@ -57,7 +67,7 @@ int main(argc, argv)
 
    strcpy(in_name,  argv[1]);
    strcpy(out_name, argv[2]);
-   
+
       /******************************************
       *
       *   Ensure the input image exists.
@@ -83,7 +93,7 @@ int main(argc, argv)
 
    for(i=0; i<GRAY_LEVELS+1; i++) histogram[i] = 0;
 
-   calculate_histogram(the_image, histogram, 
+   calculate_histogram(the_image, histogram,
                        height, width);
 
    perform_histogram_equalization(
