@@ -36,7 +36,15 @@
 
 #include "cips.h"
 
-
+int thinning();
+int dilation();
+int can_thin();
+int can_dilate();
+int dilate_not_join();
+int erosion();
+int little_label_and_check();
+int distance_8();
+int mat_d();
 
 
 
@@ -55,9 +63,9 @@
      *
      *******************************************/
 
-special_opening(the_image, out_image, 
+int special_opening(the_image, out_image,
                 value, threshold, number,
-                rows, cols) 
+                rows, cols)
    int    number;
    short  **the_image,
           **out_image,
@@ -66,24 +74,24 @@ special_opening(the_image, out_image,
 {
    int    a, b, count, i, j, k;
 
-   thinning(the_image, out_image, 
-            value, threshold, 1, 
+   thinning(the_image, out_image,
+            value, threshold, 1,
             rows, cols);
 
    if(number > 1){
       count = 1;
       while(count < number){
          count++;
-         thinning(the_image, out_image, 
+         thinning(the_image, out_image,
                   value, threshold, 1,
                   rows, cols);
       }  /* ends while */
    }  /* ends if number > 1 */
 
-   dilation(the_image, out_image, 
+   dilation(the_image, out_image,
             value, threshold,
             rows, cols);
-
+return(1);
 }  /* ends special_opening */
 
 
@@ -115,7 +123,7 @@ special_opening(the_image, out_image,
      *******************************************/
 
 
-thinning(the_image, out_image,
+int thinning(the_image, out_image,
          value, threshold, once_only,
          rows, cols)
    int    once_only;
@@ -327,7 +335,7 @@ thinning(the_image, out_image,
    /****
    fix_edges(out_image, 3, rows, cols);
    *****/
-
+return(1);
 }  /* ends thinning */
 
 
@@ -354,7 +362,7 @@ thinning(the_image, out_image,
      *
      *******************************************/
 
-can_thin(the_image, i, j, value)
+int can_thin(the_image, i, j, value)
    int   i, j;
    short **the_image, value;
 {
@@ -468,7 +476,7 @@ can_thin(the_image, i, j, value)
      *
      *******************************************/
 
-special_closing(the_image, out_image, 
+int special_closing(the_image, out_image,
                 value, threshold, number,
                 rows, cols)
    int    number;
@@ -479,7 +487,7 @@ special_closing(the_image, out_image,
 {
    int    a, b, count, i, j, k;
 
-   dilate_not_join(the_image, out_image, 
+   dilate_not_join(the_image, out_image,
                    value, threshold,
                    rows, cols);
 
@@ -487,16 +495,17 @@ special_closing(the_image, out_image,
       count = 1;
       while(count < number){
          count++;
-         dilate_not_join(the_image, out_image, 
+         dilate_not_join(the_image, out_image,
                          value, threshold,
                          rows, cols);
       }  /* ends while */
    }  /* ends if number > 1 */
 
-   erosion(the_image, out_image, 
+   erosion(the_image, out_image,
            value, threshold,
            rows, cols);
 
+return(1);
 }  /* ends special_closing */
 
 
@@ -521,7 +530,7 @@ special_closing(the_image, out_image,
      *
      *******************************************/
 
-dilate_not_join(the_image, out_image,
+int dilate_not_join(the_image, out_image,
                 value, threshold,
                 rows, cols)
    short  **the_image,
@@ -703,7 +712,7 @@ dilate_not_join(the_image, out_image,
    /****
    fix_edges(out_image, 3, rows, cols);
    *****/
-
+return(1);
 }  /* ends dilate_not_join */
 
 
@@ -726,7 +735,7 @@ dilate_not_join(the_image, out_image,
      *
      *******************************************/
 
-can_dilate(the_image, i, j, value)
+int can_dilate(the_image, i, j, value)
    int   i, j;
    short **the_image, value;
 {
@@ -832,9 +841,9 @@ can_dilate(the_image, i, j, value)
      *
      *******************************************/
 
-little_label_and_check(temp, stack, label, stack_empty,
+int little_label_and_check(temp, stack, label, stack_empty,
                        stack_pointer, a, b, value)
-   int   a, b, stack[12][2], 
+   int   a, b, stack[12][2],
          *stack_empty, *stack_pointer;
    short temp[3][3], label, value;
 {
@@ -856,6 +865,7 @@ little_label_and_check(temp, stack, label, stack_empty,
       }  /* ends loop over d */
    }  /* ends loop over c */
 
+return(1);
 }  /* ends little_label_and_check */
 
 
@@ -874,7 +884,7 @@ little_label_and_check(temp, stack, label, stack_empty,
      *******************************************/
 
 
-edm(the_image, out_image,
+int edm(the_image, out_image,
     value, rows, cols)
    short  **the_image,
           **out_image,
@@ -899,13 +909,14 @@ edm(the_image, out_image,
       if( (i%10) == 0) printf("%3d", i);
       for(j=0; j<cols; j++){
          if(the_image[i][j] == value)
-            out_image[i][j] = distance_8(the_image, 
-                                         i, j, 
+            out_image[i][j] = distance_8(the_image,
+                                         i, j,
                                          value,
                                          rows, cols);
       }  /* ends loop over j */
    }  /* ends loop over i */
 
+return(1);
 }  /* ends edm */
 
 
@@ -920,7 +931,7 @@ edm(the_image, out_image,
      *
      *******************************************/
 
-distance_8(the_image, a, b, value, rows, cols)
+int distance_8(the_image, a, b, value, rows, cols)
    int   a, b;
    short **the_image, value;
    long  cols, rows;
@@ -1107,7 +1118,7 @@ distance_8(the_image, a, b, value, rows, cols)
      *******************************************/
 
 
-mat(the_image, out_image,
+int mat(the_image, out_image,
     value, rows, cols)
    short  **the_image,
           **out_image,
@@ -1133,12 +1144,12 @@ mat(the_image, out_image,
       if( (i%10) == 0) printf("%3d", i);
       for(j=0; j<cols; j++){
          if(the_image[i][j] == value)
-            out_image[i][j] = mat_d(the_image, 
+            out_image[i][j] = mat_d(the_image,
                                     i, j, value,
                                     rows, cols);
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+return(1);
 }  /* ends mat */
 
 
@@ -1163,7 +1174,7 @@ mat(the_image, out_image,
      *
      *******************************************/
 
-mat_d(the_image, a, b, value, rows, cols)
+int mat_d(the_image, a, b, value, rows, cols)
    int   a, b;
    short **the_image, value;
    long  cols, rows;
