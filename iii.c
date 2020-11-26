@@ -26,16 +26,24 @@
 
 #include "cips.h"
 
+int grow();
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int create_allocate_tiff_file();
+int create_allocate_bmp_file();
 
 
-
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
    char     name1[80], name2[80];
    char     *cc;
-   int      a, b; 
+   int      a, b;
    int      ok = 0;
    long     length, width;
    short    **the_image;
@@ -52,7 +60,7 @@ main(argc, argv)
    strcpy(name2, argv[2]);
 
    get_image_size(name1, &length, &width);
-  
+
    the_image = allocate_image_array(length, width);
 
    cc = strstr(name1, ".tif");
@@ -63,7 +71,7 @@ main(argc, argv)
       image_header.image_length   = length;
       image_header.image_width    = width;
       image_header.strip_offset   = 1000;
-      create_allocate_tiff_file(name2, 
+      create_allocate_tiff_file(name2,
                                 &image_header);
    }  /* ends tif */
 
@@ -72,8 +80,8 @@ main(argc, argv)
       ok = 1;
       bmheader.height = length;
       bmheader.width  = width;
-      create_allocate_bmp_file(argv[2], 
-                               &bmp_file_header, 
+      create_allocate_bmp_file(argv[2],
+                               &bmp_file_header,
                                &bmheader);
    }  /* ends tif */
 
@@ -93,7 +101,7 @@ main(argc, argv)
 
    for(a=0; a<length; a++){
       for(b=0; b<width; b++){
-         if(a % 50 == 0 && b % 50 == 0)         
+         if(a % 50 == 0 && b % 50 == 0)
              the_image[a][b] = 100;
       }
    }
