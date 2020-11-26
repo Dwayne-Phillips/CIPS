@@ -1,4 +1,14 @@
 
+/*****************
+
+Novembr 2020
+
+This file contained test code I used to debug
+some image input output operations.
+
+It doesn't compile and doesn't run, and that doesn't matter.
+
+*****************/
 
 #include "cips.h"
 
@@ -31,144 +41,6 @@ struct ctstruct{
    unsigned char red;
 };
 
-
-
-main(argc, argv)
-   int argc;
-   char *argv[];
-{
-
-   struct bmpfileheader file_header;
-   struct bitmapheader  bmheader;
-   struct ctstruct rgb[256];
-
-   FILE *fp;
-   short **the_image;
-   int   i, j;
-
-
-   long height = 0, width = 0;
-   int  negative = 0;
-
-      /******************************************
-      *
-      *
-      ******************************************/
-
-   if(argc < 2){
-      printf("\ntestbmp file-name.bmp");
-      exit(0);
-   }
-
-
-
-   read_bmp_file_header(argv[1], &file_header);
-   print_bmp_file_header(&file_header);
-
-   read_bm_header(argv[1], &bmheader);
-   print_bm_header(&bmheader);
-
-   width = bmheader.width;
-   if(bmheader.height < 0)
-      height   = bmheader.height * (-1);
-   else
-      height = bmheader.height;
-
-   the_image = allocate_image_array(height, width);
-   read_bmp_image(argv[1], the_image);
-
-   for(i=0; i<15; i++){
-      printf("\n");
-      for(j=0; j<15; j++){
-         printf("-%3d", the_image[i][j]);
-      }
-   }
-
-   free_image_array(the_image, height);
-
-
-
-#ifdef TESTWRITE
-   read_bm_header(argv[1], &bmheader);
-
-   width = bmheader.width;
-   if(bmheader.height < 0)
-      height   = bmheader.height * (-1);
-   else
-      height = bmheader.height;
-
-   the_image = allocate_image_array(height, width);
-
-   for(i=0; i<height; i++){
-      for(j=0; j<width; j++){
-         the_image[i][j] = i;
-      }
-   }
-
-   write_bmp_image(argv[1], the_image);
-   free_image_array(the_image, height);
-#endif
-
-
-
-#ifdef IFNEEDED
-   read_bm_header(argv[1], &bmheader);
-
-   width = bmheader.width;
-   if(bmheader.height < 0)
-      height   = bmheader.height * (-1);
-   else
-      height = bmheader.height;
-
-   the_image = allocate_image_array(height, width);
-
-   create_bmp_file_if_needed(argv[1], argv[2], the_image);
-
-   free_image_array(the_image, height);
-#endif
-
-
-
-
-#ifdef TESTCREATE
-   bmheader.height = 222;
-   bmheader.width  = 333;
-   create_allocate_bmp_file(argv[1], &file_header, &bmheader);
-#endif
-
-
-#ifdef TESTREAD
-   read_bmp_file_header(argv[1], &file_header);
-   print_bmp_file_header(&file_header);
-
-   read_bm_header(argv[1], &bmheader);
-   print_bm_header(&bmheader);
-
-   width = bmheader.width;
-   if(bmheader.height < 0)
-      height   = bmheader.height * (-1);
-   else
-      height = bmheader.height;
-
-   the_image = allocate_image_array(height, width);
-   read_bmp_image(argv[1], the_image);
-
-   for(i=0; i<15; i++){
-      printf("\n");
-      for(j=0; j<15; j++){
-         printf("-%3d", the_image[i][j]);
-      }
-   }
-
-   free_image_array(the_image, height);
-#endif
-
-      /******************************************
-      *
-      *
-      ******************************************/
-
-}  /* ends main */
 
 
 does_not_exist(file_name)
@@ -723,7 +595,7 @@ read_bmp_image(file_name, array)
    *
    *   create_allocate_bmp_file(...
    *
-   *   The calling routine must set the 
+   *   The calling routine must set the
    *   height and width.  This routine will set
    *   everything else.
    *
@@ -746,7 +618,7 @@ create_allocate_bmp_file(file_name,
    bmheader->planes       =   1;
    bmheader->bitsperpixel =   8;
    bmheader->compression  =   0;
-   bmheader->sizeofbitmap = bmheader->height * 
+   bmheader->sizeofbitmap = bmheader->height *
                             (bmheader->width + pad);
    bmheader->horzres      = 300;
    bmheader->vertres      = 300;
@@ -756,7 +628,7 @@ create_allocate_bmp_file(file_name,
    file_header->filetype     = 0x4D42;
    file_header->reserved1    =  0;
    file_header->reserved2    =  0;
-   file_header->bitmapoffset = 14 + 
+   file_header->bitmapoffset = 14 +
                                bmheader->size +
                                bmheader->colorsused*4;
    file_header->filesize     = file_header->bitmapoffset +
@@ -844,7 +716,7 @@ create_allocate_bmp_file(file_name,
 
       /*********************************************
       *
-      *   Write a zero image.  
+      *   Write a zero image.
       *
       *********************************************/
 
@@ -935,7 +807,7 @@ write_bmp_image(file_name, array)
    }  /* ends loop over i */
 
    position   = fseek(image_file,
-                      file_header.bitmapoffset, 
+                      file_header.bitmapoffset,
                       SEEK_SET);
 
    pad = calculate_pad(width);
@@ -983,3 +855,143 @@ int calculate_pad(width)
    pad = ( (width%4) == 0) ? 0 : (4-(width%4));
    return(pad);
 }  /* ends calculate_pad */
+
+
+
+
+int main(argc, argv)
+   int argc;
+   char *argv[];
+{
+
+   struct bmpfileheader file_header;
+   struct bitmapheader  bmheader;
+   struct ctstruct rgb[256];
+
+   FILE *fp;
+   short **the_image;
+   int   i, j;
+
+
+   long height = 0, width = 0;
+   int  negative = 0;
+
+      /******************************************
+      *
+      *
+      ******************************************/
+
+   if(argc < 2){
+      printf("\ntestbmp file-name.bmp");
+      exit(0);
+   }
+
+
+
+   read_bmp_file_header(argv[1], &file_header);
+   print_bmp_file_header(&file_header);
+
+   read_bm_header(argv[1], &bmheader);
+   print_bm_header(&bmheader);
+
+   width = bmheader.width;
+   if(bmheader.height < 0)
+      height   = bmheader.height * (-1);
+   else
+      height = bmheader.height;
+
+   the_image = allocate_image_array(height, width);
+   read_bmp_image(argv[1], the_image);
+
+   for(i=0; i<15; i++){
+      printf("\n");
+      for(j=0; j<15; j++){
+         printf("-%3d", the_image[i][j]);
+      }
+   }
+
+   free_image_array(the_image, height);
+
+
+
+#ifdef TESTWRITE
+   read_bm_header(argv[1], &bmheader);
+
+   width = bmheader.width;
+   if(bmheader.height < 0)
+      height   = bmheader.height * (-1);
+   else
+      height = bmheader.height;
+
+   the_image = allocate_image_array(height, width);
+
+   for(i=0; i<height; i++){
+      for(j=0; j<width; j++){
+         the_image[i][j] = i;
+      }
+   }
+
+   write_bmp_image(argv[1], the_image);
+   free_image_array(the_image, height);
+#endif
+
+
+
+#ifdef IFNEEDED
+   read_bm_header(argv[1], &bmheader);
+
+   width = bmheader.width;
+   if(bmheader.height < 0)
+      height   = bmheader.height * (-1);
+   else
+      height = bmheader.height;
+
+   the_image = allocate_image_array(height, width);
+
+   create_bmp_file_if_needed(argv[1], argv[2], the_image);
+
+   free_image_array(the_image, height);
+#endif
+
+
+
+
+#ifdef TESTCREATE
+   bmheader.height = 222;
+   bmheader.width  = 333;
+   create_allocate_bmp_file(argv[1], &file_header, &bmheader);
+#endif
+
+
+#ifdef TESTREAD
+   read_bmp_file_header(argv[1], &file_header);
+   print_bmp_file_header(&file_header);
+
+   read_bm_header(argv[1], &bmheader);
+   print_bm_header(&bmheader);
+
+   width = bmheader.width;
+   if(bmheader.height < 0)
+      height   = bmheader.height * (-1);
+   else
+      height = bmheader.height;
+
+   the_image = allocate_image_array(height, width);
+   read_bmp_image(argv[1], the_image);
+
+   for(i=0; i<15; i++){
+      printf("\n");
+      for(j=0; j<15; j++){
+         printf("-%3d", the_image[i][j]);
+      }
+   }
+
+   free_image_array(the_image, height);
+#endif
+
+      /******************************************
+      *
+      *
+      ******************************************/
+
+}  /* ends main */
