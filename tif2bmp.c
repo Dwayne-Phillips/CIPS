@@ -41,7 +41,8 @@ int main(argc, argv)
    char *argv[];
 {
    char   *cc;
-   int    l, w;
+   char   reply[80];
+   long    l, w;
    int    ok = 0;
    short  **the_image;
    struct tiff_header_struct image_header;
@@ -75,7 +76,12 @@ int main(argc, argv)
    }
 
    get_image_size(argv[1], &l, &w);
+   /********* DEBUG
+   printf("\nDEBUG input %s l=%d w=%d", argv[1], l, w);
+   printf("\nDEBUG Hit enter to continue");
+   **********/
    the_image       = allocate_image_array(l, w);
+   gets(reply);
    bmheader.height = l;
    bmheader.width  = w;
    create_allocate_bmp_file(argv[2],
