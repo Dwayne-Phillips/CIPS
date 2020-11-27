@@ -833,7 +833,7 @@ short** allocate_image_array(length, width)
    short** the_array = (short**) malloc(length * sizeof(short*));
    for(i=0; i<length; i++){
       the_array[i] = (short*) malloc(width * sizeof(short));
-      if(the_array[i] == '\0'){
+      if(the_array[i] == NULL){
          printf("\n\tmalloc of the_image[%d] failed", i);
       }  /* ends if */
    }  /* ends loop over i */
@@ -2303,6 +2303,9 @@ int get_image_size(file_name, rows, cols)
    if(is_a_tiff(file_name)){
       is_tiff = 1;
       read_tiff_header(file_name, &tiffh);
+      /********** DEBUG
+      printf("\nDEBUGIO l=%ld w=%ld", tiffh.image_length, tiffh.image_width);
+      ***********/
       *rows = tiffh.image_length;
       *cols = tiffh.image_width;
    }  /* ends if is_a_bmp */
