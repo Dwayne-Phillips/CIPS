@@ -43,3 +43,5 @@ Sorry about this, but that was all I knew how to do.
 If you want to use "fancy" TIFF files, I recommend finding and learning how to use
 the libtiff source code.
 Google "libtiff" and you will find all sorts of information.
+One good source is http://www.simplesystems.org/libtiff/.
+
