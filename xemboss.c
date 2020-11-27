@@ -11,7 +11,7 @@
     *
     *       Purpose:
     *          This program performs embossing on
-    *          images using a collection of 
+    *          images using a collection of
     *          convolution masks.
     *
     *       External Calls:
@@ -28,6 +28,17 @@
     ***********************************************/
 
 #include "cips.h"
+
+int does_not_exist();
+int create_image_file();
+int get_image_size();
+int read_image_array();
+int free_image_array();
+int write_image_array();
+int emboss_convolution();
+int get_bitsperpixel();
+int copy_array();
+
 
    /* list the convolution masks */
 
@@ -110,7 +121,7 @@ short emboss_13_mask[3][3] =  {
 short **the_image;
 short **out_image;
 
-main(argc, argv)
+int main(argc, argv)
    int argc;
    char *argv[];
 {
@@ -167,15 +178,15 @@ main(argc, argv)
    *
    *   emoboss_convolution(...
    *
-   *   This function performs convolution 
-   *   between the input image and a 3x3 mask.  
+   *   This function performs convolution
+   *   between the input image and a 3x3 mask.
    *   The result is placed in the out_image.
    *
    ***********************************************/
 
-emboss_convolution(image, out_image,
+int emboss_convolution(image, out_image,
                    type,
-                   rows, cols, 
+                   rows, cols,
                    bitsperpixel)
    short **image,
          **out_image;
@@ -222,13 +233,13 @@ emboss_convolution(image, out_image,
 
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+return(1);
 }  /* ends emboss_convolution */
 
 
 
 
-copy_array(type, mask)
+int copy_array(type, mask)
    int type;
    short mask[3][3];
 {
@@ -297,5 +308,5 @@ copy_array(type, mask)
          }  /* ends switch */
       }  /* ends loop over j */
    }  /* ends loop over i */
-
+return(1);
 }  /* ends copy_array */
