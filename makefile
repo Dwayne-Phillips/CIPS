@@ -29,6 +29,10 @@ HEADEROBJS=header.o imageio.o
 header: $(HEADEROBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
+SIDEOBJS=side.o imageio.o
+side: $(SIDEOBJS)
+	$(CC) -o $@ $^ $(CFLAGS)
+
 
 HALFTONEOBJS=halftone.o ht.o imageio.o
 halftone: $(HALFTONEOBJS)
@@ -70,14 +74,15 @@ CREATOBJS=create.o imageio.o
 create: $(CREATOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
+STEGAOBJS=stega.o imageio.o
+stega: $(STEGAOBJS)
+		$(CC) -o $@ $^ $(CFLAGS)
+
 
 STRETCHOBJS=stretch.o geosubs.o imageio.o
 stretch: $(STRETCHOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
-MAINOVEROBJS=mainover.o overlay.o imageio.o
-mainover: $(MAINOVEROBJS)
-	$(CC) -o $@ $^ $(CFLAGS)
 
 BOOLEANOBJS=boolean.o boole.o imageio.o
 boolean: $(BOOLEANOBJS)
@@ -144,9 +149,6 @@ MFILTEROBJS=mfilter.o imageio.o filter.o utility.o
 mfilter: $(MFILTEROBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
-SIDEOBS=imageio.o hist.o side.o
-side: $(SIDEOBS)
-	$(CC) -o $@ $^ $(CFLAGS)
 
 ####################### TEST PLATFORM ###############
 
@@ -158,6 +160,20 @@ hello: $(HELLOOBJS)
 TESTBEDOBJS=testbed.o imageio.o hist.o
 testbed: $(TESTBEDOBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
+
+TEXTOBJS=text.o imageio.o tiffs.o
+text: $(TEXTOBJS)
+		$(CC) -o $@ $^ $(CFLAGS)
+
+
+TIF2BMPOBJS=tif2bmp.o imageio.o
+tif2bmp: $(TIF2BMPOBJS)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+XEMBOSSOBJS=xemboss.o imageio.o
+xemboss: $(XEMBOSSOBJS)
+		$(CC) -o $@ $^ $(CFLAGS)
+
 
 TESTSEGOBJS=testseg.o imageio.o segment.o hist.o
 testseg: $(TESTSEGOBJS)
