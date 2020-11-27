@@ -12,9 +12,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
+/*** #include <malloc.h> ***/
 
-#undef DEBUG    
+#undef DEBUG
 
 #define NOTHING -1
 #define H       10
@@ -59,15 +59,15 @@ int solution_found(struct node *, int *);
 
 /************************************************/
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 
 char response[80];
 int stupid = 99;
 
-   int cost, 
+   int cost,
        goal,
-       i, 
+       i,
        searching   = 1;
 
    struct node *CLOSED,
@@ -102,7 +102,7 @@ int stupid = 99;
 
       /******************************************
       *
-      *   Search through the state space for 
+      *   Search through the state space for
       *   a solution.
       *
       ******************************************/
@@ -136,7 +136,7 @@ gets(response);
 
             /************************************
             *
-            *   Expand node n using the 
+            *   Expand node n using the
             *   cost matrix.
             *
             ************************************/
@@ -147,13 +147,13 @@ gets(response);
 
                   /*******************************
                   *
-                  *   First expand n if it is 
+                  *   First expand n if it is
                   *   the start node.
                   *
                   *******************************/
 
                   if(n->parent == NULL){
-                     new = create_new_node(i, 
+                     new = create_new_node(i,
                               cost+n->cost);
                      new->parent = n;
                      add_to_list(&OPEN, &new);
@@ -169,14 +169,14 @@ printf("\nhit enter "); gets(response);
                   *   Expand nodes that are not
                   *   the start node.
                   *
-                  *   Do not expand the parent 
+                  *   Do not expand the parent
                   *   node of node n.
                   *
                   *******************************/
 
                   else{  /* not start node */
                      if((n->parent)-> number != i){
-                        new = create_new_node(i, 
+                        new = create_new_node(i,
                                  cost+n->cost);
                         new->parent = n;
                         add_to_list(&OPEN, &new);
@@ -204,11 +204,11 @@ printf("\nhit enter "); gets(response);
 
 /************************************************/
 /*
-   Add a node to the end of the linked list 
+   Add a node to the end of the linked list
    pointed to be the head pointer.
 */
 
-void add_to_list(struct node **head, 
+void add_to_list(struct node **head,
                  struct node **new)
 {
    struct node *temp;
@@ -271,7 +271,7 @@ void print_node(struct node *a)
 
 /************************************************/
 /*
-   This routine will remove and return one node 
+   This routine will remove and return one node
    from the linked list pointed to by head.
 
    1. If there are any goal nodes in the list,
@@ -360,7 +360,7 @@ struct node * remove_from_list(struct node **head,
             temp         = NULL;
             done         = 1;
          }  /* ends if temp->next == result */
-         if(done != 1) 
+         if(done != 1)
             temp = temp->next;
       }  /* ends while temp != NULL */
    }  /* ends else result is not at the HEAD */
@@ -388,7 +388,7 @@ int is_a_goal_node(struct node *n, int goal)
 
 /************************************************/
 
-int solution_found(struct node *end, 
+int solution_found(struct node *end,
                    int *searching)
 {
    struct node *temp;
@@ -419,7 +419,7 @@ int solution_found(struct node *end,
 
 /************************************************/
 
-struct node * create_new_node(int number, 
+struct node * create_new_node(int number,
                               int cost)
 {
    struct node *new;
@@ -439,7 +439,7 @@ struct node * create_new_node(int number,
 
 void print_usage()
 {
-   printf("\nusage: uc goal-node");
+   printf("\nusage: uc goal-node\n");
 }  /* ends print_usage */
 
 /************************************************/
