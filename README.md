@@ -45,3 +45,22 @@ the libtiff source code.
 Google "libtiff" and you will find all sorts of information.
 One good source is http://www.simplesystems.org/libtiff/.
 
+## TIF File Workaround
+
+Since the source code only works with my simple TIF files and not complex ones,
+I found a workaround to creating new TIF files. 
+This involves using the GNU Image Processing software GIMP, which is found
+at https://www.gimp.org/.
+
+1. Grab any wonderful colorful jpg image from anywhere
+2. Open that wonderful colorful jpg in GIMP
+3. Convert the wonderful colorful jpg to a grayscale image in GIMP, Image --> mode --> grayscale
+4. In GIMP, File --> Export the image as a bmp.
+
+The CIPS software can read that bmp.
+
+Finally, run the CIPS program bmp2tif to convert the bmp to a tif.
+
+
+
+
