@@ -3,6 +3,8 @@
 
 by Dwayne Phillips
 
+28 November 2020
+
 This is from my book "Image Processing in C"
 
 which I wrote in 1994 and updated in 2000.
@@ -10,6 +12,9 @@ which I wrote in 1994 and updated in 2000.
 ## The Book
 
 A pdf of the book is in the file cips2ed.pdf.
+This software illustrates basic image processing operations.
+You can filter images, detect edges, and so on.
+The book describes the concepts and points you to the source code files that implement the concepts.
 
 ## Fundamental Purpose
 
@@ -31,6 +36,18 @@ It is all written in C.
 I compiled and tested all the code in November 2020 on a Mac using the GNU tools (gcc).
 
 The source code is at https://github.com/Dwayne-Phillips/CIPS.
+
+## Making the Executables
+
+This is all done in the style of creating programs on a Unix (Linux) system like we did in the 1980s
+(yes, I am that old).
+There is a makefile that contains the dependencies for each program.
+Open a terminal window on a Mac or Linux system.
+Type "make mainas" to compile and make the mainas program, which is the program that allows you to add and subtract images.
+
+The rest work the same way.
+Again, this is how we used to do it and this still works.
+
 
 ## TIF File Problems
 
