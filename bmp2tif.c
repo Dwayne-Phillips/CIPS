@@ -40,7 +40,7 @@ int main(argc, argv)
    char *argv[];
 {
    char   *cc;
-   int    l, w;
+   long   l, w;
    int    ok = 0;
    short  **the_image;
    struct tiff_header_struct image_header;
